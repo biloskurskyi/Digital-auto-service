@@ -9,11 +9,14 @@
 </head>
 <body>
 <div class="reg_block">
+    {% for message in messages %}
+        <div>{{ message }}</div>
+    {% endfor %}
     <form method="POST" action="">
         {% csrf_token %}
         {{ form.as_p }}
         <div class="log_question">Already have an account?
-            <a href="{% url 'accounts:log'%}" style="color: lightblue;">Log in</a></div>
+            <a href="{% url 'accounts:log' %}" style="color: lightblue;">Log in</a></div>
         <button type="submit">Submit</button>
     </form>
 </div>

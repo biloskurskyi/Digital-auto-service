@@ -124,6 +124,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/login/'
 
-LOGIN_REDIRECT_URL = '/ok/'
+LOGIN_REDIRECT_URL = '/succeslogin/'
 
 AUTH_USER_MODEL = 'accounts.AccountUsers'
+# AUTH_USER_MODEL = 'auth.user'
+
+
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

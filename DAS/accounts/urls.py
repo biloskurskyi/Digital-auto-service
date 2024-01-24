@@ -1,15 +1,13 @@
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.views import LogoutView
 from django.urls import path
-
-from . import views
-from .views import *
+from views import (AccountProfile, IndexView, MianView, UserLoginView,
+                   UserRegistrationView)
 
 app_name = 'accounts'
 urlpatterns = [
-    path('', UserRegistrationView.as_view(), name='reg'),
+    path('', IndexView.as_view(), name='base'),
+    path('registration/', UserRegistrationView.as_view(), name='reg'),
     path('login/', UserLoginView.as_view(), name='log'),
-    path('ok/', login_required(OkView.as_view()), name='ok'),
+    path('succeslogin/', login_required(MianView.as_view()), name='success_log'),
+    path('profile/<int:pk>/', login_required(AccountProfile.as_view()), name='ok'),
 ]

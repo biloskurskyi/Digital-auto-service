@@ -9,6 +9,9 @@
 </head>
 <body>
 <div class="login_block">
+    {% for message in messages %}
+        <div>{{ message }}</div>
+    {% endfor %}
     <form method="POST" action="">
         {% csrf_token %}
         {{ form.as_p }}

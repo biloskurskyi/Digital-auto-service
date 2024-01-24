@@ -1,0 +1,21 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="profile">
+    {% for message in messages %}
+        <div>{{ message }}</div>
+    {% endfor %}
+    <form method="post" action="{% url 'accounts:ok' pk=form.instance.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>
