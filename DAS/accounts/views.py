@@ -1,10 +1,13 @@
-from django.contrib.auth.models import User
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.checks import messages
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-# from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
-from .forms import CreateAccountUserForm, UserLoginForm
+from django.views.generic import CreateView, TemplateView, UpdateView
+
+from .forms import AccountProfileForm, CreateAccountUserForm, UserLoginForm
 from .models import AccountUsers
 
 
@@ -25,6 +28,11 @@ class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     title = 'DAS - registration'
     success_url = reverse_lazy('accounts:log')
 
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     messages.success(self.request, self.success_message)
+    #     return redirect(self.success_url)
+
 
 class UserLoginView(TitleMixin, LoginView):
     template_name = 'accounts/login.html'
@@ -32,5 +40,35 @@ class UserLoginView(TitleMixin, LoginView):
     title = 'DAS - login'
 
 
-class OkView(TemplateView):
-    template_name = "accounts/successful_page.html"
+class AccountProfile(TitleMixin, UpdateView):
+    model = AccountUsers
+    form_class = AccountProfileForm
+    template_name = "accounts/profile.html"
+    title = 'DAS - account profile'
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:ok', args=(self.object.id,))
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        if request.user != profile_user:
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Profile updated successfully.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Error updating profile.')
+        return super().form_invalid(form)
+
+
+class MianView(TemplateView):
+    template_name = "accounts/successful_login.html"
+    title = "DAS - login success"
+
+
+class IndexView(TemplateView):
+    template_name = "accounts/base.html"
+    title = "DAS"

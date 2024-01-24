@@ -4,19 +4,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    <title>Title</title>
 </head>
 <body>
-<div class="reg_block">
+<div class="profile">
     {% for message in messages %}
         <div>{{ message }}</div>
     {% endfor %}
-    <form method="POST" action="">
+    <form method="post" action="{% url 'accounts:ok' pk=form.instance.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
-        <div class="log_question">Already have an account?
-            <a href="{% url 'accounts:log' %}" style="color: lightblue;">Log in</a></div>
         <button type="submit">Submit</button>
     </form>
 </div>
