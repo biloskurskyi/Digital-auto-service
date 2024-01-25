@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>{{ title }}</title>
 </head>
 <body>
 <div class="profile">
@@ -15,6 +15,9 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Submit</button>
+        <br>
+        <br>
+        <a href="{% url 'accounts:delete' user.id %}" style="color: red;">Delete account</a>
     </form>
 </div>
 </body>

@@ -32,5 +32,4 @@ class AccountProfileForm(UserChangeForm):
     def __init__(self, *args, **kwargs):
         super(AccountProfileForm, self).__init__(*args, **kwargs)
 
-        # Приховуємо поле пароля
         self.fields['password'].widget = forms.HiddenInput()
