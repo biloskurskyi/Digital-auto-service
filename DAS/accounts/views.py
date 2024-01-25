@@ -1,11 +1,10 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.checks import messages
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
 from .forms import AccountProfileForm, CreateAccountUserForm, UserLoginForm
 from .models import AccountUsers
@@ -18,6 +17,16 @@ class TitleMixin:
         context = super(TitleMixin, self).get_context_data()
         context['title'] = self.title
         return context
+
+
+class IndexView(TitleMixin, TemplateView):
+    template_name = "accounts/base.html"
+    title = "DAS"
+
+
+class MianView(TitleMixin, TemplateView):
+    template_name = "accounts/successful_login.html"
+    title = "DAS - login success"
 
 
 class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
@@ -64,11 +73,30 @@ class AccountProfile(TitleMixin, UpdateView):
         return super().form_invalid(form)
 
 
-class MianView(TemplateView):
-    template_name = "accounts/successful_login.html"
-    title = "DAS - login success"
+class AccountDelete(TitleMixin, DeleteView):
+    model = AccountUsers
+    success_url = reverse_lazy('accounts:reg')
+    success_message = 'Account deleted successfully.'
+    template_name = 'accounts/delete.html'
+    title = 'DAS - account delete'
 
+    def get_object(self, queryset=None):
+        return self.request.user
 
-class IndexView(TemplateView):
-    template_name = "accounts/base.html"
-    title = "DAS"
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        if request.user != profile_user:
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        return super().delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Profile deleted successfully.')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Error, profile was not deleted.')
+        return super().form_invalid(form)

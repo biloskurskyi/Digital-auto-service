@@ -8,13 +8,14 @@ class AccountUsers(AbstractUser):
     username = models.CharField(max_length=32, unique=True)
     email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15, unique=True)
+    owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
 
     groups = models.ManyToManyField(
         'auth.Group',
         verbose_name='groups',
         blank=True,
         help_text='The groups this user belongs to.',
-        related_name='accounts_users_groups'
+        related_name='owner_users_groups'
     )
 
     user_permissions = models.ManyToManyField(
@@ -22,34 +23,41 @@ class AccountUsers(AbstractUser):
         verbose_name='user permissions',
         blank=True,
         help_text='Specific permissions for this user.',
-        related_name='accounts_users_permissions'
+        related_name='owner_users_permissions'
     )
 
     def save(self, *args, **kwargs):
-        # Ensure that the user is not saved as a superuser
         self.is_superuser = False
         super().save(*args, **kwargs)
 
-# class AdminUser(AbstractUser):
+    class Meta:
+        verbose_name = "Owner"
+        verbose_name_plural = "Owners"
+
+#
+# class AccountManagersUsers(AbstractUser):
+#     first_name = models.CharField(max_length=32)
+#     last_name = models.CharField(max_length=32)
+#     username = models.CharField(max_length=32, unique=True)
 #     email = models.EmailField(unique=True)
-#
-#     USERNAME_FIELD = 'email'
-#     REQUIRED_FIELDS = ['username']
-#
-#     def __str__(self):
-#         return self.email
+#     phone_number = models.CharField(max_length=15, unique=True)
+#     owner = models.ForeignKey('AccountOwnerUsers', on_delete=models.PROTECT)
 #
 #     groups = models.ManyToManyField(
 #         'auth.Group',
-#         related_name='admin_users',
-#         blank=True,
-#         help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
 #         verbose_name='groups',
+#         blank=True,
+#         help_text='The groups this user belongs to.',
+#         related_name='managers_users_groups'
 #     )
+#
 #     user_permissions = models.ManyToManyField(
 #         'auth.Permission',
-#         related_name='admin_users',
+#         verbose_name='user permissions',
 #         blank=True,
 #         help_text='Specific permissions for this user.',
-#         verbose_name='user permissions',
+#         related_name='managers_users_permissions'
 #     )
+#
+#     class Meta:
+#         verbose_name_plural = "Managers"
