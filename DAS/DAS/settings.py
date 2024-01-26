@@ -122,12 +122,29 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# login settings
+
 LOGIN_URL = '/login/'
-
-LOGIN_REDIRECT_URL = '/succeslogin/'
-
+LOGIN_REDIRECT_URL = '/success/login/'
+LOGOUT_REDIRECT_URL = '/login/'
 AUTH_USER_MODEL = 'accounts.AccountUsers'
 # AUTH_USER_MODEL = 'auth.user'
 
-
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+# email settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'your_email@example.com'
+EMAIL_HOST_PASSWORD = 'server-password'
+EMAIL_USE_SSL = True
+
+
+# EMAIL_OAUTH2_CLIENT_ID = 'your_client_id'
+# EMAIL_OAUTH2_CLIENT_SECRET = 'your_client_secret'
+# EMAIL_OAUTH2_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
+# EMAIL_OAUTH2_SCOPE = 'https://www.googleapis.com/auth/gmail.send'
+# EMAIL_OAUTH2_USE_SANDBOX = False
+# EMAIL_OAUTH2_USE_CREDENTIALS = True

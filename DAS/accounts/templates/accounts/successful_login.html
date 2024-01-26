@@ -5,6 +5,15 @@
     <title>{{ title }}</title>
 </head>
 <body>
-<a href="{% url 'accounts:ok' user.id %}" style="color: lightblue;">Your account</a>
+{#{{ user.username }}#}
+{#{{ user.owner.id }}#}
+{#{{ user.id }}#}
+{% if user.owner.id %}
+    <a href="{% url 'accounts:manager_profile' user.id %}">Your account</a>
+{% else %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">Your account</a>
+{% endif %}
+<br><br>
+<a href="{% url 'accounts:log_out' %}">Log out</a>
 </body>
 </html>
