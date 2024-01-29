@@ -7,7 +7,7 @@ from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
 from django.core.mail import send_mail
 
-from accounts.models import AccountUsers
+from accounts.models import AccountUsers, Client
 
 
 class UserLoginForm(AuthenticationForm):
@@ -79,3 +79,24 @@ class AccountProfileForm(UserChangeForm):
         super(AccountProfileForm, self).__init__(*args, **kwargs)
 
         self.fields['password'].widget = forms.HiddenInput()
+
+
+class CreateClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = '__all__'
+        exclude = ('owner',)
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = Client
+        fields = '__all__'
+        exclude = ('owner',)
+
+    def __init__(self, *args, **kwargs):
+        super(ClientForm, self).__init__(*args, **kwargs)
+        self.fields['date_of_birth'].widget = forms.DateInput(attrs={'type': 'date'})
