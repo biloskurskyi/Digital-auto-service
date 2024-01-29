@@ -20,12 +20,26 @@
             {% for manager, manager_id in managers %}
                 <li><a href="{% url 'accounts:owner_manager_profile' pk=manager_id %}">{{ manager }}</a></li>
             {% endfor %}
-{#            {{ user.username }}#}
-{#            {{ form.instance.pk }}#}
+            {#            {{ user.username }}#}
+            {#            {{ form.instance.pk }}#}
         </div>
-        {#        {% endif %}#}
         <br>
         <a href="{% url 'accounts:create_manager' user.id %}">Create new manager</a>
+        <br>
+        <div>
+            <h3>Clients:</h3>
+            {% for client in clients %}
+
+                <li>
+                    <a href="{% url 'accounts:client_owner' pk=client.id %}">
+                        {{ client.first_name }} {{ client.last_name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </div>
+        <br>
+        {#        {% endif %}#}
+        <a href="{% url 'accounts:client_owner_create' user.id %}">Create new client</a>
         <br>
         <br>
         <button type="submit">Submit</button>
