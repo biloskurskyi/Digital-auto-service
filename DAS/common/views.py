@@ -3,9 +3,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import TemplateView, CreateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
 
-from accounts.forms import AccountProfileForm
+from accounts.forms import AccountProfileForm, CreateClientForm, ClientForm
 from accounts.models import AccountUsers, Client
 
 
@@ -37,29 +37,18 @@ class AccountProfileView(TitleMixin, UpdateView):
         managers = self.object.get_managers()
         context['managers'] = managers
 
-        # owner = get_object_or_404(AccountUsers, id=self.request.user.id)
-        # clients = Client.objects.filter(owner=owner)
-        # context['clients'] = [(client, client.id) for client in clients]
-
+        if self.request.user.owner is not None:
+            manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
+            clients = Client.objects.filter(owner=manager)
+            context['clients'] = clients
+        else:
+            owner = get_object_or_404(AccountUsers, id=self.request.user.id)
+            clients = Client.objects.filter(owner=owner)
+            context['clients'] = [client for client in clients]
         return context
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     owner = get_object_or_404(AccountUsers, id=self.request.user.id)
-    #     clients = Client.objects.filter(owner=owner)
-    #     context['clients'] = [(client, client.id) for client in clients]
-    #     # print([(client, client.id) for client in clients])
-    #     return context
 
     def get_success_url(self):
         return reverse_lazy(f'accounts:{self.profile}', args=(self.object.id,))
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        managers = self.request.user.get_managers()
-        if (request.user != profile_user or not request.user.is_active) and profile_user.owner != request.user:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         messages.success(self.request, 'Profile updated successfully.')
@@ -68,3 +57,50 @@ class AccountProfileView(TitleMixin, UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Error updating profile.')
         return super().form_invalid(form)
+
+
+# http://localhost:8009/owner/create/client/profile/6/
+class ClientCreateView(TitleMixin, CreateView):
+    model = Client
+    form_class = CreateClientForm
+    path_name = 'profile'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.path_name}', args=(self.request.user.id,))
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+    #     if request.user != profile_user:
+    #         raise Http404("User not found")
+    #     return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if self.path_name == 'manager_profile':
+            form.instance.owner = self.request.user.owner
+            messages.success(self.request, 'Client created successfully.')
+        elif self.path_name == 'owner_profile':
+            owner_id = get_object_or_404(AccountUsers, id=self.request.user.id)
+            form.instance.owner = owner_id
+            messages.success(self.request, 'Client created successfully.')
+        return super().form_valid(form)
+
+
+class ClientUpdateView(TitleMixin, UpdateView):
+    model = Client
+    form_class = ClientForm
+    path_name = 'profile'
+
+    def get_success_url(self):
+        messages.success(self.request, 'Client profile updated successfully.')
+        return reverse_lazy(f'accounts:{self.path_name}', args=(self.object.id,))
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(Client, pk=kwargs['pk'])
+        if self.path_name == 'client_manager':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and request.user.owner_id != profile_user.owner_id):
+                raise Http404("User not found")
+        elif self.path_name == 'client_owner':
+            if (request.user != profile_user or not request.user.is_active) and profile_user.owner != request.user:
+                raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)

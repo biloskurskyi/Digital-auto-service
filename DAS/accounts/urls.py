@@ -1,9 +1,14 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.urls import path
-from .views import (OwnerAccountProfileView, IndexView, MianView, UserLoginView, UserRegistrationView, AccountDelete,
-                    OwnerManagerAccountProfileView, ManagerAccountProfileView, CreateManagerView, ClientOwnerCreateView,
-                    ClientManagerCreateView, ClientOwnerUpdateView, ClientManagerUpdateView)
+
+from .views import (OwnerAccountDelete, ClientManagerCreateView,
+                    ClientManagerUpdateView, ClientOwnerCreateView,
+                    ClientOwnerUpdateView, CreateManagerView, IndexView,
+                    ManagerAccountProfileView, MianView,
+                    OwnerAccountProfileView, OwnerManagerAccountProfileView,
+                    UserLoginView, UserRegistrationView, ManagerAccountDelete, OwnerClientAccountDelete,
+                    ManagerClientAccountDelete)
 
 app_name = 'accounts'
 urlpatterns = [
@@ -14,7 +19,12 @@ urlpatterns = [
     path('success/login/', login_required(MianView.as_view()), name='success_log'),
     path('logout/', LogoutView.as_view(), name='log_out'),
 
-    path('delete/<int:pk>/', login_required(AccountDelete.as_view()), name='delete'),
+    path('delete/owner/<int:pk>/', login_required(OwnerAccountDelete.as_view()), name='delete_owner'),
+    path('delete/manager/<int:pk>/', login_required(ManagerAccountDelete.as_view()), name='delete_manager'),
+    path('owner/delete/client/<int:pk>/', login_required(OwnerClientAccountDelete.as_view()),
+         name='owner_delete_client'),
+    path('manager/delete/client/<int:pk>/', login_required(ManagerClientAccountDelete.as_view()),
+         name='manager_delete_client'),
 
     path('owner/profile/<int:pk>/', login_required(OwnerAccountProfileView.as_view()), name='owner_profile'),
     path('owner/manager/profile/<int:pk>/', login_required(OwnerManagerAccountProfileView.as_view()),

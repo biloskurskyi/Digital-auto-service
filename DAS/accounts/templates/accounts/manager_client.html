@@ -24,6 +24,7 @@
         <br>
         <a href="{% url 'accounts:manager_profile' pk=request.user.pk %}">Manager account</a>
         <br>
+        <a href="{% url 'accounts:manager_delete_client' form.instance.pk %}" style="color: red;">Delete client</a>
     </form>
 </div>
 </body>

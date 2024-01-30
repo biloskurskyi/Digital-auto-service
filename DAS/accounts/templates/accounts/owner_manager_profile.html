@@ -25,7 +25,7 @@
         <br>
         <a href="{% url 'accounts:owner_profile' pk=form.instance.owner.pk %}">Owner account</a>
         <br>
-        <a href="{% url 'accounts:delete' user.id %}" style="color: red;">Delete account</a>
+        <a href="{% url 'accounts:delete_manager' form.instance.pk %}" style="color: red;">Delete manager</a>
     </form>
 </div>
 </body>
