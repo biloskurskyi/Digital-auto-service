@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div class="delete_account">
+    <form method="post" action="{% url 'accounts:manager_delete_client' pk=object.pk %}">
+        {% csrf_token %}
+        <p>Are you sure you want to delete {{ object.last_name }} {{ object.first_name }}?</p>
+        <input type="submit" value="Confirm">
+    </form>
+</div>
+</body>
+</html>
