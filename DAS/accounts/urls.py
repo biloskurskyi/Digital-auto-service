@@ -2,13 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from .views import (OwnerAccountDelete, ClientManagerCreateView,
-                    ClientManagerUpdateView, ClientOwnerCreateView,
-                    ClientOwnerUpdateView, CreateManagerView, IndexView,
-                    ManagerAccountProfileView, MianView,
-                    OwnerAccountProfileView, OwnerManagerAccountProfileView,
-                    UserLoginView, UserRegistrationView, ManagerAccountDelete, OwnerClientAccountDelete,
-                    ManagerClientAccountDelete)
+from .views import (ClientManagerCreateView, ClientManagerUpdateView,
+                    ClientOwnerCreateView, ClientOwnerUpdateView,
+                    CreateManagerView, IndexView, ManagerAccountDelete,
+                    ManagerAccountProfileView, ManagerClientAccountDelete,
+                    MianView, OwnerAccountDelete, OwnerAccountProfileView,
+                    OwnerClientAccountDelete, OwnerManagerAccountProfileView,
+                    UserLoginView, UserRegistrationView)
 
 app_name = 'accounts'
 urlpatterns = [

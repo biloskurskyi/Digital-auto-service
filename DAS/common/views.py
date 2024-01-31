@@ -3,9 +3,11 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView, UpdateView, DeleteView
+from django.views.generic import (CreateView, DeleteView, TemplateView,
+                                  UpdateView)
 
-from accounts.forms import AccountProfileForm, CreateClientForm, ClientForm
+from accounts.forms import (AccountProfileForm, ClientForm,
+                            CreateAccountUserForm, CreateClientForm)
 from accounts.models import AccountUsers, Client
 
 
@@ -58,21 +60,32 @@ class AccountProfileView(TitleMixin, UpdateView):
         messages.error(self.request, 'Error updating profile.')
         return super().form_invalid(form)
 
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
 
-# http://localhost:8009/owner/create/client/profile/6/
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
 class ClientCreateView(TitleMixin, CreateView):
     model = Client
     form_class = CreateClientForm
     path_name = 'profile'
+    title = 'create client'
 
     def get_success_url(self):
         return reverse_lazy(f'accounts:{self.path_name}', args=(self.request.user.id,))
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-    #     if request.user != profile_user:
-    #         raise Http404("User not found")
-    #     return super().dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         if self.path_name == 'manager_profile':
@@ -84,11 +97,15 @@ class ClientCreateView(TitleMixin, CreateView):
             messages.success(self.request, 'Client created successfully.')
         return super().form_valid(form)
 
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
 
 class ClientUpdateView(TitleMixin, UpdateView):
     model = Client
     form_class = ClientForm
     path_name = 'profile'
+    title = 'client update'
 
     def get_success_url(self):
         messages.success(self.request, 'Client profile updated successfully.')
@@ -104,3 +121,35 @@ class ClientUpdateView(TitleMixin, UpdateView):
             if (request.user != profile_user or not request.user.is_active) and profile_user.owner != request.user:
                 raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
+
+
+class DeleteAccountView(TitleMixin, DeleteView):
+    form_valid_info = 'Account deleted successfully.'
+    form_invalid_info = 'Account was not deleted.'
+    reverse_page = ''
+    model = ''
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")

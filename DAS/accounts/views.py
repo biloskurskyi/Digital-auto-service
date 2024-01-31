@@ -1,15 +1,13 @@
-from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, UpdateView
 
-from common.views import (AccountProfileView, BaseView, CreateAccountView,
-                          TitleMixin, ClientCreateView, ClientUpdateView)
+from common.views import (AccountProfileView, BaseView, ClientCreateView,
+                          ClientUpdateView, CreateAccountView,
+                          DeleteAccountView, TitleMixin)
 
-from .forms import (AccountProfileForm, ClientForm, CreateAccountUserForm,
-                    CreateClientForm, CreateManagerUserForm, UserLoginForm)
+from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers, Client
 
 
@@ -52,15 +50,10 @@ class CreateManagerView(CreateAccountView):
         kwargs['request'] = self.request
         return kwargs
 
-
-class ManagerAccountProfileView(AccountProfileView):
-    template_name = "accounts/manager_profile.html"
-    title = 'DAS - manager account profile'
-    profile = 'manager_profile'
-
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if request.user != profile_user or not request.user.is_active or request.user.owner == None:
+        print(profile_user, request.user)
+        if request.user != profile_user:
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
 
@@ -70,11 +63,17 @@ class OwnerAccountProfileView(AccountProfileView):
     title = 'DAS - owner account profile'
     profile = 'owner_profile'
 
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if request.user != profile_user or not request.user.is_active or request.user.owner != None:  # and profile_user.owner != request.user
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
+
+
+class ManagerAccountProfileView(AccountProfileView):
+    template_name = "accounts/manager_profile.html"
+    title = 'DAS - manager account profile'
+    profile = 'manager_profile'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
 
 
 class OwnerManagerAccountProfileView(AccountProfileView):
@@ -82,27 +81,26 @@ class OwnerManagerAccountProfileView(AccountProfileView):
     title = 'DAS - manager account profile'
     profile = 'owner_manager_profile'
 
+    def check_access(self, request, profile_user):
+        if profile_user.id == request.user.id or (profile_user.id and profile_user.owner is None):
+            raise Http404("User not found")
+        return request.user.id == profile_user.owner.id and request.user.is_active
+
 
 class ClientOwnerCreateView(ClientCreateView):
     template_name = 'accounts/owner_create_client.html'
     path_name = 'owner_profile'
 
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if request.user != profile_user or not request.user.is_active or request.user.owner != None:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
 
 
 class ClientManagerCreateView(ClientCreateView):
     template_name = 'accounts/manager_create_client.html'
     path_name = 'manager_profile'
 
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if request.user != profile_user or not request.user.is_active or request.user.owner == None:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
 
 
 class ClientOwnerUpdateView(ClientUpdateView):
@@ -115,117 +113,51 @@ class ClientManagerUpdateView(ClientUpdateView):
     path_name = 'client_manager'
 
 
-class OwnerAccountDelete(TitleMixin, DeleteView):
+class OwnerAccountDelete(DeleteAccountView):
     model = AccountUsers
-    success_url = reverse_lazy('accounts:reg')
     template_name = 'accounts/delete_owner.html'
     title = 'DAS - account delete'
+    form_valid_info = 'Owner account deleted successfully.'
+    form_invalid_info = 'Error, owner account was not deleted.'
 
-    def get_object(self, queryset=None):
-        return self.request.user
+    def get_success_url(self):
+        return reverse_lazy('accounts:reg')
 
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if request.user != profile_user:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Owner account deleted successfully.')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Error, account was not deleted.')
-        return super().form_invalid(form)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user
 
 
-class ManagerAccountDelete(TitleMixin, DeleteView):
+class ManagerAccountDelete(DeleteAccountView):
     model = AccountUsers
     template_name = 'accounts/delete_manager.html'
     title = 'DAS - account delete'
+    form_valid_info = 'Manager account deleted successfully.'
+    form_invalid_info = 'Error, manager account was not deleted.'
+    reverse_page = 'owner_profile'
 
-    def get_success_url(self):
-        return reverse_lazy('accounts:owner_profile', kwargs={'pk': self.request.user.pk})
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(AccountUsers, pk=self.kwargs['pk'])
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.user != self.get_object().owner:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Manager account deleted successfully.')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Error, manager account was not deleted.')
-        return super().form_invalid(form)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user.owner
 
 
-class OwnerClientAccountDelete(TitleMixin, DeleteView):
+class OwnerClientAccountDelete(DeleteAccountView):
     model = Client
     template_name = 'accounts/delete_owner_client.html'
     title = 'DAS - account delete'
+    form_valid_info = 'Client account deleted successfully.'
+    form_invalid_info = 'Error, client account was not deleted.'
+    reverse_page = 'owner_profile'
 
-    def get_success_url(self):
-        return reverse_lazy('accounts:owner_profile', kwargs={'pk': self.request.user.pk})
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Client, pk=self.kwargs['pk'])
-
-    def dispatch(self, request, *args, **kwargs):
-        print(request.user.id)
-        print(self.get_object().owner.id)
-        if request.user != self.get_object().owner:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Client account deleted successfully.')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Error, client account was not deleted.')
-        return super().form_invalid(form)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user.owner
 
 
-class ManagerClientAccountDelete(TitleMixin, DeleteView):
+class ManagerClientAccountDelete(DeleteAccountView):
     model = Client
-    template_name = 'accounts/delete_owner_client.html'
+    template_name = 'accounts/delete_manager_client.html'
     title = 'DAS - account delete'
+    form_valid_info = 'Client account deleted successfully.'
+    form_invalid_info = 'Error, client account was not deleted.'
+    reverse_page = 'manager_profile'
 
-    def get_success_url(self):
-        return reverse_lazy('accounts:manager_profile', kwargs={'pk': self.request.user.pk})
-
-    def get_object(self, queryset=None):
-        return get_object_or_404(Client, pk=self.kwargs['pk'])
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(Client, pk=kwargs['pk'])
-        # print(profile_user.owner.id)
-        # print(request.user.owner.id)
-        if profile_user.owner != request.user.owner:
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Client account deleted successfully.')
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, 'Error, client account was not deleted.')
-        return super().form_invalid(form)
+    def check_access(self, request, profile_user):
+        return profile_user.owner == request.user.owner
