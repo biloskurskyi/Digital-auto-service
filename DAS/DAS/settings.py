@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'accounts',
+    'clients',
 ]
 
 MIDDLEWARE = [
@@ -140,7 +141,6 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'your_email@example.com'
 EMAIL_HOST_PASSWORD = 'server-password'
 EMAIL_USE_SSL = True
-
 
 # EMAIL_OAUTH2_CLIENT_ID = 'your_client_id'
 # EMAIL_OAUTH2_CLIENT_SECRET = 'your_client_secret'

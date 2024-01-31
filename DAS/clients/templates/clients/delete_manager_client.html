@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="delete_account">
-    <form method="post" action="{% url 'accounts:owner_delete_client' pk=object.pk %}">
+    <form method="post" action="{% url 'clients:manager_delete_client' pk=object.pk %}">
         {% csrf_token %}
         <p>Are you sure you want to delete {{ object.last_name }} {{ object.first_name }}?</p>
         <input type="submit" value="Confirm">

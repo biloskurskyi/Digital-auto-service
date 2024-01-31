@@ -19,14 +19,14 @@
             <h3>Clients:</h3>
             {% for client in clients %}
                 <li>
-                    <a href="{% url 'accounts:client_manager' pk=client.id %}">
+                    <a href="{% url 'clients:client_manager' pk=client.id %}">
                         {{ client.first_name }} {{ client.last_name }}
                     </a>
                 </li>
             {% endfor %}
         </div>
     <br>
-        <a href="{% url 'accounts:manager_owner_create' user.id %}">Create new client</a>
+        <a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a>
         <br>
         <br>
         <button type="submit">Submit</button>

@@ -1,13 +1,10 @@
-import random
 import secrets
-import string
 
 from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
-from django.core.mail import send_mail
 
-from accounts.models import AccountUsers, Client
+from accounts.models import AccountUsers
 
 
 class UserLoginForm(AuthenticationForm):
@@ -54,13 +51,6 @@ class CreateManagerUserForm(UserCreationForm):
         if commit:
             user.save()
 
-            # subject = 'Your Account Information'
-            # message = f'Your username: {user.username}\nYour password: {user.password}'
-            # from_email = 'your_email@example.com'
-            # recipient_list = [user.email]
-            #
-            # send_mail(subject, message, from_email, recipient_list)
-
         return user
 
 
@@ -79,24 +69,3 @@ class AccountProfileForm(UserChangeForm):
         super(AccountProfileForm, self).__init__(*args, **kwargs)
 
         self.fields['password'].widget = forms.HiddenInput()
-
-
-class CreateClientForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = '__all__'
-        exclude = ('owner',)
-        widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-        }
-
-
-class ClientForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = '__all__'
-        exclude = ('owner',)
-
-    def __init__(self, *args, **kwargs):
-        super(ClientForm, self).__init__(*args, **kwargs)
-        self.fields['date_of_birth'].widget = forms.DateInput(attrs={'type': 'date'})

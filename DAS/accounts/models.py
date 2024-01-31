@@ -1,9 +1,5 @@
-from datetime import date
-
 from django.contrib.auth.models import AbstractUser, User
-from django.core.validators import MaxValueValidator
 from django.db import models
-from django.shortcuts import get_object_or_404
 
 
 class AccountUsers(AbstractUser):
@@ -42,13 +38,3 @@ class AccountUsers(AbstractUser):
         managers = AccountUsers.objects.filter(owner=self.id)
         user_info = [(user.username, user.id) for user in managers]
         return user_info
-
-
-class Client(models.Model):
-    first_name = models.CharField(max_length=32)
-    last_name = models.CharField(max_length=32)
-    email = models.EmailField()
-    phone_number = models.CharField(max_length=15)
-    date_of_birth = models.DateField(validators=[MaxValueValidator(limit_value=date.today())])
-    type = models.CharField(max_length=16)
-    owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)

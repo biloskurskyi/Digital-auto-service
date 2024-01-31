@@ -12,7 +12,7 @@
     {% for message in messages %}
         <div>{{ message }}</div>
     {% endfor %}
-    <form method="post" action="{% url 'accounts:client_owner' pk=form.instance.pk %}">
+    <form method="post" action="{% url 'clients:client_owner' pk=form.instance.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="hidden" name="owner" value="{{ request.user.id }}">
@@ -25,7 +25,7 @@
         <br>
         <a href="{% url 'accounts:owner_profile' pk=form.instance.owner.pk %}">Owner account</a>
         <br>
-        <a href="{% url 'accounts:owner_delete_client' form.instance.pk %}" style="color: red;">Delete client</a>
+        <a href="{% url 'clients:owner_delete_client' form.instance.pk %}" style="color: red;">Delete client</a>
     </form>
 </div>
 </body>

@@ -3,12 +3,11 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from common.views import (AccountProfileView, BaseView, ClientCreateView,
-                          ClientUpdateView, CreateAccountView,
+from common.views import (AccountProfileView, BaseView, CreateAccountView,
                           DeleteAccountView, TitleMixin)
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
-from .models import AccountUsers, Client
+from .models import AccountUsers
 
 
 class IndexView(BaseView):
@@ -87,32 +86,6 @@ class OwnerManagerAccountProfileView(AccountProfileView):
         return request.user.id == profile_user.owner.id and request.user.is_active
 
 
-class ClientOwnerCreateView(ClientCreateView):
-    template_name = 'accounts/owner_create_client.html'
-    path_name = 'owner_profile'
-
-    def check_access(self, request, profile_user):
-        return request.user == profile_user and request.user.is_active and request.user.owner is None
-
-
-class ClientManagerCreateView(ClientCreateView):
-    template_name = 'accounts/manager_create_client.html'
-    path_name = 'manager_profile'
-
-    def check_access(self, request, profile_user):
-        return request.user == profile_user and request.user.is_active and request.user.owner is not None
-
-
-class ClientOwnerUpdateView(ClientUpdateView):
-    template_name = 'accounts/owner_client.html'
-    path_name = 'client_owner'
-
-
-class ClientManagerUpdateView(ClientUpdateView):
-    template_name = 'accounts/manager_client.html'
-    path_name = 'client_manager'
-
-
 class OwnerAccountDelete(DeleteAccountView):
     model = AccountUsers
     template_name = 'accounts/delete_owner.html'
@@ -137,27 +110,3 @@ class ManagerAccountDelete(DeleteAccountView):
 
     def check_access(self, request, profile_user):
         return request.user == profile_user.owner
-
-
-class OwnerClientAccountDelete(DeleteAccountView):
-    model = Client
-    template_name = 'accounts/delete_owner_client.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Client account deleted successfully.'
-    form_invalid_info = 'Error, client account was not deleted.'
-    reverse_page = 'owner_profile'
-
-    def check_access(self, request, profile_user):
-        return request.user == profile_user.owner
-
-
-class ManagerClientAccountDelete(DeleteAccountView):
-    model = Client
-    template_name = 'accounts/delete_manager_client.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Client account deleted successfully.'
-    form_invalid_info = 'Error, client account was not deleted.'
-    reverse_page = 'manager_profile'
-
-    def check_access(self, request, profile_user):
-        return profile_user.owner == request.user.owner
