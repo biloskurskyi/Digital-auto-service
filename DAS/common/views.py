@@ -6,9 +6,10 @@ from django.urls import reverse_lazy
 from django.views.generic import (CreateView, DeleteView, TemplateView,
                                   UpdateView)
 
-from accounts.forms import (AccountProfileForm, ClientForm,
-                            CreateAccountUserForm, CreateClientForm)
-from accounts.models import AccountUsers, Client
+from accounts.forms import AccountProfileForm, CreateAccountUserForm
+from accounts.models import AccountUsers
+from clients.forms import ClientForm, CreateClientForm
+from clients.models import Client
 
 
 class TitleMixin:
@@ -109,7 +110,7 @@ class ClientUpdateView(TitleMixin, UpdateView):
 
     def get_success_url(self):
         messages.success(self.request, 'Client profile updated successfully.')
-        return reverse_lazy(f'accounts:{self.path_name}', args=(self.object.id,))
+        return reverse_lazy(f'clients:{self.path_name}', args=(self.object.id,))
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(Client, pk=kwargs['pk'])

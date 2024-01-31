@@ -7,7 +7,7 @@
     <title>{{ title }}</title>
 </head>
 <body>
-<form method="post" action="{% url 'accounts:manager_owner_create' user.id %}">
+<form method="post" action="{% url 'clients:client_manager_create' user.id %}">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Submit</button>
