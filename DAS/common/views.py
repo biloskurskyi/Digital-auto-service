@@ -8,6 +8,7 @@ from django.views.generic import (CreateView, DeleteView, TemplateView,
 
 from accounts.forms import AccountProfileForm, CreateAccountUserForm
 from accounts.models import AccountUsers
+from cars.models import Car
 from clients.forms import ClientForm, CreateClientForm
 from clients.models import Client
 
@@ -44,10 +45,20 @@ class AccountProfileView(TitleMixin, UpdateView):
             manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
             clients = Client.objects.filter(owner=manager)
             context['clients'] = clients
+            # manager2 = get_object_or_404(Car, id=self.request.user.owner_id)
+            # cars = Car.objects.filter(owner=manager2)
+            # context['cars'] = cars
+            cars = Car.objects.filter(client__owner=manager)
+            context['cars'] = cars
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             clients = Client.objects.filter(owner=owner)
             context['clients'] = [client for client in clients]
+            # owner2 = get_object_or_404(Car, id=self.request.user.id)
+            # cars = Car.objects.filter(owner=owner2)
+            # context['cars'] = [car for car in cars]
+            cars = Car.objects.filter(client__owner=owner)
+            context['cars'] = cars
         return context
 
     def get_success_url(self):

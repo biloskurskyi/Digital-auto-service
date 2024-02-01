@@ -15,3 +15,6 @@ class Client(models.Model):
     date_of_birth = models.DateField(validators=[MaxValueValidator(limit_value=date.today())])
     type = models.CharField(max_length=16)
     owner = models.ForeignKey(AccountUsers, on_delete=models.PROTECT, null=True)
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
