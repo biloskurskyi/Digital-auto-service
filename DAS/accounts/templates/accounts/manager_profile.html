@@ -25,8 +25,21 @@
                 </li>
             {% endfor %}
         </div>
-    <br>
+        <br>
         <a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a>
+        <br>
+        <div>
+            <h3>Cars:</h3>
+            {% for car in cars %}
+                <li>
+                    <a href="{% url 'cars:car_manager' pk=car.id %}">
+                        {{ car.car_number }}
+                    </a>
+                </li>
+            {% endfor %}
+        </div>
+        <br>
+        <a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a>
         <br>
         <br>
         <button type="submit">Submit</button>

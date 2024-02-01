@@ -1,0 +1,31 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<div class="profile">
+    You are still owner!
+    {% for message in messages %}
+        <div>{{ message }}</div>
+    {% endfor %}
+    <form method="post" action="{% url 'cars:car_manager' pk=form.instance.pk %}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="owner" value="{{ request.user.id }}">
+        <br>
+        <button type="submit">Submit</button>
+        <br>
+        <br>
+        <a href="{% url 'accounts:log_out' %}">Log out</a>
+        <br>
+        <a href="{% url 'accounts:manager_profile' pk=request.user.pk %}">Manager account</a>
+        <br>
+        <a href="{% url 'cars:manager_delete_car' form.instance.pk %}" style="color: red;">Delete client</a>
+    </form>
+</div>
+</body>
+</html>
