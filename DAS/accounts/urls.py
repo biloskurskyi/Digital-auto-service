@@ -3,8 +3,9 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (CreateManagerView, IndexView, ManagerAccountDelete,
-                    ManagerAccountProfileView, MianView, OwnerAccountDelete,
-                    OwnerAccountProfileView, OwnerManagerAccountProfileView,
+                    ManagerAccountProfileView, ManagerGeneratePDFView,
+                    MianView, OwnerAccountDelete, OwnerAccountProfileView,
+                    OwnerGeneratePDFView, OwnerManagerAccountProfileView,
                     UserLoginView, UserRegistrationView)
 
 app_name = 'accounts'
@@ -24,5 +25,10 @@ urlpatterns = [
          name='owner_manager_profile'),
     path('manager/profile/<int:pk>/', login_required(ManagerAccountProfileView.as_view()), name='manager_profile'),
     path('create/manager/profile/<int:pk>/', login_required(CreateManagerView.as_view()), name='create_manager'),
+
+    path('owner/generate_pdf/<int:pk>/', login_required(OwnerGeneratePDFView.as_view()), name='owner_generate_pdf'),
+    #     http://localhost:8009/generate_pdf/131/
+    path('manager/generate_pdf/<int:pk>/', login_required(ManagerGeneratePDFView.as_view()),
+         name='manager_generate_pdf'),
 
 ]
