@@ -2,12 +2,13 @@ from datetime import datetime
 
 from django.core.exceptions import ValidationError
 from django.db import models
+
 from clients.models import Client
 
 
 def validate_year_range(value):
     current_year = datetime.now().year
-    first_auto = 1886
+    # first_auto = 1886
 
     if value < 0 or value > current_year:
         raise ValidationError('Year must be between 1886 and 2024.')

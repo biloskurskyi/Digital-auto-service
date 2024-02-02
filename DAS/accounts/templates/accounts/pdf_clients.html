@@ -1,0 +1,19 @@
+<!-- pdf_template.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Clients Report</title>
+</head>
+<body>
+    <h1>Clients Report</h1>
+        {% for client in clients %}
+            <li>{{ client.first_name }} {{ client.last_name }} {{ client.email }} {{ client.phone_number }}</li>
+        {% endfor %}
+    <br>
+    <br>
+    <h1>Car Report</h1>
+        {% for car in cars %}
+            <li>{{ car.car_number }} {{ car.mark }} {{ car.model }} {{ car.client.first_name }} {{ car.client.last_name }}</li>
+        {% endfor %}
+</body>
+</html>

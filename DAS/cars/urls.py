@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from cars.views import CarOwnerCreateView, CarManagerCreateView, CarOwnerUpdateView, CarManagerUpdateView, \
-    OwnerCarAccountDelete, ManagerCarAccountDelete
+from cars.views import (CarManagerCreateView, CarManagerUpdateView,
+                        CarOwnerCreateView, CarOwnerUpdateView,
+                        ManagerCarAccountDelete, OwnerCarAccountDelete)
 
 app_name = 'cars'
 

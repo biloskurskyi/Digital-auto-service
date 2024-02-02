@@ -19,6 +19,21 @@
         <br>
         <button type="submit">Submit</button>
         <br>
+        {% if form.instance.id %}
+            <h2>Cars for {{ form.instance.first_name }} {{ form.instance.last_name }}</h2>
+                {% for car in form.instance.get_all_cars %}
+                    <li>
+                        Car Number: {{ car.car_number }}<br>
+                        Mark: {{ car.mark }}<br>
+                        Model: {{ car.model }}<br>
+                        Year: {{ car.year }}<br>
+                        Engine: {{ car.engine }}<br>
+                        Gear Type: {{ car.gear_type }}<br>
+                        Comment: {{ car.comment }}<br>
+                        <hr>
+                    </li>
+                {% endfor %}
+        {% endif %}
         <br>
         <a href="{% url 'accounts:log_out' %}">Log out</a>
         <br>

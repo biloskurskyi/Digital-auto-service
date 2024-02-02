@@ -1,4 +1,4 @@
-from common.views import ClientCreateView, ClientUpdateView, ClientDeleteView
+from common.views import ClientCreateView, ClientDeleteView, ClientUpdateView
 
 
 class ClientOwnerCreateView(ClientCreateView):

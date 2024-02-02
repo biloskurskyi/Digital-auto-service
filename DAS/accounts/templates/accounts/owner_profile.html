@@ -35,6 +35,10 @@
             {% endfor %}
         </div>
         <br>
+        <a href="{% url 'accounts:owner_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf">Download
+            Clients Report</a>
+        <br>
+        <br>
         <a href="{% url 'clients:client_owner_create' user.id %}">Create new client</a>
         <div>
             <h3>Cars:</h3>

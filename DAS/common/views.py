@@ -1,12 +1,15 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
+from django.template.loader import get_template
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import (CreateView, DeleteView, TemplateView,
                                   UpdateView)
+from xhtml2pdf import pisa
 
-from accounts.forms import AccountProfileForm, CreateAccountUserForm
+from accounts.forms import AccountProfileForm
 from accounts.models import AccountUsers
 from cars.forms import CreateCarForm
 from cars.models import Car
@@ -46,18 +49,12 @@ class AccountProfileView(TitleMixin, UpdateView):
             manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
             clients = Client.objects.filter(owner=manager)
             context['clients'] = clients
-            # manager2 = get_object_or_404(Car, id=self.request.user.owner_id)
-            # cars = Car.objects.filter(owner=manager2)
-            # context['cars'] = cars
             cars = Car.objects.filter(client__owner=manager)
             context['cars'] = cars
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             clients = Client.objects.filter(owner=owner)
             context['clients'] = [client for client in clients]
-            # owner2 = get_object_or_404(Car, id=self.request.user.id)
-            # cars = Car.objects.filter(owner=owner2)
-            # context['cars'] = [car for car in cars]
             cars = Car.objects.filter(client__owner=owner)
             context['cars'] = cars
         return context
@@ -272,8 +269,8 @@ class CarUpdateView(TitleMixin, UpdateView):
                     and request.user.owner_id != profile_user.client.owner_id):
                 raise Http404("User not found")
         elif self.path_name == 'car_owner':
-            if (
-                    request.user != profile_user or not request.user.is_active) and profile_user.client.owner != request.user:
+            if ((request.user != profile_user or not request.user.is_active)
+                    and profile_user.client.owner != request.user):
                 raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
 
@@ -309,3 +306,48 @@ class CarDeleteView(TitleMixin, DeleteView):
     def form_invalid(self, form):
         messages.error(self.request, f'{self.form_invalid_info}')
         return super().form_invalid(form)
+
+
+class GeneratePDFView(TitleMixin, View):
+    title = "pdf data"
+    template_name = 'accounts/pdf_clients.html'
+
+    def get_context_data(self, **kwargs):
+        context = {}
+
+        if self.request.user.owner is not None:
+            manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
+            clients = Client.objects.filter(owner=manager)
+            cars = Car.objects.filter(client__owner=manager)
+        else:
+            owner = get_object_or_404(AccountUsers, id=self.request.user.id)
+            clients = Client.objects.filter(owner=owner)
+            cars = Car.objects.filter(client__owner=owner)
+        context['clients'] = clients
+        context['cars'] = cars
+        return context
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        print(request.user == profile_user)
+        if not self.check_access(request, profile_user):  # not
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(pk=kwargs['pk'])
+
+        template = get_template(self.template_name)
+        html = template.render(context)
+
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'filename="clients_report.pdf"'
+
+        pisa_status = pisa.CreatePDF(html, dest=response)
+
+        if pisa_status.err:
+            return HttpResponse('We had some errors <pre>' + html + '</pre>')
+        return response
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")

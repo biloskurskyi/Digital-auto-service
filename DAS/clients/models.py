@@ -18,3 +18,8 @@ class Client(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+    def get_all_cars(self):
+        from cars.models import \
+            Car  # Import inside the method to avoid circular import
+        return Car.objects.filter(client=self)

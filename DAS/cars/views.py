@@ -1,4 +1,4 @@
-from common.views import CarCreateView, CarUpdateView, CarDeleteView
+from common.views import CarCreateView, CarDeleteView, CarUpdateView
 
 
 class CarOwnerCreateView(CarCreateView):

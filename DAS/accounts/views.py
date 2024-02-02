@@ -3,8 +3,8 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from common.views import (AccountProfileView, BaseView, CreateAccountView,
-                          AccountDeleteView, TitleMixin)
+from common.views import (AccountDeleteView, AccountProfileView, BaseView,
+                          CreateAccountView, GeneratePDFView, TitleMixin)
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers
@@ -102,3 +102,14 @@ class ManagerAccountDelete(AccountDeleteView):
 
     def check_access(self, request, profile_user):
         return request.user == profile_user.owner
+
+
+class OwnerGeneratePDFView(GeneratePDFView):
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
+
+
+class ManagerGeneratePDFView(GeneratePDFView):
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
