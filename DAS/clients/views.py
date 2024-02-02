@@ -1,5 +1,4 @@
-from clients.models import Client
-from common.views import ClientCreateView, ClientUpdateView, DeleteAccountView
+from common.views import ClientCreateView, ClientUpdateView, ClientDeleteView
 
 
 class ClientOwnerCreateView(ClientCreateView):
@@ -28,24 +27,16 @@ class ClientManagerUpdateView(ClientUpdateView):
     path_name = 'client_manager'
 
 
-class OwnerClientAccountDelete(DeleteAccountView):
-    model = Client
+class OwnerClientAccountDelete(ClientDeleteView):
     template_name = 'clients/delete_owner_client.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Client account deleted successfully.'
-    form_invalid_info = 'Error, client account was not deleted.'
     reverse_page = 'owner_profile'
 
     def check_access(self, request, profile_user):
         return request.user == profile_user.owner
 
 
-class ManagerClientAccountDelete(DeleteAccountView):
-    model = Client
+class ManagerClientAccountDelete(ClientDeleteView):
     template_name = 'clients/delete_manager_client.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Client account deleted successfully.'
-    form_invalid_info = 'Error, client account was not deleted.'
     reverse_page = 'manager_profile'
 
     def check_access(self, request, profile_user):

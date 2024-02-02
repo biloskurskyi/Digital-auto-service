@@ -1,154 +1,47 @@
-from django.http import Http404
-from django.shortcuts import render, get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView
-
-from accounts.models import AccountUsers
-from cars.forms import CreateCarForm
-from cars.models import Car
-from clients.models import Client
-from common.views import TitleMixin
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
+from common.views import CarCreateView, CarUpdateView, CarDeleteView
 
 
-class CarManagerCreateView(TitleMixin, CreateView):
-    model = Car
-    form_class = CreateCarForm
-    title = 'create car'
-    template_name = 'cars/manager_create_car.html'
-    path_name = 'manager_owner'
-
-    def get_success_url(self):
-        return reverse_lazy(f'accounts:manager_profile', args=(self.request.user.id,))
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['manager'] = self.request.user
-        return kwargs
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if not (request.user == profile_user and request.user.is_active and request.user.owner is not None):
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
-
-
-class CarOwnerCreateView(TitleMixin, CreateView):
-    model = Car
-    form_class = CreateCarForm
-    title = 'create car'
+class CarOwnerCreateView(CarCreateView):
+    reverse_page = 'owner_profile'
+    creator_type = 'owner'
     template_name = 'cars/owner_create_car.html'
-    path_name = 'client_owner'
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['owner'] = self.request.user  # Pass the owner to the form
-        return kwargs
-
-    def get_success_url(self):
-        return reverse_lazy(f'accounts:owner_profile', args=(self.request.user.id,))
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        if not (request.user == profile_user and request.user.is_active and request.user.owner is None):
-            raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
 
 
-class CarOwnerUpdateView(TitleMixin, UpdateView):
+class CarManagerCreateView(CarCreateView):
+    reverse_page = 'manager_profile'
+    creator_type = 'manager'
+    template_name = 'cars/manager_create_car.html'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
+
+
+class CarOwnerUpdateView(CarUpdateView):
     template_name = 'cars/owner_car.html'
-    path_name = 'car_owner'
-    model = Car
-    form_class = CreateCarForm
-    title = 'car update'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['owner'] = self.request.user
-        return kwargs
-
-    def get_success_url(self):
-        return reverse_lazy('cars:car_owner', args=(self.object.id,))
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(Car, pk=kwargs['pk'])
-        if self.path_name == 'car_manager':
-            if ((request.user != profile_user or not request.user.is_active)
-                    and request.user.owner_id != profile_user.client.owner_id):
-                raise Http404("User not found")
-        elif self.path_name == 'car_owner':
-            if ((request.user != profile_user or not request.user.is_active)
-                    and profile_user.client.owner != request.user):
-                raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    creator_type = 'owner'
+    reverse_page = path_name = 'car_owner'
 
 
-class CarManagerUpdateView(TitleMixin, UpdateView):
+class CarManagerUpdateView(CarUpdateView):
     template_name = 'cars/manager_car.html'
-    path_name = 'car_manager'
-    model = Car
-    form_class = CreateCarForm
-    title = 'car update'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['manager'] = self.request.user
-        return kwargs
-
-    def get_success_url(self):
-        return reverse_lazy('cars:car_manager', args=(self.object.id,))
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(Car, pk=kwargs['pk'])
-        if self.path_name == 'car_manager':
-            if ((request.user != profile_user or not request.user.is_active)
-                    and request.user.owner_id != profile_user.client.owner_id):
-                raise Http404("User not found")
-        elif self.path_name == 'car_owner':
-            if ((request.user != profile_user or not request.user.is_active)
-                    and profile_user.client.owner != request.user):
-                raise Http404("User not found")
-        return super().dispatch(request, *args, **kwargs)
+    creator_type = 'manager'
+    reverse_page = path_name = 'car_manager'
 
 
-class OwnerCarAccountDelete(TitleMixin, DeleteView):
-    model = Car
+class OwnerCarAccountDelete(CarDeleteView):
     template_name = 'cars/owner_delete_car.html'
-    title = 'DAS - car delete'
     reverse_page = 'owner_profile'
 
-    def get_success_url(self):
-        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
-
-        if not request.user == profile_user.client.owner:
-            raise Http404("User not found")
-
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return request.user == profile_user.client.owner
 
 
-class ManagerCarAccountDelete(TitleMixin, DeleteView):
-    model = Car
+class ManagerCarAccountDelete(CarDeleteView):
     template_name = 'cars/manager_delete_car.html'
-    title = 'DAS - car delete'
     reverse_page = 'manager_profile'
 
-    def get_success_url(self):
-        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
-
-    def delete(self, request, *args, **kwargs):
-        return super().delete(request, *args, **kwargs)
-
-    def dispatch(self, request, *args, **kwargs):
-        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
-
-        if not profile_user.client.owner == request.user.owner:
-            raise Http404("User not found")
-
-        return super().dispatch(request, *args, **kwargs)
+    def check_access(self, request, profile_user):
+        return profile_user.client.owner == request.user.owner

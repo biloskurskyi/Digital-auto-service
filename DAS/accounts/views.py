@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
 from common.views import (AccountProfileView, BaseView, CreateAccountView,
-                          DeleteAccountView, TitleMixin)
+                          AccountDeleteView, TitleMixin)
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers
@@ -86,12 +86,8 @@ class OwnerManagerAccountProfileView(AccountProfileView):
         return request.user.id == profile_user.owner.id and request.user.is_active
 
 
-class OwnerAccountDelete(DeleteAccountView):
-    model = AccountUsers
+class OwnerAccountDelete(AccountDeleteView):
     template_name = 'accounts/delete_owner.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Owner account deleted successfully.'
-    form_invalid_info = 'Error, owner account was not deleted.'
 
     def get_success_url(self):
         return reverse_lazy('accounts:reg')
@@ -100,12 +96,8 @@ class OwnerAccountDelete(DeleteAccountView):
         return request.user == profile_user
 
 
-class ManagerAccountDelete(DeleteAccountView):
-    model = AccountUsers
+class ManagerAccountDelete(AccountDeleteView):
     template_name = 'accounts/delete_manager.html'
-    title = 'DAS - account delete'
-    form_valid_info = 'Manager account deleted successfully.'
-    form_invalid_info = 'Error, manager account was not deleted.'
     reverse_page = 'owner_profile'
 
     def check_access(self, request, profile_user):

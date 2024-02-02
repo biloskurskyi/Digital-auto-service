@@ -8,6 +8,7 @@ from django.views.generic import (CreateView, DeleteView, TemplateView,
 
 from accounts.forms import AccountProfileForm, CreateAccountUserForm
 from accounts.models import AccountUsers
+from cars.forms import CreateCarForm
 from cars.models import Car
 from clients.forms import ClientForm, CreateClientForm
 from clients.models import Client
@@ -83,6 +84,39 @@ class AccountProfileView(TitleMixin, UpdateView):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
 
+class AccountDeleteView(TitleMixin, DeleteView):
+    form_valid_info = 'Account deleted successfully.'
+    form_invalid_info = 'Account was not deleted.'
+    reverse_page = ''
+    model = AccountUsers
+    title = 'DAS - account delete'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
 class ClientCreateView(TitleMixin, CreateView):
     model = Client
     form_class = CreateClientForm
@@ -135,11 +169,12 @@ class ClientUpdateView(TitleMixin, UpdateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class DeleteAccountView(TitleMixin, DeleteView):
-    form_valid_info = 'Account deleted successfully.'
-    form_invalid_info = 'Account was not deleted.'
+class ClientDeleteView(TitleMixin, DeleteView):
+    model = Client
+    title = 'DAS - client delete'
+    form_valid_info = 'Client account deleted successfully.'
+    form_invalid_info = 'Error, client account was not deleted.'
     reverse_page = ''
-    model = ''
 
     def get_success_url(self):
         return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
@@ -165,3 +200,112 @@ class DeleteAccountView(TitleMixin, DeleteView):
 
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class CarCreateView(TitleMixin, CreateView):
+    form_valid_info = 'Car was created successfully.'
+    form_invalid_info = 'Car was not created.'
+    model = Car
+    form_class = CreateCarForm
+    title = 'create car'
+    reverse_page = ''
+    creator_type = ''
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', args=(self.request.user.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class CarUpdateView(TitleMixin, UpdateView):
+    form_valid_info = 'Car was update successfully.'
+    form_invalid_info = 'Car was not updated.'
+    model = Car
+    form_class = CreateCarForm
+    title = 'car update'
+    reverse_page = ''
+    creator_type = ''
+    path_name = ''
+
+    def get_success_url(self):
+        return reverse_lazy(f'cars:{self.reverse_page}', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(Car, pk=kwargs['pk'])
+        print(
+            (request.user != profile_user or not request.user.is_active) and profile_user.client.owner == request.user)
+        if self.path_name == 'car_manager':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and request.user.owner_id != profile_user.client.owner_id):
+                raise Http404("User not found")
+        elif self.path_name == 'car_owner':
+            if (
+                    request.user != profile_user or not request.user.is_active) and profile_user.client.owner != request.user:
+                raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class CarDeleteView(TitleMixin, DeleteView):
+    model = Car
+    title = 'DAS - car delete'
+    reverse_page = ''
+    form_valid_info = 'Car deleted successfully.'
+    form_invalid_info = 'Car was not deleted.'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
