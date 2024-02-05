@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -15,6 +15,8 @@ from cars.forms import CreateCarForm
 from cars.models import Car
 from clients.forms import ClientForm, CreateClientForm
 from clients.models import Client
+from orders.forms import CreateOrderForm, UpdateOrderForm
+from orders.models import Order
 
 
 class TitleMixin:
@@ -51,12 +53,16 @@ class AccountProfileView(TitleMixin, UpdateView):
             context['clients'] = clients
             cars = Car.objects.filter(client__owner=manager)
             context['cars'] = cars
+            orders = Order.objects.filter(client__owner=manager)
+            context['orders'] = orders
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             clients = Client.objects.filter(owner=owner)
             context['clients'] = [client for client in clients]
             cars = Car.objects.filter(client__owner=owner)
             context['cars'] = cars
+            orders = Order.objects.filter(client__owner=owner)
+            context['orders'] = orders
         return context
 
     def get_success_url(self):
@@ -262,8 +268,6 @@ class CarUpdateView(TitleMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(Car, pk=kwargs['pk'])
-        print(
-            (request.user != profile_user or not request.user.is_active) and profile_user.client.owner == request.user)
         if self.path_name == 'car_manager':
             if ((request.user != profile_user or not request.user.is_active)
                     and request.user.owner_id != profile_user.client.owner_id):
@@ -329,7 +333,6 @@ class GeneratePDFView(TitleMixin, View):
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        print(request.user == profile_user)
         if not self.check_access(request, profile_user):  # not
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
@@ -348,6 +351,117 @@ class GeneratePDFView(TitleMixin, View):
         if pisa_status.err:
             return HttpResponse('We had some errors <pre>' + html + '</pre>')
         return response
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class OrderCreateView(TitleMixin, CreateView):
+    form_valid_info = 'Order was created successfully.'
+    form_invalid_info = 'Order was not created.'
+    model = Order
+    form_class = CreateOrderForm
+    title = 'Create order'
+
+    reverse_page = ''
+    creator_type = ''
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', args=(self.request.user.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        print(form.errors)
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        if not self.check_access(request, profile_user):  # not
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class OrderUpdateView(TitleMixin, UpdateView):
+    creator_type = ''
+    reverse_page = path_name = ''
+
+    form_valid_info = 'Order was update successfully.'
+    form_invalid_info = 'Order was not updated.'
+    model = Order
+    form_class = UpdateOrderForm
+    title = 'Order update'
+
+    def get_success_url(self):
+        return reverse_lazy(f'orders:{self.reverse_page}', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(Order, pk=kwargs['pk'])
+        if self.path_name == 'order_manager':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and request.user.owner_id != profile_user.client.owner_id):
+                raise Http404("User not found")
+        elif self.path_name == 'order_owner':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and profile_user.client.owner != request.user):
+                raise Http404("User not found")
+        else:
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class OrderDeleteView(TitleMixin, DeleteView):
+    model = Order
+    title = 'DAS - article delete'
+    form_valid_info = 'Order deleted successfully.'
+    form_invalid_info = 'Order was not deleted.'
+    reverse_page = ''
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
+        print(request.user)
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
 
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")

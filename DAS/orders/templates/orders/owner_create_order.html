@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+<form method="post" action="{% url 'orders:order_owner_create' user.id %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#id_client").change(function () {
+            var clientId = $(this).val();
+            if (clientId) {
+                $.ajax({
+                    url: '{% url "orders:get_cars_for_client" %}',
+                    type: 'GET',
+                    data: {'client_id': clientId},
+                    success: function (data) {
+                        $("#id_car").html('');
+
+                        // Iterate over car_choices and append options
+                        for (var i = 0; i < data.car_choices.length; i++) {
+                            var option = $('<option/>');
+                            option.attr('value', data.car_choices[i][0]);
+                            option.text(data.car_choices[i][1]);
+                            $("#id_car").append(option);
+                        }
+                    }
+                });
+            } else {
+                $("#id_car").html('');
+            }
+        });
+    });
+</script>
+

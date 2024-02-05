@@ -15,6 +15,8 @@
     <form method="post" action="{% url 'accounts:manager_profile' pk=form.instance.pk %}">
         {% csrf_token %}
         {{ form.as_p }}
+        <button type="submit">Submit</button>
+        <br>
         <div>
             <h3>Clients:</h3>
             {% for client in clients %}
@@ -46,7 +48,18 @@
         <a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a>
         <br>
         <br>
-        <button type="submit">Submit</button>
+        <div>
+            <h3>Orders:</h3>
+            {% for order in orders %}
+                <li>
+                    <a href="{% url 'orders:order_manager' pk=order.id %}">
+                        {{ order.client }} {{ order.car }}
+                    </a>
+                </li>
+            {% endfor %}
+        </div>
+        <br>
+        <a href="{% url 'orders:order_manager_create' user.id %}">Create new order</a>
         <br>
         <br>
         <a href="{% url 'accounts:log_out' %}">Log out</a>
