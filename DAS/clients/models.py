@@ -23,3 +23,7 @@ class Client(models.Model):
         from cars.models import \
             Car  # Import inside the method to avoid circular import
         return Car.objects.filter(client=self)
+
+    class Meta:
+        verbose_name = "Client"
+        verbose_name_plural = "Clients"
