@@ -23,7 +23,11 @@ class Car(models.Model):
     year = models.IntegerField(validators=[validate_year_range])
     engine = models.CharField(max_length=32)
     gear_type = models.CharField(max_length=32)
-    comment = models.CharField(max_length=60)
+    comment = models.TextField(max_length=60)
 
     def __str__(self):
         return f"{self.car_number} {self.model} {self.mark}"
+
+    class Meta:
+        verbose_name = "Car"
+        verbose_name_plural = "Cars"

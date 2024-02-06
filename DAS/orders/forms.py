@@ -9,6 +9,9 @@ class CreateOrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = '__all__'
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         owner = kwargs.pop('owner', None)
@@ -37,7 +40,10 @@ class CreateOrderForm(forms.ModelForm):
 class UpdateOrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ('client', 'car', 'info')
+        fields = ('client', 'car', 'start_date', 'process_status', 'info',)
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         owner = kwargs.pop('owner', None)

@@ -30,33 +30,3 @@ class AccountUserAdmin(admin.ModelAdmin):
         queryset = queryset.filter(owner__isnull=True)
         self.message_user(request, f'{len(queryset)} users were set as owners.')
         return queryset, use_distinct
-
-    # def owners(self, request, queryset, search_term):
-    #     queryset, use_distinct = super().get_search_results(request, queryset, search_term)
-    #     queryset = queryset.filter(owner__isnull=True)
-    #     return queryset, use_distinct
-
-    # def filter_by_owner_null(self, request, queryset):
-    #     search_term = request.POST.get('q', '')  # assuming 'q' is the search parameter
-    #     queryset, use_distinct = self.get_search_results(request, queryset, search_term)
-    #     queryset = queryset.filter(owner__isnull=True)
-    #     return queryset, use_distinct
-    #
-    # filter_by_owner_null.short_description = "Owners"
-
-    # actions = [get_search_results, ]
-
-    # def owners(self, request, queryset):
-    #     owners_list = queryset.filter(owner__isnull=True)
-    #     return owners_list
-    #
-    # def managers(self, request, queryset):
-    #     managers_list = queryset.filter(owner__isnull=False)
-    #     return managers_list
-
-    # def get_queryset(self, request):
-    #     queryset = super().get_queryset(request).filter(owner__isnull=True)
-    #     return queryset
-    #
-    # get_queryset.short_description = "Filter users with null owner"
-    # actions = ['get_queryset']
