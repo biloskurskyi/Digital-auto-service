@@ -7,5 +7,5 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ('client', 'car', 'start_date', 'process_status', 'info')
     search_fields = ('client__first_name', 'client__last_name', 'car__car_number')
     list_per_page = 15
-    readonly_fields = ('client', 'car', 'process_status',)
+    readonly_fields = ('client', 'car',)
 # Register your models here.
