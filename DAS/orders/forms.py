@@ -1,6 +1,5 @@
 from django import forms
 
-from cars.forms import CreateCarForm
 from cars.models import Car
 
 from .models import Order
@@ -36,16 +35,9 @@ class CreateOrderForm(forms.ModelForm):
 
 
 class UpdateOrderForm(forms.ModelForm):
-    # client = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
-    # car = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
-
     class Meta:
         model = Order
-        fields = ('client', 'car',)
-        widgets = {
-            'client': forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}),
-            'car': forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}),
-        }
+        fields = ('client', 'car', 'info')
 
     def __init__(self, *args, **kwargs):
         owner = kwargs.pop('owner', None)
@@ -59,12 +51,5 @@ class UpdateOrderForm(forms.ModelForm):
             owner = manager.owner if manager.owner else manager
             self.fields['client'].queryset = owner.client_set.all()
 
-        # The rest of your code remains unchanged
-        if 'client' in self.data:
-            try:
-                client_id = int(self.data.get('client'))
-                self.fields['car'].queryset = Car.objects.filter(client_id=client_id)
-            except (ValueError, TypeError):
-                pass
-        elif self.instance and hasattr(self.instance, 'client') and self.instance.client:
-            self.fields['car'].queryset = self.instance.client.car_set.all()
+        self.fields['client'].disabled = True
+        self.fields['car'].disabled = True
