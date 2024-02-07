@@ -3,6 +3,7 @@ from django.views import View
 
 from cars.models import Car
 from common.views import OrderCreateView, OrderDeleteView, OrderUpdateView
+from orders.models import Order
 
 
 class OrderOwnerCreateView(OrderCreateView):
@@ -57,6 +58,6 @@ class GetCarsForClientView(View):
         if client_id:
             cars = Car.objects.filter(client_id=client_id)
             car_choices = [(car.id, str(car)) for car in cars]
-            print({'car_choices': car_choices})
-            return JsonResponse({'car_choices': car_choices})
+
+            return JsonResponse({'car_choices': car_choices}, )
         return JsonResponse({'car_choices': []})
