@@ -1,7 +1,7 @@
 from datetime import date
-from django.utils import timezone
 
 from django.db import models
+from django.utils import timezone
 
 from cars.models import Car
 from clients.models import Client

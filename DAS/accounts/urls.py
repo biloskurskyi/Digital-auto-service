@@ -6,7 +6,7 @@ from .views import (CreateManagerView, IndexView, ManagerAccountDelete,
                     ManagerAccountProfileView, ManagerGeneratePDFView,
                     MianView, OwnerAccountDelete, OwnerAccountProfileView,
                     OwnerGeneratePDFView, OwnerManagerAccountProfileView,
-                    UserLoginView, UserRegistrationView, )
+                    UserLoginView, UserRegistrationView)
 
 app_name = 'accounts'
 urlpatterns = [
