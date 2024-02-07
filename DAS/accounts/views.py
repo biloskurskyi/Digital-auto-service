@@ -11,7 +11,7 @@ from .models import AccountUsers
 
 
 class IndexView(BaseView):
-    template_name = "accounts/base.html"
+    template_name = "accounts/index.html"
     title = "DAS"
 
 
@@ -23,7 +23,7 @@ class MianView(BaseView):
 class UserLoginView(TitleMixin, LoginView):
     template_name = 'accounts/login.html'
     form_class = UserLoginForm
-    title = 'DAS - login'
+    title = 'DAS - Login'
 
 
 class UserRegistrationView(CreateAccountView):
