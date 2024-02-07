@@ -1,10 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from orders.views import (OrderManagerCreateView,
+from orders.views import (GetCarsForClientView, OrderManagerCreateView,
                           OrderManagerDeleteView, OrderManagerUpdateView,
                           OrderOwnerCreateView, OrderOwnerDeleteView,
-                          OrderOwnerUpdateView, GetCarsForClientView)
+                          OrderOwnerUpdateView)
 
 app_name = 'orders'
 
