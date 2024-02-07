@@ -1,11 +1,5 @@
+{% extends 'layouts/base-auth.html' %}
 {% load static %}
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% include 'includes/head.html ' %}
-</head>
-<body>
 
 {% block content %}
     <div class="auth-wrapper">
@@ -29,7 +23,7 @@
                         {% endfor %}
                     {% endif %}
                     {% for field in form %}
-                        <div class="">
+                        <div class="input-group mb-3">
                             {#                        input-group mb-3#}
                             {{ field }}
                         </div>
@@ -52,14 +46,6 @@
         <input type="checkbox" id="theme-switch" class="d-none">
     </label>
 {% endblock content %}
-
-
-{% include 'includes/scripts.html' %}
-
-{% block extra_js %}{% endblock extra_js %}
-
-</body>
-</html>
 
 
 {#{% load static %}#}
