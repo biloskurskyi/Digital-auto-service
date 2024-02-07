@@ -321,14 +321,21 @@ class GeneratePDFView(TitleMixin, View):
 
         if self.request.user.owner is not None:
             manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
+            managers = None
             clients = Client.objects.filter(owner=manager)
             cars = Car.objects.filter(client__owner=manager)
+            orders = Order.objects.filter(car__order__client__owner=manager)
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
+            managers = AccountUsers.objects.filter(owner__isnull=False, owner=owner).distinct()
             clients = Client.objects.filter(owner=owner)
             cars = Car.objects.filter(client__owner=owner)
+            orders = Order.objects.filter(car__order__client__owner=owner)
+        context['managers'] = managers
         context['clients'] = clients
         context['cars'] = cars
+        context['orders'] = orders
+        context['username'] = self.request.user.username
         return context
 
     def dispatch(self, request, *args, **kwargs):

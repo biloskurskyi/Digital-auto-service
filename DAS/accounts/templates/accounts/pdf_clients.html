@@ -5,15 +5,32 @@
     <title>Clients Report</title>
 </head>
 <body>
-    <h1>Clients Report</h1>
-        {% for client in clients %}
-            <li>{{ client.first_name }} {{ client.last_name }} {{ client.email }} {{ client.phone_number }}</li>
-        {% endfor %}
-    <br>
-    <br>
-    <h1>Car Report</h1>
-        {% for car in cars %}
-            <li>{{ car.car_number }} {{ car.mark }} {{ car.model }} {{ car.client.first_name }} {{ car.client.last_name }}</li>
-        {% endfor %}
+Report for {{ username }}
+{% if managers is not none %}
+    <h1>Manager Report</h1>
+    {% for manager in managers %}
+        <li>{{ manager }} {{ manager.first_name }} {{ manager.last_name }} {{ manager.email }} {{ phone.number }}</li>
+    {% endfor %}
+{% endif %}
+<br>
+<br>
+<h1>Client Report</h1>
+{% for client in clients %}
+    <li>{{ client.first_name }} {{ client.last_name }} {{ client.email }} {{ client.phone_number }}</li>
+{% endfor %}
+<br>
+<br>
+<h1>Car Report</h1>
+{% for car in cars %}
+    <li>{{ car.car_number }} {{ car.mark }} {{ car.model }} {{ car.client.first_name }} {{ car.client.last_name }}</li>
+    {{ car.comment }}
+{% endfor %}
+<br>
+<br>
+<h1>Order Report</h1>
+{% for order in orders %}
+    <li>{{ order.car }} {{ order.client }} {{ order.start_date }} {{ order.get_process_status_display }}</li>
+    {{ order.info }}
+{% endfor %}
 </body>
 </html>

@@ -1,6 +1,6 @@
 from django.contrib.auth.views import LoginView
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 
 from common.views import (AccountDeleteView, AccountProfileView, BaseView,
