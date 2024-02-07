@@ -3,23 +3,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
+    {% include 'includes/head.html ' %}
 </head>
 <body>
-<div class="login_account">
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
-    <form method="POST" action="">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <div class="log_question">Don't have an account?
-            <a href="{% url 'accounts:reg' %}" style="color: lightblue;">Register</a>
+
+{% block content %}
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <form method="post" class="card-body text-center">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <i class="feather icon-unlock auth-icon"></i>
+                    </div>
+                    <h3 class="mb-4">Login</h3>
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <span class="text-danger d-block my-3">{{ error }}</span>
+                        {% endfor %}
+                    {% endif %}
+                    {% for field in form %}
+                        <div class="">
+                            {#                        input-group mb-3#}
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <div class="form-group text-left mt-4">
+                        <div class="checkbox checkbox-fill d-inline">
+                            <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
+                            <label for="checkbox-fill-a1" class="cr"> Save Details</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary shadow-2 mb-4">Login</button>
+                    <p class="mb-0 text-muted">Don’t have an account? <a href="{% url 'accounts:reg' %}">Signup</a></p>
+                </form>
+            </div>
         </div>
-        <button type="submit">Login</button>
-    </form>
-</div>
+    </div>
+
+    <label class="d-none">
+        <i class="icon feather icon-sun" id="theme-indicator"></i>
+        <input type="checkbox" id="theme-switch" class="d-none">
+    </label>
+{% endblock content %}
+
+
+{% include 'includes/scripts.html' %}
+
+{% block extra_js %}{% endblock extra_js %}
+
 </body>
 </html>
+
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<includes>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>{{ title }}</title>#}
+{#</includes>#}
+{#<body>#}
+{#<div class="login_account">#}
+{#    {% for message in messages %}#}
+{#        <div>{{ message }}</div>#}
+{#    {% endfor %}#}
+{#    <form method="POST" action="">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <div class="log_question">Don't have an account?#}
+{#            <a href="{% url 'accounts:reg' %}" style="color: lightblue;">Register</a>#}
+{#        </div>#}
+{#        <button type="submit">Login</button>#}
+{#    </form>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
