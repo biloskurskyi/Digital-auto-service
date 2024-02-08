@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
 from django.http import Http404
 from django.shortcuts import get_object_or_404, render
@@ -17,7 +18,7 @@ class IndexView(BaseView):
 
 class MianView(BaseView):
     template_name = "accounts/successful_login.html"
-    title = "DAS - login success"
+    title = "DAS - Login success"
 
 
 class UserLoginView(TitleMixin, LoginView):
@@ -25,12 +26,17 @@ class UserLoginView(TitleMixin, LoginView):
     form_class = UserLoginForm
     title = 'DAS - Login'
 
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     messages.success(self.request, "You have successfully logged in.")
+    #     return response
+
 
 class UserRegistrationView(CreateAccountView):
     form_class = CreateAccountUserForm
     template_name = 'accounts/registration.html'
     success_message = 'Registration is successfully done!'
-    title = 'DAS - registration'
+    title = 'DAS - Registration'
     success_url = reverse_lazy('accounts:log')
 
 
