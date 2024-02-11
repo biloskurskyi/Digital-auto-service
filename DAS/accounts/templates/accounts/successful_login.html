@@ -30,7 +30,8 @@
             <div class="card">
                 <form method="post" class="card-body text-center">
                     {% csrf_token %}
-                    <h3 class="mb-4">You have successfully logged in as {{ request.user.username }} and can start to
+                    <h3 class="mb-4">You have successfully logged in as <a
+                            style="color: #00d000">{{ request.user.username }}</a> and can start to
                         work🔧!</h3>
                     {% if user.owner.id %}
                         <a href="{% url 'accounts:manager_profile' user.id %}" style="font-size: 18px;">Your account</a>

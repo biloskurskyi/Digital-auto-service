@@ -40,7 +40,7 @@ class CreateOrderForm(forms.ModelForm):
 class UpdateOrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ('client', 'car', 'start_date', 'process_status', 'info',)
+        fields = ('client', 'car', 'start_date', 'process_status', 'info', 'service_station')
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
         }

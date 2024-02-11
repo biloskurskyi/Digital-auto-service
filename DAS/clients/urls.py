@@ -17,9 +17,9 @@ urlpatterns = [
          name='client_owner_create'),
     path('manager/create/client/profile/<int:pk>/', login_required(ClientManagerCreateView.as_view()),
          name='client_manager_create'),
+
     path('owner/client/profile/<int:pk>/', login_required(ClientOwnerUpdateView.as_view()),
          name='client_owner'),
     path('manager/client/profile/<int:pk>/', login_required(ClientManagerUpdateView.as_view()),
          name='client_manager'),
-
 ]
