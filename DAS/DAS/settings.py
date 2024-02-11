@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'clients',
     'cars',
     'orders',
+    'stations',
 ]
 
 MIDDLEWARE = [

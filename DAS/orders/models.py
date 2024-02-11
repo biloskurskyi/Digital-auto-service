@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from cars.models import Car
 from clients.models import Client
+from stations.models import Station
 
 
 class Order(models.Model):
@@ -24,6 +25,7 @@ class Order(models.Model):
     start_date = models.DateField(default=timezone.now)
     process_status = models.SmallIntegerField(default=NOT_STARTED, choices=STATUSES)
     info = models.TextField(max_length=200, default="repair")
+    service_station = models.ForeignKey(Station, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
         return f"{self.client.first_name} {self.client.last_name} {self.car.car_number} {self.process_status}"

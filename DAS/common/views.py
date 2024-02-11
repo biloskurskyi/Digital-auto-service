@@ -17,6 +17,8 @@ from clients.forms import ClientForm, CreateClientForm
 from clients.models import Client
 from orders.forms import CreateOrderForm, UpdateOrderForm
 from orders.models import Order
+from stations.forms import CreateStationForm
+from stations.models import Station
 
 
 class TitleMixin:
@@ -55,6 +57,8 @@ class AccountProfileView(TitleMixin, UpdateView):
             context['cars'] = cars
             orders = Order.objects.filter(client__owner=manager)
             context['orders'] = orders
+            stations = Station.objects.filter(owner=manager)
+            context['stations'] = stations
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             clients = Client.objects.filter(owner=owner)
@@ -63,6 +67,8 @@ class AccountProfileView(TitleMixin, UpdateView):
             context['cars'] = cars
             orders = Order.objects.filter(client__owner=owner)
             context['orders'] = orders
+            stations = Station.objects.filter(owner=owner)
+            context['stations'] = stations
         return context
 
     def get_success_url(self):
@@ -472,3 +478,55 @@ class OrderDeleteView(TitleMixin, DeleteView):
 
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class StationCreateView(TitleMixin, CreateView):
+    model = Station
+    form_class = CreateStationForm
+    path_name = 'profile'
+    title = 'create station'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.path_name}', args=(self.request.user.id,))
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if self.path_name == 'manager_profile':
+            form.instance.owner = self.request.user.owner
+            messages.success(self.request, 'Client created successfully.')
+        elif self.path_name == 'owner_profile':
+            owner_id = get_object_or_404(AccountUsers, id=self.request.user.id)
+            form.instance.owner = owner_id
+            messages.success(self.request, 'Client created successfully.')
+        return super().form_valid(form)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+
+
+class StationUpdateView(TitleMixin, UpdateView):
+    path_name = 'station'
+    model = Station
+    form_class = CreateStationForm
+    title = 'station update'
+
+    def get_success_url(self):
+        messages.success(self.request, 'Station profile updated successfully.')
+        return reverse_lazy(f'stations:{self.path_name}', args=(self.object.id,))
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(Station, pk=kwargs['pk'])
+        if self.path_name == 'station_manager':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and request.user.owner_id != profile_user.owner_id):
+                raise Http404("User not found")
+        elif self.path_name == 'station_owner':
+            if (request.user != profile_user or not request.user.is_active) and profile_user.owner != request.user:
+                raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)

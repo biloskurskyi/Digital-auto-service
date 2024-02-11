@@ -55,7 +55,6 @@
     <br>
     <a href="{% url 'cars:car_owner_create' user.id %}">Create new car</a>
     <br>
-    <br>
     <div>
         <h3>Orders:</h3>
         {% for order in orders %}
@@ -68,6 +67,19 @@
     </div>
     <br>
     <a href="{% url 'orders:order_owner_create' user.id %}">Create new order</a>
+    <br>
+    <div>
+        <h3>Stations:</h3>
+        {% for station in stations %}
+            <li>
+                <a href="{% url 'stations:station_owner' pk=station.id %}">
+                    {{ station.name }} {{ station.address }}
+                </a>
+            </li>
+        {% endfor %}
+    </div>
+    <br>
+    <a href="{% url 'stations:station_owner_create' user.id %}">Create new station</a>
     <br>
     <br>
     {#        <button type="submit">Submit</button>#}
