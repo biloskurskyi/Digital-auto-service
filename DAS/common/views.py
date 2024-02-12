@@ -387,6 +387,25 @@ class OrderCreateView(TitleMixin, CreateView):
         kwargs[self.creator_type] = self.request.user
         return kwargs
 
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #
+    #     # Check if self.object is not None before accessing its attributes
+    #     if self.object is not None:
+    #         managers = self.object.get_managers()
+    #         context['managers'] = managers
+    #
+    #     if self.request.user.owner is not None:
+    #         manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
+    #         stations = Station.objects.filter(owner=manager)
+    #         context['stations'] = stations
+    #     else:
+    #         owner = get_object_or_404(AccountUsers, id=self.request.user.id)
+    #         stations = Station.objects.filter(owner=owner)
+    #         context['stations'] = stations
+    #     print(context)
+    #     return context
+
     def form_valid(self, form):
         messages.success(self.request, f'{self.form_valid_info}')
         return super().form_valid(form)
