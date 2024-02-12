@@ -3,6 +3,7 @@ from datetime import date
 from django.db import models
 from django.utils import timezone
 
+from accounts.models import AccountUsers
 from cars.models import Car
 from clients.models import Client
 from stations.models import Station
@@ -33,3 +34,8 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Order"
         verbose_name_plural = "Orders"
+
+    # def get_managers(self):
+    #     managers = AccountUsers.objects.filter(owner=self.id)
+    #     user_info = [(user.username, user.id) for user in managers]
+    #     return user_info
