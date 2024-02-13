@@ -43,6 +43,16 @@ class CreateAccountUserForm(UserCreationForm):
 
 class CreateManagerUserForm(UserCreationForm):
     # email = forms.EmailField()
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter first name'}))
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter last name'}))
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter username'}))
+    email = forms.CharField(
+        widget=forms.EmailInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter email'}))
+    phone_number = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter phone number'}))
 
     class Meta:
         model = AccountUsers
