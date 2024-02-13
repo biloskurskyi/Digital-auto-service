@@ -1,80 +1,206 @@
+{% extends 'layouts/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-<div class="profile">
-    Manager!
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
-    <form method="post" action="{% url 'accounts:manager_profile' pk=form.instance.pk %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-        <br>
-        <div>
-            <h3>Clients:</h3>
-            {% for client in clients %}
-                <li>
-                    <a href="{% url 'clients:client_manager' pk=client.id %}">
-                        {{ client.first_name }} {{ client.last_name }}
-                    </a>
-                </li>
-            {% endfor %}
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Edit Manager profile</h5>
+                </div>
+                <div class="card-block">
+                    {% for message in messages %}
+                        <div style="font-size: 18px; color: #00d000">{{ message }}</div>
+                    {% endfor %}
+                    <br>
+                    <form method="post" action="{% url 'accounts:manager_profile' pk=form.instance.pk %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-12 mb-4">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email address</label>
+                                    {{ form.email }}
+                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with
+                                        anyone
+                                        else.</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="fn">First Name</label>
+                                    {{ form.first_name }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-4">
+                                <div class="form-group">
+                                    <label for="ln">Last Name</label>
+                                    {{ form.last_name }}
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-4">
+                                <div class="form-group">
+                                    <label for="add">Username</label>
+                                    {{ form.username }}
+                                    <small id="addd" class="form-text text-muted">This is your unique username</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 mb-4">
+                                <div class="form-group">
+                                    <label for="abt">Phone number</label>
+                                    {{ form.phone_number }}
+                                    <small id="addd" class="form-text text-muted">Enter you real phone number</small>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Submit</button>
+                        <hr>
+                        <a href="{% url 'accounts:log_out' %}">Log out</a>
+                        <br>
+                    </form>
+                </div>
+            </div>
         </div>
-        <br>
-        <a href="{% url 'accounts:manager_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf">Download
-            Clients Report</a>
-        <br>
-        <br>
-        <a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a>
-        <br>
-        <div>
-            <h3>Cars:</h3>
-            {% for car in cars %}
-                <li>
-                    <a href="{% url 'cars:car_manager' pk=car.id %}">
-                        {{ car.car_number }}
-                    </a>
-                </li>
-            {% endfor %}
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-block">
+                    <div class="d-flex align-items-center justify-content-center flex-column">
+                        <div class="text-center">
+                            <h4 class="font-weight-bold h6">User Statistic</h4>
+                            <p class="font-italic text-muted">Displayed below is the information for user:
+                                <strong>{{ form.username.value }}</strong></p>
+                        </div>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>Clients count: {{ clients|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for client in clients %}
+                                <li>
+                                    <a href="{% url 'clients:client_manager' pk=client.id %}">
+                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Cars count: {{ cars|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for car in cars %}
+                                <li>
+                                    <a href="{% url 'cars:car_manager' pk=car.id %}">
+                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Orders count: {{ orders|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for order in orders %}
+                                <li>
+                                    <a href="{% url 'orders:order_manager' pk=order.id %}">
+                                        Client {{ order.client }} with car {{ order.car }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Stations count: {{ stations|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for station in stations %}
+                                <li>
+                                    <a href="{% url 'stations:station_manager' pk=station.id %}">
+                                        {{ station.name }} on {{ station.address }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <br>
-        <a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a>
-        <br>
-        <br>
-        <div>
-            <h3>Orders:</h3>
-            {% for order in orders %}
-                <li>
-                    <a href="{% url 'orders:order_manager' pk=order.id %}">
-                        {{ order.client }} {{ order.car }}
-                    </a>
-                </li>
-            {% endfor %}
-        </div>
-        <br>
-        <a href="{% url 'orders:order_manager_create' user.id %}">Create new order</a>
-        <br>
-        <br>
-        <h3>Stations:</h3>
-        {% for station in stations %}
-            <li>
-                <a href="{% url 'stations:station_manager' pk=station.id %}">
-                    {{ station.name }} {{ station.address }}
-                </a>
-            </li>
-        {% endfor %}
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<div class="profile">#}
+{#    Manager!#}
+{#    {% for message in messages %}#}
+{#        <div>{{ message }}</div>#}
+{#    {% endfor %}#}
+{#    <form method="post" action="{% url 'accounts:manager_profile' pk=form.instance.pk %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit">Submit</button>#}
+{#        <br>#}
+{#        <div>#}
+{#            <h3>Clients:</h3>#}
+{#            {% for client in clients %}#}
+{#                <li>#}
+{#                    <a href="{% url 'clients:client_manager' pk=client.id %}">#}
+{#                        {{ client.first_name }} {{ client.last_name }}#}
+{#                    </a>#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:manager_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf">Download#}
+{#            Clients Report</a>#}
+{#        <br>#}
+{#        <br>#}
+{#        <a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a>#}
+{#        <br>#}
+{#        <div>#}
+{#            <h3>Cars:</h3>#}
+{#            {% for car in cars %}#}
+{#                <li>#}
+{#                    <a href="{% url 'cars:car_manager' pk=car.id %}">#}
+{#                        {{ car.car_number }}#}
+{#                    </a>#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <br>#}
+{#        <a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a>#}
+{#        <br>#}
+{#        <br>#}
+{#        <div>#}
+{#            <h3>Orders:</h3>#}
+{#            {% for order in orders %}#}
+{#                <li>#}
+{#                    <a href="{% url 'orders:order_manager' pk=order.id %}">#}
+{#                        {{ order.client }} {{ order.car }}#}
+{#                    </a>#}
+{#                </li>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#        <br>#}
+{#        <a href="{% url 'orders:order_manager_create' user.id %}">Create new order</a>#}
+{#        <br>#}
+{#        <br>#}
+{#        <h3>Stations:</h3>#}
+{#        {% for station in stations %}#}
+{#            <li>#}
+{#                <a href="{% url 'stations:station_manager' pk=station.id %}">#}
+{#                    {{ station.name }} {{ station.address }}#}
+{#                </a>#}
+{#            </li>#}
+{#        {% endfor %}#}
 {#        <a href="{% url 'stations:station_manager_create' user.id %}">Create new station</a>#}
-        <br>
-        <br>
-        <a href="{% url 'accounts:log_out' %}">Log out</a>
-    </form>
-</div>
-</body>
-</html>
+{#        <br>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:log_out' %}">Log out</a>#}
+{#    </form>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
