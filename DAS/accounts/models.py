@@ -36,5 +36,5 @@ class AccountUsers(AbstractUser):
 
     def get_managers(self):
         managers = AccountUsers.objects.filter(owner=self.id)
-        user_info = [(user.username, user.id) for user in managers]
+        user_info = [(user.username, user.id, user.first_name, user.last_name) for user in managers]
         return user_info

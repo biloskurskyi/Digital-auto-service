@@ -69,7 +69,6 @@ class UpdateOrderForm(forms.ModelForm):
         stations = kwargs.pop('stations', None)
 
         super(UpdateOrderForm, self).__init__(*args, **kwargs)
-
         if owner:
             self.fields['client'].queryset = owner.client_set.all()
         if manager:
@@ -78,7 +77,6 @@ class UpdateOrderForm(forms.ModelForm):
 
         self.fields['client'].disabled = True
         self.fields['car'].disabled = True
-
         if owner:
             self.fields['service_station'].queryset = Station.objects.filter(
                 Q(owner=owner) | Q(owner__owner=owner)

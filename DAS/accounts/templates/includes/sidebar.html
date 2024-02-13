@@ -1,0 +1,162 @@
+<nav class="pcoded-navbar">
+    <div class="navbar-wrapper">
+        <div class="navbar-brand header-logo">
+            <span class="b-title">DAS</span>
+        </div>
+        {% if request.user.owner.id is None %}
+            <div class="navbar-content scroll-div">
+                <ul class="nav pcoded-inner-navbar">
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Navigation</label>
+                    </li>
+
+                    <li class="nav-item pcoded-hasmenu {% if 'basic_components' in parent %}active pcoded-trigger{% endif %}">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Managers</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li>
+                                <a href="{% url 'accounts:create_manager' user.id %}">Create new manager</a>
+                            </li>
+                            <hr>
+                            {% for manager, manager_id, manager_first_name, manager_last_name in managers %}
+                                <li>
+                                    <a href="{% url 'accounts:owner_manager_profile' pk=manager_id %}">{{ manager_first_name }} {{ manager_last_name }}
+                                        with username: {{ manager }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Clients</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'clients:client_owner_create' user.id %}">Create new client</a></li>
+                            <hr>
+                            {% for client in clients %}
+                                <li>
+                                    <a href="{% url 'clients:client_owner' pk=client.id %}">
+                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Cars</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'cars:car_owner_create' user.id %}">Create new car</a></li>
+                            <hr>
+                            {% for car in cars %}
+                                <li>
+                                    <a href="{% url 'cars:car_owner' pk=car.id %}">
+                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'orders:order_owner_create' user.id %}">Create new order</a></li>
+                            <hr>
+                            {% for order in orders %}
+                                <li>
+                                    <a href="{% url 'orders:order_owner' pk=order.id %}">
+                                        {{ order.client }} {{ order.car }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Stations</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'stations:station_owner_create' user.id %}">Create new station</a></li>
+                            <hr>
+                            {% for station in stations %}
+                                <li>
+                                    <a href="{% url 'stations:station_owner' pk=station.id %}">
+                                        {{ station.name }} on {{ station.address }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+        {% if request.user.owner.id is not None %}
+            <div class="navbar-content scroll-div">
+                <ul class="nav pcoded-inner-navbar">
+                    <li class="nav-item pcoded-menu-caption">
+                        <label>Navigation</label>
+                    </li>
+
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Clients</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a></li>
+                            <hr>
+                            {% for client in clients %}
+                                <li>
+                                    <a href="{% url 'clients:client_manager' pk=client.id %}">
+                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Cars</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a></li>
+                            <hr>
+                            {% for car in cars %}
+                                <li>
+                                    <a href="{% url 'cars:car_manager' pk=car.id %}">
+                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'orders:order_manager_create' user.id %}">Create new order</a></li>
+                            <hr>
+                            {% for order in orders %}
+                                <li>
+                                    <a href="{% url 'orders:order_manager' pk=order.id %}">
+                                        {{ order.client }} {{ order.car }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Stations</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            {% for station in stations %}
+                                <li>
+                                    <a href="{% url 'stations:station_manager' pk=station.id %}">
+                                        {{ station.name }} on {{ station.address }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</nav>

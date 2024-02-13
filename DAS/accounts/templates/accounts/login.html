@@ -17,6 +17,10 @@
                         <i class="feather icon-unlock auth-icon"></i>
                     </div>
                     <h3 class="mb-4">Login</h3>
+                    {% for message in messages %}
+                        <div>{{ message }}</div>
+                    {% endfor %}
+                    <br>
                     {% if form.non_field_errors %}
                         {% for error in form.non_field_errors %}
                             <span class="text-danger d-block my-3">{{ error }}</span>
