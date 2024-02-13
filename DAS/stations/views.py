@@ -22,12 +22,12 @@ class StationOwnerCreateView(StationCreateView):
 
 
 #
-class StationManagerCreateView(StationCreateView):
-    path_name = 'manager_profile'
-    template_name = 'stations/manager_create_station.html'
-
-    def check_access(self, request, profile_user):
-        return request.user == profile_user and request.user.is_active and request.user.owner is not None
+# class StationManagerCreateView(StationCreateView):
+#     path_name = 'manager_profile'
+#     template_name = 'stations/manager_create_station.html'
+#
+#     def check_access(self, request, profile_user):
+#         return request.user == profile_user and request.user.is_active and request.user.owner is not None
 
 
 class StationOwnerUpdateView(StationUpdateView):

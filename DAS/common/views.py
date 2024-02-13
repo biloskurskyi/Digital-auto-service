@@ -534,6 +534,7 @@ class StationUpdateView(TitleMixin, UpdateView):
     model = Station
     form_class = CreateStationForm
     title = 'station update'
+    creator_type = 'manager'
 
     def get_success_url(self):
         messages.success(self.request, 'Station profile updated successfully.')
@@ -549,3 +550,11 @@ class StationUpdateView(TitleMixin, UpdateView):
             if (request.user != profile_user or not request.user.is_active) and profile_user.owner != request.user:
                 raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['owner'] = self.object.owner.id  # Pass the owner to the form
+        kwargs['username'] = self.request.user.id
+        return kwargs
+
+
