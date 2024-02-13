@@ -13,7 +13,7 @@ class Client(models.Model):
     email = models.EmailField()
     phone_number = models.CharField(max_length=15)
     date_of_birth = models.DateField(validators=[MaxValueValidator(limit_value=date.today())])
-    type = models.CharField(max_length=16)
+    info = models.CharField(max_length=64)
     owner = models.ForeignKey(AccountUsers, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
