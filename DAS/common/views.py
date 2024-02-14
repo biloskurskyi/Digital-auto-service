@@ -30,23 +30,11 @@ class TitleMixin:
         return context
 
 
-class BaseView(TitleMixin, TemplateView):
-    title = "DAS"
-
-
-class CreateAccountView(TitleMixin, SuccessMessageMixin, CreateView):
-    model = AccountUsers
-
-
-class AccountProfileView(TitleMixin, UpdateView):
-    model = AccountUsers
-    form_class = AccountProfileForm
-    profile = 'profile'
-
+class CommonContextMixin:
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        managers = self.object.get_managers()
+        managers = AccountUsers.objects.get_managers(self.request.user.id)
         context['managers'] = managers
 
         if self.request.user.owner is not None:
@@ -70,6 +58,20 @@ class AccountProfileView(TitleMixin, UpdateView):
             stations = Station.objects.filter(owner=owner)
             context['stations'] = stations
         return context
+
+
+class BaseView(TitleMixin, TemplateView):
+    title = "DAS"
+
+
+class CreateAccountView(TitleMixin, SuccessMessageMixin, CreateView):
+    model = AccountUsers
+
+
+class AccountProfileView(CommonContextMixin, TitleMixin, UpdateView):
+    model = AccountUsers
+    form_class = AccountProfileForm
+    profile = 'profile'
 
     def get_success_url(self):
         return reverse_lazy(f'accounts:{self.profile}', args=(self.object.id,))
@@ -156,15 +158,20 @@ class ClientCreateView(TitleMixin, CreateView):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
 
-class ClientUpdateView(TitleMixin, UpdateView):
+class ClientUpdateView(CommonContextMixin, TitleMixin, UpdateView):
     model = Client
     form_class = ClientForm
+    form_invalid_info = 'Account was not deleted.'
     path_name = 'profile'
     title = 'client update'
 
     def get_success_url(self):
         messages.success(self.request, 'Client profile updated successfully.')
         return reverse_lazy(f'clients:{self.path_name}', args=(self.object.id,))
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'Client profile wasn\'t updated')
+        return super().form_invalid(form)
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(Client, pk=kwargs['pk'])
@@ -246,7 +253,7 @@ class CarCreateView(TitleMixin, CreateView):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
 
-class CarUpdateView(TitleMixin, UpdateView):
+class CarUpdateView(CommonContextMixin, TitleMixin, UpdateView):
     form_valid_info = 'Car was update successfully.'
     form_invalid_info = 'Car was not updated.'
     model = Car
@@ -387,25 +394,6 @@ class OrderCreateView(TitleMixin, CreateView):
         kwargs[self.creator_type] = self.request.user
         return kwargs
 
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #
-    #     # Check if self.object is not None before accessing its attributes
-    #     if self.object is not None:
-    #         managers = self.object.get_managers()
-    #         context['managers'] = managers
-    #
-    #     if self.request.user.owner is not None:
-    #         manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
-    #         stations = Station.objects.filter(owner=manager)
-    #         context['stations'] = stations
-    #     else:
-    #         owner = get_object_or_404(AccountUsers, id=self.request.user.id)
-    #         stations = Station.objects.filter(owner=owner)
-    #         context['stations'] = stations
-    #     print(context)
-    #     return context
-
     def form_valid(self, form):
         messages.success(self.request, f'{self.form_valid_info}')
         return super().form_valid(form)
@@ -425,7 +413,7 @@ class OrderCreateView(TitleMixin, CreateView):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
 
-class OrderUpdateView(TitleMixin, UpdateView):
+class OrderUpdateView(CommonContextMixin, TitleMixin, UpdateView):
     creator_type = ''
     reverse_page = path_name = ''
 
@@ -529,7 +517,7 @@ class StationCreateView(TitleMixin, CreateView):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
 
-class StationUpdateView(TitleMixin, UpdateView):
+class StationUpdateView(CommonContextMixin, TitleMixin, UpdateView):
     path_name = 'station'
     model = Station
     form_class = CreateStationForm
@@ -556,5 +544,3 @@ class StationUpdateView(TitleMixin, UpdateView):
         kwargs['owner'] = self.object.owner.id  # Pass the owner to the form
         kwargs['username'] = self.request.user.id
         return kwargs
-
-
