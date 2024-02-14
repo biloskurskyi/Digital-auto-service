@@ -518,11 +518,11 @@ class StationCreateView(TitleMixin, CreateView):
     def form_valid(self, form):
         if self.path_name == 'manager_profile':
             form.instance.owner = self.request.user.owner
-            messages.success(self.request, 'Client created successfully.')
+            messages.success(self.request, 'Station created successfully.')
         elif self.path_name == 'owner_profile':
             owner_id = get_object_or_404(AccountUsers, id=self.request.user.id)
             form.instance.owner = owner_id
-            messages.success(self.request, 'Client created successfully.')
+            messages.success(self.request, 'Station created successfully.')
         return super().form_valid(form)
 
     def check_access(self, request, profile_user):

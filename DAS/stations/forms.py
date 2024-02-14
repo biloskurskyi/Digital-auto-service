@@ -6,6 +6,11 @@ from .models import Station
 
 
 class CreateStationForm(forms.ModelForm):
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter station name'}))
+    address = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter address'}))
+
     class Meta:
         model = Station
         fields = '__all__'
