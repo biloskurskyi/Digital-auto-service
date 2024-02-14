@@ -16,7 +16,7 @@
                 {% for message in messages %}
                     <div>{{ message }}</div>
                 {% endfor %}
-                <form method="post" class="card-body text-center">
+                <form method="post" class="card-body text-center" action="{% url 'clients:client_owner_create' user.id %}">
                     {% csrf_token %}
 
                     <div class="mb-4">
