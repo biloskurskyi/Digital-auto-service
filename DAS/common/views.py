@@ -170,7 +170,7 @@ class ClientUpdateView(CommonContextMixin, TitleMixin, UpdateView):
         return reverse_lazy(f'clients:{self.path_name}', args=(self.object.id,))
 
     def form_invalid(self, form):
-        messages.error(self.request, f'Client profile wasn\'t updated')
+        messages.error(self.request, 'Client profile wasn\'t updated')
         return super().form_invalid(form)
 
     def dispatch(self, request, *args, **kwargs):

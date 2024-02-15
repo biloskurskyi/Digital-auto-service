@@ -41,11 +41,19 @@
                 number</small>
         </div>
     </div>
+    <a class="col-sm-12 mb-4" href="{% url 'accounts:owner_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf" style="font-size: 25px">Download
+        Report<img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;"></a>
+
+    <hr>
 {% endblock %}
-{% block logout %}<a href="{% url 'accounts:log_out' %}">Log out</a>{% endblock %}
+{% block logout %}<a href="{% url 'accounts:log_out' %}">Log out</a>
+{#<button type="button" onclick="window.location.href='{% url 'accounts:log_out' %}'" class="btn btn-outline-light" data-toggle="tooltip">Log out</button>#}
+{% endblock %}
 {% block delete %}
     <a href="{% url 'accounts:delete_owner' user.id %}" style="color: red;">Delete
-        account</a>{% endblock %}
+        account</a>
+{#<button type="button" onclick="window.location.href='{% url 'accounts:delete_owner' user.id %}'" class="btn btn-outline-danger" data-toggle="tooltip">Delete account</button>#}
+{% endblock %}
 {#{% extends 'layouts/base.html' %}#}
 {#{% load static %}#}
 {##}

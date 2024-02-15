@@ -1,7 +1,7 @@
 from datetime import date
 
 from django import forms
-from django.core.validators import MaxValueValidator, MaxLengthValidator
+from django.core.validators import MaxLengthValidator, MaxValueValidator
 
 from clients.models import Client
 

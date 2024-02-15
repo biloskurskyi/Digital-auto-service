@@ -1,8 +1,8 @@
-from django.contrib.auth.models import AbstractUser, User
+from django.contrib.auth.models import AbstractUser, User, UserManager
 from django.db import models
 
 
-class AccountUsersManager(models.Manager):
+class AccountUsersManager(UserManager):
     def get_managers(self, owner_id):
         managers = self.filter(owner_id=owner_id)
         user_info = [(user.username, user.id, user.first_name, user.last_name) for user in managers]
@@ -10,6 +10,15 @@ class AccountUsersManager(models.Manager):
 
     def get_by_natural_key(self, username):
         return self.get(username=username)
+
+    def normalize_email(self, email):
+        try:
+            email_name, domain_part = email.strip().rsplit('@', 1)
+        except ValueError:
+            pass
+        else:
+            email = '@'.join([email_name, domain_part.lower()])
+        return email
 
 
 class AccountUsers(AbstractUser):
@@ -20,21 +29,21 @@ class AccountUsers(AbstractUser):
     phone_number = models.CharField(max_length=15, unique=True)
     owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
 
-    groups = models.ManyToManyField(
-        'auth.Group',
-        verbose_name='groups',
-        blank=True,
-        help_text='The groups this user belongs to.',
-        related_name='owner_users_groups'
-    )
-
-    user_permissions = models.ManyToManyField(
-        'auth.Permission',
-        verbose_name='user permissions',
-        blank=True,
-        help_text='Specific permissions for this user.',
-        related_name='owner_users_permissions'
-    )
+    # groups = models.ManyToManyField(
+    #     'auth.Group',
+    #     verbose_name='groups',
+    #     blank=True,
+    #     help_text='The groups this user belongs to.',
+    #     related_name='owner_users_groups'
+    # )
+    #
+    # user_permissions = models.ManyToManyField(
+    #     'auth.Permission',
+    #     verbose_name='user permissions',
+    #     blank=True,
+    #     help_text='Specific permissions for this user.',
+    #     related_name='owner_users_permissions'
+    # )
 
     def save(self, *args, **kwargs):
         self.is_superuser = False

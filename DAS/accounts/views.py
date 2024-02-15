@@ -73,7 +73,7 @@ class OwnerAccountProfileView(AccountProfileView):
 
 
 class ManagerAccountProfileView(AccountProfileView):
-    template_name = "accounts/profile.html"
+    template_name = "accounts/manager_profile.html"
     title = 'DAS - manager account profile'
     profile = 'manager_profile'
 
