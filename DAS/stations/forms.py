@@ -1,8 +1,9 @@
 from django import forms
 
+from .models import Station
+
 # from location_field.models.plain import PlainLocationField
 
-from .models import Station
 
 
 class CreateStationForm(forms.ModelForm):

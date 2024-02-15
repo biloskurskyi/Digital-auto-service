@@ -3,12 +3,12 @@ from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView, DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
 from accounts.models import AccountUsers
 from clients.forms import CreateClientForm
 from clients.models import Client
-from common.views import TitleMixin, StationCreateView, StationUpdateView
+from common.views import StationCreateView, StationUpdateView, TitleMixin
 from stations.forms import CreateStationForm
 from stations.models import Station
 

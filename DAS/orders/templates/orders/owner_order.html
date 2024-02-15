@@ -1,29 +1,100 @@
-{% load static %}
+{% extends 'includes/owner_profile_common.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-<div class="profile">
-    You are still owner!
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
-    <form method="post" action="{% url 'orders:order_owner' pk=form.instance.pk %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-        <br>
-        <br>
-        <a href="{% url 'accounts:log_out' %}">Log out</a>
-        <br>
-        <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>
-        <br>
-        <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">Delete order</a>
-    </form>
-</div>
-</body>
-</html>
+{% block edit_profile %}Order{% endblock %}
+{% block post %}{% url 'orders:order_owner' pk=form.instance.pk %}{% endblock %}
+{% block form %}
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Client</label>
+            {{ form.client }}
+            <small id="addd" class="form-text text-muted">You can't change this field</small>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="fn">Car</label>
+            {{ form.car }}
+            <small id="addd" class="form-text text-muted">You can't change this field</small>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="ln">Start date</label>
+            {{ form.start_date }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="add">Process status</label>
+            {{ form.process_status }}
+            <small id="addd" class="form-text text-muted"></small>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="add">Service station</label>
+            {{ form.service_station }}
+        </div>
+    </div>
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Info</label>
+            {{ form.info }}
+        </div>
+    </div>
+    {% if form.instance.id %}
+        <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
+        {% for car in form.instance.get_all_cars %}
+             <ul>
+                <li >
+                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car Number: {{ car.car_number }}</a><br>
+                    Mark: {{ car.mark }}<br>
+                    Model: {{ car.model }}<br>
+                    Year: {{ car.year }}<br>
+                    Engine: {{ car.engine }}<br>
+                    Gear Type: {{ car.gear_type }}<br>
+                    Comment: {{ car.comment }}<br></li>
+             </ul>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
+{% block logout %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
+
+{% block delete %}
+    <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">Delete
+        order</a>{% endblock %}
+
+
+
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<div class="profile">#}
+{#    You are still owner!#}
+{#    {% for message in messages %}#}
+{#        <div>{{ message }}</div>#}
+{#    {% endfor %}#}
+{#    <form method="post" action="{% url 'orders:order_owner' pk=form.instance.pk %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit">Submit</button>#}
+{#        <br>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:log_out' %}">Log out</a>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>#}
+{#        <br>#}
+{#        <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">Delete order</a>#}
+{#    </form>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}

@@ -1,8 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from stations.views import StationOwnerCreateView, StationOwnerUpdateView, \
-    StationManagerUpdateView, StationDeleteView
+from stations.views import (StationDeleteView, StationManagerUpdateView,
+                            StationOwnerCreateView, StationOwnerUpdateView)
 
 app_name = 'stations'
 

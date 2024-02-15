@@ -31,9 +31,9 @@
     </div>
     <div class="col-sm-6 mb-4">
         <label for="exampleInputEmail1">Date</label>
-         <div class="form-group">
+        <div class="form-group">
             {{ form.date_of_birth }}
-             <small id="addd" class="form-text text-muted">The date of birth cannot be greater than today</small>
+            <small id="addd" class="form-text text-muted">The date of birth cannot be greater than today</small>
         </div>
     </div>
     <div class="col-sm-12 mb-4">
@@ -42,7 +42,21 @@
             {{ form.info }}
         </div>
     </div>
-
+    {% if form.instance.id %}
+        <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
+        {% for car in form.instance.get_all_cars %}
+             <ul>
+                <li >
+                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car Number: {{ car.car_number }}</a><br>
+                    Mark: {{ car.mark }}<br>
+                    Model: {{ car.model }}<br>
+                    Year: {{ car.year }}<br>
+                    Engine: {{ car.engine }}<br>
+                    Gear Type: {{ car.gear_type }}<br>
+                    Comment: {{ car.comment }}<br></li>
+             </ul>
+        {% endfor %}
+    {% endif %}
 {% endblock %}
 
 {% block logout %}

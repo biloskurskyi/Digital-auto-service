@@ -1,27 +1,55 @@
-{% load static %}
+{% extends 'includes/owner_profile_common.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-<div class="profile">
-    You are still owner!
-    {% for message in messages %}
-        <div>{{ message }}</div>
-    {% endfor %}
-    <form method="post" action="{% url 'stations:station_owner' pk=form.instance.pk %}">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-    <a href="{% url 'accounts:log_out' %}">Log out</a>
-    <br>
-    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>
-    <br>
-    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">Delete station</a>
-</div>
-</body>
-</html>
+{% block edit_profile %}Station{% endblock %}
+{% block post %}{% url 'stations:station_owner' pk=form.instance.pk %}{% endblock %}
+{% block form %}
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Name</label>
+            {{ form.name }}
+        </div>
+    </div>
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="fn">Address</label>
+            {{ form.address }}
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block logout %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
+
+{% block delete %}
+    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">Delete
+        station</a>{% endblock %}
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<div class="profile">#}
+{#    You are still owner!#}
+{#    {% for message in messages %}#}
+{#        <div>{{ message }}</div>#}
+{#    {% endfor %}#}
+{#    <form method="post" action="{% url 'stations:station_owner' pk=form.instance.pk %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit">Submit</button>#}
+{#    </form>#}
+{#    <a href="{% url 'accounts:log_out' %}">Log out</a>#}
+{#    <br>#}
+{#    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>#}
+{#    <br>#}
+{#    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">Delete station</a>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}

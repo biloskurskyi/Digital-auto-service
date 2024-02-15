@@ -1,13 +1,12 @@
-from django.utils import timezone
-
 from django import forms
+from django.db.models import Q
+from django.utils import timezone
 
 from cars.models import Car
 from clients.models import Client
 from stations.models import Station
 
 from .models import Order
-from django.db.models import Q
 
 
 class CreateOrderForm(forms.ModelForm):
@@ -74,6 +73,21 @@ class CreateOrderForm(forms.ModelForm):
 
 
 class UpdateOrderForm(forms.ModelForm):
+    client = forms.ModelChoiceField(queryset=Client.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}),
+                                    empty_label="---")
+    car = forms.ModelChoiceField(queryset=Car.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}),
+                                 empty_label="---")
+    start_date = forms.DateField(initial=timezone.now,
+                                 widget=forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'YYYY-MM-DD'}))
+    process_status = forms.ChoiceField(choices=Order.STATUSES, widget=forms.Select(
+        attrs={'class': 'form-control', 'placeholder': 'Enter process status'}))
+    info = forms.CharField(max_length=200,
+                           widget=forms.TextInput(
+                               attrs={'class': 'form-control py-4', 'placeholder': 'Enter information'}))
+    service_station = forms.ModelChoiceField(queryset=Station.objects.all(),
+                                             widget=forms.Select(attrs={'class': 'form-control'}),
+                                             empty_label=None)
+
     class Meta:
         model = Order
         fields = ('client', 'car', 'start_date', 'process_status', 'info', 'service_station')
