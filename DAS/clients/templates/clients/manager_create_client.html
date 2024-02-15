@@ -1,6 +1,11 @@
 {% extends 'includes/create_common.html' %}
 
 {% block creator_status %}{% url 'clients:client_manager_create' user.id %}{% endblock %}
+{% block icon %}
+    <div class="mb-4">
+        <i class="feather icon-user-plus auth-icon"></i>
+    </div>
+{% endblock %}
 {% block create_name %}Create Client{% endblock %}
 {% block status_page %}<a href="{% url 'accounts:manager_profile' user.id %}">Return manager page</a>{% endblock %}
 

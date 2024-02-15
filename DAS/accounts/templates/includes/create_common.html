@@ -20,9 +20,13 @@
                       action="{% block creator_status %}{% endblock %}">
                     {% csrf_token %}
 
-                    <div class="mb-4">
-                        <i class="feather icon-user-plus auth-icon"></i>
-                    </div>
+                    {% block icon %}{% endblock %}
+{#                    <div class="mb-4">#}
+{#                        <i class="feather icon-user-plus auth-icon"></i>#}
+{#                    </div>#}
+                    {#                    <div class="mb-4">#}
+                    {#                        <i class="feather icon-plus auth-icon"></i>#}
+                    {#                    </div>#}
                     <h3 class="mb-4">{% block create_name %}{% endblock %}</h3>
                     {% for field in form %}
                         <div class="input-group mb-3">
