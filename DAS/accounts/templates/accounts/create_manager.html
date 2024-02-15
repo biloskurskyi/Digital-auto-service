@@ -1,6 +1,11 @@
 {% extends 'includes/create_common.html' %}
 
 {% block create_name %}Create Manager{% endblock %}
+{% block icon %}
+    <div class="mb-4">
+        <i class="feather icon-user-plus auth-icon"></i>
+    </div>
+{% endblock %}
 {% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
 
 

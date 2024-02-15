@@ -1,5 +1,9 @@
 {% extends 'includes/create_common.html' %}
-
+{% block icon %}
+    <div class="mb-4">
+        <i class="feather icon-home auth-icon"></i><i class="feather icon-plus auth-icon" style="font-size: 25px"></i>
+    </div>
+{% endblock %}
 {% block creator_status %}{% url 'stations:station_owner_create' user.id %}{% endblock %}
 {% block create_name %}Create Station{% endblock %}
 {% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
