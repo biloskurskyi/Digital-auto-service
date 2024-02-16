@@ -2,35 +2,162 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Clients Report</title>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 25px;
+        }
+
+        h2 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            font-size: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .section-content {
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
-Report for {{ username }}
+
+<h1>Clients Report for {{ username }}</h1>
 {% if managers is not none %}
-    <h1>Manager Report</h1>
-    {% for manager in managers %}
-        <li>{{ manager }} {{ manager.first_name }} {{ manager.last_name }} {{ manager.email }} {{ phone.number }}</li>
-    {% endfor %}
+    <div class="section">
+        <h2>Manager Report</h2>
+        <div class="section-content">
+            <ul>
+                {% for manager in managers %}
+                    <li>{{ manager.first_name }} {{ manager.last_name }} - Email: {{ manager.email }} -
+                        Phone: {{ manager.phone_number }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 {% endif %}
-<br>
-<br>
-<h1>Client Report</h1>
-{% for client in clients %}
-    <li>{{ client.first_name }} {{ client.last_name }} {{ client.email }} {{ client.phone_number }}</li>
-{% endfor %}
-<br>
-<br>
-<h1>Car Report</h1>
-{% for car in cars %}
-    <li>{{ car.car_number }} {{ car.mark }} {{ car.model }} {{ car.client.first_name }} {{ car.client.last_name }}</li>
-    {{ car.comment }}
-{% endfor %}
-<br>
-<br>
-<h1>Order Report</h1>
-{% for order in orders %}
-    <li>{{ order.car }} {{ order.client }} {{ order.start_date }} {{ order.get_process_status_display }}</li>
-    {{ order.info }}
-{% endfor %}
+
+<div class="section">
+    <h2>Client Report</h2>
+    <div class="section-content">
+        <ul>
+            {% for client in clients %}
+                <li>{{ client.first_name }} {{ client.last_name }}, Email: {{ client.email }},
+                    Phone: {{ client.phone_number }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{#Report for {{ username }}#}
+{#{% if managers is not none %}#}
+{#    <h1>Manager Report</h1>#}
+{#    {% for manager in managers %}#}
+{#        <li>{{ manager }} {{ manager.first_name }} {{ manager.last_name }} {{ manager.email }} {{ phone.number }}</li>#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+
+<div class="section">
+    <h2>Car Report</h2>
+    <div class="section-content">
+        <ul>
+            {% for car in cars %}
+                <li>Car Number: {{ car.car_number }}, Mark and model: {{ car.mark }} {{ car.model }},
+                    Owner: {{ car.client.first_name }} {{ car.client.last_name }} {{ car.client.email }},
+                    Comment: {{ car.comment }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Orders Report</h2>
+    <div class="section-content">
+        <ul>
+            {% for order in orders %}
+                <li>Client: {{ order.client.first_name }} {{ order.client.last_name }}, {{ car.client.email }},
+                    Car: {{ order.car.car_number }} {{ order.car.mark }} {{ order.car.model }}, Start
+                    Date: {{ order.start_date }}, Service
+                    Station: {{ order.service_station.name }} {{ order.service_station.address }}, Process
+                    Status: {{ order.process_status }}, Info: {{ order.info }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% if stations is not none %}
+    <div class="section">
+        <h2>Station Report</h2>
+        <div class="section-content">
+            <ul>
+                {% for station in stations %}
+                    <li>{{ station.name }} - Address: {{ station.address }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}
+
 </body>
-</html>
+{#<body>#}
+{#Report for {{ username }}#}
+{#{% if managers is not none %}#}
+{#    <h1>Manager Report</h1>#}
+{#    {% for manager in managers %}#}
+{#        <li>{{ manager }} {{ manager.first_name }} {{ manager.last_name }} {{ manager.email }} {{ phone.number }}</li>#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+{#<br>#}
+{#<br>#}
+{#<h1>Client Report</h1>#}
+{#{% for client in clients %}#}
+{#    <li>{{ client.first_name }} {{ client.last_name }} {{ client.email }} {{ client.phone_number }}</li>#}
+{#{% endfor %}#}
+{#<br>#}
+{#<br>#}
+{#<h1>Car Report</h1>#}
+{#{% for car in cars %}#}
+{#    <li>{{ car.car_number }} {{ car.mark }} {{ car.model }} {{ car.client.first_name }} {{ car.client.last_name }}</li>#}
+{#    {{ car.comment }}#}
+{#{% endfor %}#}
+{#<br>#}
+{#<br>#}
+{#<h1>Orders Report</h1>#}
+{#{% for order in orders %}#}
+{#    <li>{{ order.client.first_name }} {{ order.client.last_name }} {{ car.car_number }} {{ car.mark }} {{ car.model }} {{ order.start_date }} {{ order.service_station.address }} {{ order.start_date }} {{ order.process_status }} {{ order.process_status }}</li>#}
+{#    {{ order.info }}#}
+{#{% endfor %}#}
+{#<br>#}
+{#<br>#}
+{#{% if managers is not none %}#}
+{#    <h1>Station Report</h1>#}
+{#    {% for station in stations %}#}
+{#        <li>{{ station.name }} {{ station.address }}</li>#}
+{#    {% endfor %}#}
+{#{% endif %}#}
+{#</body>#}
+{#</html>#}

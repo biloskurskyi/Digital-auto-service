@@ -6,7 +6,7 @@ from accounts.models import AccountUsers
 
 class Station(models.Model):
     name = models.CharField(max_length=32)
-    address = models.CharField(max_length=32, null=True)
+    address = models.CharField(max_length=64, null=True)
     owner = models.ForeignKey(AccountUsers, on_delete=models.PROTECT, null=True)
 
     def __str__(self):

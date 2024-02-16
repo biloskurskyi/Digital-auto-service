@@ -326,7 +326,7 @@ class CarDeleteView(TitleMixin, DeleteView):
 
 
 class GeneratePDFView(TitleMixin, View):
-    title = "pdf data"
+    title = "pdf report"
     template_name = 'accounts/pdf_clients.html'
 
     def get_context_data(self, **kwargs):
@@ -338,17 +338,20 @@ class GeneratePDFView(TitleMixin, View):
             clients = Client.objects.filter(owner=manager)
             cars = Car.objects.filter(client__owner=manager)
             orders = Order.objects.filter(car__order__client__owner=manager)
+            stations = None
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             managers = AccountUsers.objects.filter(owner__isnull=False, owner=owner).distinct()
             clients = Client.objects.filter(owner=owner)
             cars = Car.objects.filter(client__owner=owner)
             orders = Order.objects.filter(car__order__client__owner=owner)
+            stations = Station.objects.filter(owner=self.request.user.id)
         context['managers'] = managers
         context['clients'] = clients
         context['cars'] = cars
         context['orders'] = orders
         context['username'] = self.request.user.username
+        context['stations'] = stations
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -363,7 +366,7 @@ class GeneratePDFView(TitleMixin, View):
         template = get_template(self.template_name)
         html = template.render(context)
 
-        response = HttpResponse(content_type='application/pdf')
+        response = HttpResponse(content_type='application/pdf; charset=utf-8')
         response['Content-Disposition'] = 'filename="clients_report.pdf"'
 
         pisa_status = pisa.CreatePDF(html, dest=response)
