@@ -1,19 +1,29 @@
-{% load static %}
+{% extends 'includes/delete_common.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body>
-<div class="delete_account">
-    <form method="post" action="{% url 'orders:manager_delete_order' pk=object.pk %}">
-        {% csrf_token %}
-        <p>Are you sure you want to
-            delete {{ object.client.first_name }} {{ object.client.last_name }} {{ object.mark }} {{ object.model }} {{ object.car_number }}?</p>
-        <input type="submit" value="Confirm">
-    </form>
-</div>
-</body>
-</html>
+{% block name_delete %}{{ object.client.first_name }} {{ object.client.last_name }} {{ object.car.mark }}
+    {{ object.car.model }} {{ object.car.car_number }}{% endblock %}
+{% block button %}'{% url 'orders:manager_delete_order' pk=object.pk %}'{% endblock %}
+{% block button_name %}Delete order{% endblock %}
+{% block status_page %}<a href="{% url 'accounts:manager_profile' user.id %}">Return on manager page</a>{% endblock %}
+
+
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<div class="delete_account">#}
+{#    <form method="post" action="{% url 'orders:manager_delete_order' pk=object.pk %}">#}
+{#        {% csrf_token %}#}
+{#        <p>Are you sure you want to#}
+{#            delete {{ object.client.first_name }} {{ object.client.last_name }} {{ object.mark }} {{ object.model }} {{ object.car_number }}?</p>#}
+{#        <input type="submit" value="Confirm">#}
+{#    </form>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
