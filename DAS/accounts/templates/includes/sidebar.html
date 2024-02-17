@@ -57,6 +57,23 @@
                             {% endfor %}
                         </ul>
                     </li>
+
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Workers</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'workers:worker_owner_create' user.id %}">Create new worker</a></li>
+                            <hr>
+                            {#                            {% for client in clients %}#}
+                            {#                                <li>#}
+                            {#                                    <a href="{% url 'clients:client_owner' pk=client.id %}">#}
+                            {#                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}#}
+                            {#                                    </a>#}
+                            {#                                </li>#}
+                            {#                            {% endfor %}#}
+                        </ul>
+                    </li>
+
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
                                 class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>
@@ -72,6 +89,8 @@
                             {% endfor %}
                         </ul>
                     </li>
+
+
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
                                 class="feather icon-box"></i></span><span class="pcoded-mtext">Stations</span></a>
@@ -90,6 +109,7 @@
                 </ul>
             </div>
         {% endif %}
+
         {% if request.user.owner.id is not None %}
             <div class="navbar-content scroll-div">
                 <ul class="nav pcoded-inner-navbar">
@@ -127,6 +147,23 @@
                             {% endfor %}
                         </ul>
                     </li>
+
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">Workers</span></a>
+                        <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
+                            <li><a href="{% url 'workers:worker_manager_create' user.id %}">Create new worker</a></li>
+                            <hr>
+                            {#                            {% for client in clients %}#}
+                            {#                                <li>#}
+                            {#                                    <a href="{% url 'clients:client_owner' pk=client.id %}">#}
+                            {#                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}#}
+                            {#                                    </a>#}
+                            {#                                </li>#}
+                            {#                            {% endfor %}#}
+                        </ul>
+                    </li>
+
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
                                 class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>

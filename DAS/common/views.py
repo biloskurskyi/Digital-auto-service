@@ -13,12 +13,14 @@ from accounts.forms import AccountProfileForm
 from accounts.models import AccountUsers
 from cars.forms import CreateCarForm
 from cars.models import Car
-from clients.forms import ClientForm, CreateClientForm
+from clients.forms import ClientForm
 from clients.models import Client
 from orders.forms import CreateOrderForm, UpdateOrderForm
 from orders.models import Order
 from stations.forms import CreateStationForm
 from stations.models import Station
+from workers.forms import WorkerForm
+from workers.models import Worker
 
 
 class TitleMixin:
@@ -130,7 +132,7 @@ class AccountDeleteView(TitleMixin, DeleteView):
 
 class ClientCreateView(TitleMixin, CreateView):
     model = Client
-    form_class = CreateClientForm
+    form_class = ClientForm
     path_name = 'profile'
     title = 'create client'
 
@@ -547,3 +549,33 @@ class StationUpdateView(CommonContextMixin, TitleMixin, UpdateView):
         kwargs['owner'] = self.object.owner.id  # Pass the owner to the form
         kwargs['username'] = self.request.user.id
         return kwargs
+
+
+class WorkerCreateView(TitleMixin, CreateView):
+    model = Worker
+    form_class = WorkerForm
+    path_name = 'profile'
+    title = 'create worker'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.path_name}', args=(self.request.user.id,))
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if self.path_name == 'manager_profile':
+            form.instance.owner = self.request.user.owner
+            messages.success(self.request, 'Client created successfully.')
+        elif self.path_name == 'owner_profile':
+            owner_id = get_object_or_404(AccountUsers, id=self.request.user.id)
+            form.instance.owner = owner_id
+            messages.success(self.request, 'Client created successfully.')
+        return super().form_valid(form)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")

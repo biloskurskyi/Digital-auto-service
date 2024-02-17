@@ -5,6 +5,7 @@ from django.utils import timezone
 from cars.models import Car
 from clients.models import Client
 from stations.models import Station
+from workers.models import Worker
 
 from .models import Order
 
@@ -24,6 +25,11 @@ class CreateOrderForm(forms.ModelForm):
     service_station = forms.ModelChoiceField(queryset=Station.objects.all(),
                                              widget=forms.Select(attrs={'class': 'form-control'}),
                                              empty_label=None)
+    workers = forms.ModelMultipleChoiceField(
+        queryset=Worker.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-select'}),
+        required=False,  # If you want orders to be optional
+    )
 
     class Meta:
         model = Order
@@ -87,6 +93,12 @@ class UpdateOrderForm(forms.ModelForm):
     service_station = forms.ModelChoiceField(queryset=Station.objects.all(),
                                              widget=forms.Select(attrs={'class': 'form-control'}),
                                              empty_label=None)
+
+    workers = forms.ModelMultipleChoiceField(
+        queryset=Worker.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-select'}),
+        required=False,  # If you want orders to be optional
+    )
 
     class Meta:
         model = Order

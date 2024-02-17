@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('cars.urls', namespace='cars')),
     path('', include('orders.urls', namespace='orders')),
     path('', include('stations.urls', namespace='stations')),
+    path('', include('workers.urls', namespace='workers')),
 
 ]
 # if settings.DEBUG:
