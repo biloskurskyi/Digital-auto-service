@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.db import models
 from django.utils import timezone
 
@@ -27,6 +25,7 @@ class Order(models.Model):
     process_status = models.SmallIntegerField(default=NOT_STARTED, choices=STATUSES)
     info = models.TextField(max_length=200, default="repair")
     service_station = models.ForeignKey(Station, on_delete=models.PROTECT, null=True)
+    workers = models.ManyToManyField('workers.Worker', through='workers.WorkerOrder')
 
     def __str__(self):
         return f"{self.client.first_name} {self.client.last_name} {self.car.car_number} {self.process_status}"
