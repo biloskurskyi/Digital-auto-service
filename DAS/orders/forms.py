@@ -44,7 +44,6 @@ class CreateOrderForm(forms.ModelForm):
         stations = kwargs.pop('stations', None)
 
         super(CreateOrderForm, self).__init__(*args, **kwargs)
-
         if owner:
             self.fields['client'].queryset = owner.client_set.all()
         if manager:
@@ -61,6 +60,16 @@ class CreateOrderForm(forms.ModelForm):
         elif manager:
             self.fields['service_station'].queryset = stations.filter(
                 Q(owner=manager) | Q(owner__owner=manager)
+            )
+
+        if owner:
+            self.fields['workers'].queryset = Worker.objects.filter(
+                Q(owner=owner)
+            )
+        elif manager:
+            print(manager)
+            self.fields['workers'].queryset = Worker.objects.filter(
+                Q(owner=manager.owner.id)
             )
 
         if 'client' in self.data:
@@ -128,4 +137,14 @@ class UpdateOrderForm(forms.ModelForm):
         elif manager:
             self.fields['service_station'].queryset = stations.filter(
                 Q(owner=manager) | Q(owner__owner=manager)
+            )
+
+        if owner:
+            self.fields['workers'].queryset = Worker.objects.filter(
+                Q(owner=owner)
+            )
+        elif manager:
+            print(manager)
+            self.fields['workers'].queryset = Worker.objects.filter(
+                Q(owner=manager.owner.id)
             )

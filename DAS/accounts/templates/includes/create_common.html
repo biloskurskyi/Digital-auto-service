@@ -21,16 +21,28 @@
                     {% csrf_token %}
 
                     {% block icon %}{% endblock %}
-{#                    <div class="mb-4">#}
-{#                        <i class="feather icon-user-plus auth-icon"></i>#}
-{#                    </div>#}
+                    {#                    <div class="mb-4">#}
+                    {#                        <i class="feather icon-user-plus auth-icon"></i>#}
+                    {#                    </div>#}
                     {#                    <div class="mb-4">#}
                     {#                        <i class="feather icon-plus auth-icon"></i>#}
                     {#                    </div>#}
                     <h3 class="mb-4">{% block create_name %}{% endblock %}</h3>
                     {% for field in form %}
                         <div class="input-group mb-3">
-                            {{ field }}
+                            {% if field.name == 'orders' %}
+                                <label for="fn">Orders:</label>&nbsp;&nbsp;
+                                {% for order in field.field.queryset %}
+                                    <div class="form-group form-check">
+                                        <input type="checkbox" class="form-check-input" id="order_{{ order.id }}"
+                                               name="orders" value="{{ order.id }}"
+                                               {% if order in field.value %}checked{% endif %}>
+                                        <label class="form-check-label" for="order_{{ order.id }}">{{ order }}</label>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
                         </div>
                         <span class="text-danger d-block text-left">{{ field.errors }}</span>
                     {% endfor %}
