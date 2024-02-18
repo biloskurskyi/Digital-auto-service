@@ -556,9 +556,15 @@ class WorkerCreateView(TitleMixin, CreateView):
     form_class = WorkerForm
     path_name = 'profile'
     title = 'create worker'
+    creator_type = ''
 
     def get_success_url(self):
         return reverse_lazy(f'accounts:{self.path_name}', args=(self.request.user.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
@@ -570,12 +576,13 @@ class WorkerCreateView(TitleMixin, CreateView):
     def form_valid(self, form):
         if self.path_name == 'manager_profile':
             form.instance.owner = self.request.user.owner
-            messages.success(self.request, 'Client created successfully.')
+            messages.success(self.request, 'Worker created successfully.')
         elif self.path_name == 'owner_profile':
             owner_id = get_object_or_404(AccountUsers, id=self.request.user.id)
             form.instance.owner = owner_id
-            messages.success(self.request, 'Client created successfully.')
+            messages.success(self.request, 'Worker created successfully.')
         return super().form_valid(form)
 
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")
+
