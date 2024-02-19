@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from workers.views import (WorkerManagerCreateView, WorkerOwnerCreateView, WorkerOwnerUpdateView,
-                           WorkerManagerUpdateView)
+                           WorkerManagerUpdateView, WorkerOwnerDeleteView, WorkerManagerDeleteView)
 
 app_name = 'workers'
 
@@ -16,6 +16,11 @@ urlpatterns = [
          name='worker_owner'),
     path('manager/worker/profile/<int:pk>/', login_required(WorkerManagerUpdateView.as_view()),
          name='worker_manager'),
+
+    path('owner/delete/worker/<int:pk>/', login_required(WorkerOwnerDeleteView.as_view()),
+         name='owner_delete_worker'),
+    path('manager/delete/worker/<int:pk>/', login_required(WorkerManagerDeleteView.as_view()),
+         name='manager_delete_worker'),
 
     # path('owner/order/profile/<int:pk>/', login_required(OrderOwnerUpdateView.as_view()),
     #      name='worker_owner'),

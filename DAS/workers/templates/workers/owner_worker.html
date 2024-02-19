@@ -51,6 +51,6 @@
 {% block logout %}
     <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
 
-{#{% block delete %}#}
-{#    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">Delete#}
-{#        station</a>{% endblock %}#}
+{% block delete %}
+    <a href="{% url 'workers:owner_delete_worker' form.instance.pk %}" style="color: red;">Delete
+        worker</a>{% endblock %}
