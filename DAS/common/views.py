@@ -630,3 +630,37 @@ class WorkerUpdateView(CommonContextMixin, TitleMixin, UpdateView):
         else:
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
+
+
+class WorkerDeleteView(TitleMixin, DeleteView):
+    form_valid_info = 'Worker deleted successfully.'
+    form_invalid_info = 'Worker was not deleted.'
+    reverse_page = ''
+    model = Worker
+    title = 'DAS - worker delete'
+
+    def get_success_url(self):
+        return reverse_lazy(f'accounts:{self.reverse_page}', kwargs={'pk': self.request.user.pk})
+
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(self.model, pk=kwargs['pk'])
+
+        if not self.check_access(request, profile_user):
+            raise Http404("User not found")
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def check_access(self, request, profile_user):
+        raise NotImplementedError("Subclasses must implement the check_access method")
+

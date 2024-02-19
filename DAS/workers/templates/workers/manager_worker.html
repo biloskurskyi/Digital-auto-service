@@ -50,3 +50,7 @@
 
 {% block logout %}
     <a href="{% url 'accounts:manager_profile' pk=request.user.pk %}">Manager account</a>{% endblock %}
+
+{% block delete %}
+    <a href="{% url 'workers:manager_delete_worker' form.instance.pk %}" style="color: red;">Delete
+        worker</a>{% endblock %}

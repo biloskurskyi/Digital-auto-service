@@ -1,4 +1,4 @@
-from common.views import WorkerCreateView, WorkerUpdateView
+from common.views import WorkerCreateView, WorkerUpdateView, ClientDeleteView, WorkerDeleteView
 from orders.models import Order
 
 
@@ -55,4 +55,20 @@ class WorkerManagerUpdateView(WorkerUpdateView):
     template_name = 'workers/manager_worker.html'
     creator_type = 'manager'
     reverse_page = path_name = 'worker_manager'
+
+
+class WorkerOwnerDeleteView(WorkerDeleteView):
+    template_name = 'workers/owner_delete_worker.html'
+    reverse_page = 'owner_profile'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user.owner
+
+
+class WorkerManagerDeleteView(WorkerDeleteView):
+    template_name = 'workers/manager_delete_worker.html'
+    reverse_page = 'manager_profile'
+
+    def check_access(self, request, profile_user):
+        return profile_user.owner == request.user.owner
 
