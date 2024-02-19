@@ -5,7 +5,7 @@ from django.utils import timezone
 from cars.models import Car
 from clients.models import Client
 from stations.models import Station
-from workers.models import Worker
+from workers.models import Worker, WorkerOrder
 
 from .models import Order
 
@@ -120,6 +120,7 @@ class UpdateOrderForm(forms.ModelForm):
         owner = kwargs.pop('owner', None)
         manager = kwargs.pop('manager', None)
         stations = kwargs.pop('stations', None)
+        order_instance = kwargs.get('instance')
 
         super(UpdateOrderForm, self).__init__(*args, **kwargs)
         if owner:
@@ -130,6 +131,8 @@ class UpdateOrderForm(forms.ModelForm):
 
         self.fields['client'].disabled = True
         self.fields['car'].disabled = True
+        self.fields['service_station'].disabled = True
+
         if owner:
             self.fields['service_station'].queryset = Station.objects.filter(
                 Q(owner=owner) | Q(owner__owner=owner)
@@ -142,9 +145,39 @@ class UpdateOrderForm(forms.ModelForm):
         if owner:
             self.fields['workers'].queryset = Worker.objects.filter(
                 Q(owner=owner)
+
             )
         elif manager:
             print(manager)
             self.fields['workers'].queryset = Worker.objects.filter(
                 Q(owner=manager.owner.id)
             )
+
+        if order_instance:
+            workers_working_on_order = WorkerOrder.objects.filter(order=order_instance)
+            worker_ids_working_on_order = [worker_order.worker.id for worker_order in workers_working_on_order]
+            self.fields['workers'].initial = worker_ids_working_on_order
+
+    def save(self, commit=True):
+        instance = super(UpdateOrderForm, self).save(commit=False)
+        if commit:
+            instance.save()
+
+        order_instance = instance
+        selected_workers = self.cleaned_data.get('workers', [])
+
+        current_workers = WorkerOrder.objects.filter(order=order_instance)
+
+        for worker_order in current_workers:
+            if worker_order.worker.id not in selected_workers:
+                worker_order.delete()
+
+        for worker_id in selected_workers:
+
+            worker_order, created = WorkerOrder.objects.get_or_create(worker_id=worker_id.id, order=order_instance)
+
+            if not created:
+                worker_order.order = order_instance
+                worker_order.save()
+
+        return instance
