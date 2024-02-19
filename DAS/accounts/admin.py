@@ -1,11 +1,14 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import AccountUsers
 
 all_info = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'is_active', 'owner', 'is_superuser')
 
+admin.site.register(AccountUsers, UserAdmin)
 
-@admin.register(AccountUsers)
+
+# @admin.register(AccountUsers)
 class AccountUserAdmin(admin.ModelAdmin):
     list_display = all_info
     search_fields = ('email',)
@@ -21,9 +24,9 @@ class AccountUserAdmin(admin.ModelAdmin):
 
     actions = ['owners', ]
 
-    def get_search_results(self, request, queryset, search_term):
-        self.search_term = search_term
-        return super().get_search_results(request, queryset, search_term)
+    # def get_search_results(self, request, queryset, search_term):
+    #     self.search_term = search_term
+    #     return super().get_search_results(request, queryset, search_term)
 
     def owners(self, request, queryset):
         queryset, use_distinct = super().get_search_results(request, queryset, self.search_term)
