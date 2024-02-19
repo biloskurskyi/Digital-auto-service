@@ -1,9 +1,11 @@
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.http import JsonResponse
 from django.views import View
 
 from cars.models import Car
 from common.views import OrderCreateView, OrderDeleteView, OrderUpdateView
 from orders.models import Order
+from workers.models import Worker
 
 
 class OrderOwnerCreateView(OrderCreateView):
@@ -28,6 +30,26 @@ class OrderOwnerUpdateView(OrderUpdateView):
     template_name = 'orders/owner_order.html'
     creator_type = 'owner'
     reverse_page = path_name = 'order_owner'
+    paginate_by = 3
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     workers = Worker.objects.all()
+    #     paginator = Paginator(workers, 3)  # 10 workers per page
+    #     page = self.request.GET.get('page')
+    #     try:
+    #         workers = paginator.page(page)
+    #     except PageNotAnInteger:
+    #         workers = paginator.page(1)
+    #     except EmptyPage:
+    #         workers = paginator.page(paginator.num_pages)
+    #     context['workers'] = workers
+    #     return context
+
+    # def get_workers_query(self):
+    #     if self.creator_type == 'owner':
+    #         owner = self.request.user if self.request.user.owner is None else self.request.user.owner
+    #         return Worker.objects.filter(owner=owner)
 
 
 class OrderManagerUpdateView(OrderUpdateView):
@@ -61,3 +83,14 @@ class GetCarsForClientView(View):
 
             return JsonResponse({'car_choices': car_choices}, )
         return JsonResponse({'car_choices': []})
+
+
+# class GetWorkersForStationView(View):
+#     def get(self, request, *args, **kwargs):
+#         station_id = request.GET.get('station_id')
+#         if station_id:
+#             workers = Worker.objects.filter(station_id=station_id)
+#             worker_choices = [(worker.id, str(worker), worker in request.user.workers.all()) for worker in workers]
+#             print(JsonResponse({'worker_choices': worker_choices}))
+#             return JsonResponse({'worker_choices': worker_choices})
+#         return JsonResponse({'worker_choices': []})

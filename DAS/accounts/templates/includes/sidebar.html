@@ -64,13 +64,13 @@
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
                             <li><a href="{% url 'workers:worker_owner_create' user.id %}">Create new worker</a></li>
                             <hr>
-                            {#                            {% for client in clients %}#}
-                            {#                                <li>#}
-                            {#                                    <a href="{% url 'clients:client_owner' pk=client.id %}">#}
-                            {#                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}#}
-                            {#                                    </a>#}
-                            {#                                </li>#}
-                            {#                            {% endfor %}#}
+                            {% for worker in workers %}
+                                <li>
+                                    <a href="{% url 'workers:worker_owner' pk=worker.id %}">
+                                        {{ worker.first_name }} {{ worker.last_name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </li>
 
@@ -154,13 +154,13 @@
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
                             <li><a href="{% url 'workers:worker_manager_create' user.id %}">Create new worker</a></li>
                             <hr>
-                            {#                            {% for client in clients %}#}
-                            {#                                <li>#}
-                            {#                                    <a href="{% url 'clients:client_owner' pk=client.id %}">#}
-                            {#                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}#}
-                            {#                                    </a>#}
-                            {#                                </li>#}
-                            {#                            {% endfor %}#}
+                            {% for worker in workers %}
+                                <li>
+                                    <a href="{% url 'workers:worker_manager' pk=worker.id %}">
+                                        {{ worker.first_name }} {{ worker.last_name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </li>
 

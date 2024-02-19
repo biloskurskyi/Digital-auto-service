@@ -1,4 +1,5 @@
 from django import forms
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.utils import timezone
 
@@ -106,7 +107,7 @@ class UpdateOrderForm(forms.ModelForm):
     workers = forms.ModelMultipleChoiceField(
         queryset=Worker.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'checkbox-select'}),
-        required=False,  # If you want orders to be optional
+        required=False,
     )
 
     class Meta:
@@ -121,7 +122,7 @@ class UpdateOrderForm(forms.ModelForm):
         manager = kwargs.pop('manager', None)
         stations = kwargs.pop('stations', None)
         order_instance = kwargs.get('instance')
-
+        page = kwargs.pop('page', None)
         super(UpdateOrderForm, self).__init__(*args, **kwargs)
         if owner:
             self.fields['client'].queryset = owner.client_set.all()
@@ -131,7 +132,7 @@ class UpdateOrderForm(forms.ModelForm):
 
         self.fields['client'].disabled = True
         self.fields['car'].disabled = True
-        self.fields['service_station'].disabled = True
+        # self.fields['service_station'].disabled = True
 
         if owner:
             self.fields['service_station'].queryset = Station.objects.filter(
@@ -157,6 +158,13 @@ class UpdateOrderForm(forms.ModelForm):
             workers_working_on_order = WorkerOrder.objects.filter(order=order_instance)
             worker_ids_working_on_order = [worker_order.worker.id for worker_order in workers_working_on_order]
             self.fields['workers'].initial = worker_ids_working_on_order
+
+        if page:
+            workers = Worker.objects.all()
+            paginator = Paginator(workers, self.paginate_by)
+            page_number = page
+            page_obj = paginator.get_page(page_number)
+            self.fields['workers'].queryset = page_obj
 
     def save(self, commit=True):
         instance = super(UpdateOrderForm, self).save(commit=False)

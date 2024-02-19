@@ -49,6 +49,8 @@ class CommonContextMixin:
             context['orders'] = orders
             stations = Station.objects.filter(owner=manager)
             context['stations'] = stations
+            workers = Worker.objects.filter(owner=manager)
+            context['workers'] = workers
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
             clients = Client.objects.filter(owner=owner)
@@ -59,6 +61,8 @@ class CommonContextMixin:
             context['orders'] = orders
             stations = Station.objects.filter(owner=owner)
             context['stations'] = stations
+            workers = Worker.objects.filter(owner=owner)
+            context['workers'] = workers
         return context
 
 
@@ -586,3 +590,43 @@ class WorkerCreateView(TitleMixin, CreateView):
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")
 
+
+class WorkerUpdateView(CommonContextMixin, TitleMixin, UpdateView):
+    creator_type = ''
+    reverse_page = path_name = ''
+
+    form_valid_info = 'Worker was update successfully.'
+    form_invalid_info = 'Worker was not updated.'
+    model = Worker
+    form_class = WorkerForm
+    title = 'Worker update'
+
+    def get_success_url(self):
+        return reverse_lazy(f'workers:{self.reverse_page}', args=(self.object.id,))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs[self.creator_type] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        messages.success(self.request, f'{self.form_valid_info}')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, f'{self.form_invalid_info}')
+        return super().form_invalid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(Worker, pk=kwargs['pk'])
+        if self.path_name == 'worker_manager':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and request.user.owner_id != profile_user.owner_id):
+                raise Http404("User not found")
+        elif self.path_name == 'worker_owner':
+            if ((request.user != profile_user or not request.user.is_active)
+                    and profile_user.owner != request.user):
+                raise Http404("User not found")
+        else:
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)

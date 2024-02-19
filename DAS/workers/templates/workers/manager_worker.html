@@ -1,0 +1,52 @@
+{% extends 'includes/manager_profile_common.html' %}
+
+{% block edit_profile %}Worker{% endblock %}
+{% block post %}{% url 'workers:worker_manager' pk=form.instance.pk %}{% endblock %}
+{% block form %}
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Name</label>
+            {{ form.first_name }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="fn">Surname</label>
+            {{ form.last_name }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <label for="exampleInputEmail1">Date</label>
+        <div class="form-group">
+            {{ form.date_of_birth }}
+            <small id="addd" class="form-text text-muted">The date of birth cannot be greater than today</small>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <label for="exampleInputEmail1">Years of experience</label>
+        <div class="form-group">
+            {{ form.years_of_experience }}
+        </div>
+    </div>
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Skills</label>
+            {{ form.skills }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <label for="exampleInputEmail1">Salary</label>
+        <div class="form-group">
+            {{ form.salary }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="add">Orders</label>
+            {{ form.orders }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block logout %}
+    <a href="{% url 'accounts:manager_profile' pk=request.user.pk %}">Manager account</a>{% endblock %}

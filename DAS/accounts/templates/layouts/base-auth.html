@@ -42,4 +42,72 @@
             }
         });
     });
+    {#$(document).ready(function () {#}
+    {#    $("#id_service_station").change(function () {#}
+    {#        var stationId = $(this).val();#}
+    {#        if (stationId) {#}
+    {#            $.ajax({#}
+    {#                url: '{% url "orders:get_workers_for_station" %}',#}
+    {#                type: 'GET',#}
+    {#                data: {'station_id': stationId},#}
+    {#                success: function (data) {#}
+    {#                    $("#id_workers").html('');#}
+    {##}
+    {#                    // Iterate over worker_choices and append checkboxes#}
+    {#                    for (var i = 0; i < data.worker_choices.length; i++) {#}
+    {#                        var option = $('<option/>');#}
+    {#                        option.attr('value', data.worker_choices[i][0]);#}
+    {#                        option.text(data.worker_choices[i][1]);#}
+    {#                        $("#id_cworker").append(option);#}
+    {#                    }#}
+    {#                }#}
+    {#            });#}
+    {#        } else {#}
+    {#            $("#id_workers").html('');#}
+    {#        }#}
+    {#    });#}
+
 </script>
+{#<script>#}
+{#    $(document).ready(function () {#}
+{#        $("#id_service_station").change(function () {#}
+{#            var stationId = $(this).val();#}
+{#            if (stationId) {#}
+{#                $.ajax({#}
+{#                    url: '{% url "orders:get_workers_for_station" %}',#}
+{#                    type: 'GET',#}
+{#                    data: {'station_id': stationId},#}
+{#                    success: function (data) {#}
+{#                        $("#id_workers").html('');#}
+{##}
+{#                        // Iterate over worker_choices and append checkboxes#}
+{#                        for (var i = 0; i < data.worker_choices.length; i++) {#}
+{#                            var checkbox = $('<input/>');#}
+{#                            checkbox.attr('type', 'checkbox');#}
+{#                            checkbox.attr('class', 'form-check-input');#}
+{#                            checkbox.attr('id', 'worker_' + data.worker_choices[i][0]);#}
+{#                            checkbox.attr('name', 'workers');#}
+{#                            checkbox.attr('value', data.worker_choices[i][0]);#}
+{#                            if (data.worker_choices[i][0] in data.selected_workers) {#}
+{#                                checkbox.prop('checked', true);#}
+{#                            }#}
+{#                            var label = $('<label/>');#}
+{#                            label.attr('class', 'form-check-label');#}
+{#                            label.attr('for', 'worker_' + data.worker_choices[i][0]);#}
+{#                            label.text(data.worker_choices[i][1]);#}
+{#                            var div = $('<div/>');#}
+{#                            div.attr('class', 'form-group form-check');#}
+{#                            div.append(checkbox);#}
+{#                            div.append(label);#}
+{#                            $("#id_workers").append(div);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+{#            } else {#}
+{#                $("#id_workers").html('');#}
+{#            }#}
+{#        });#}
+{#    });#}
+{##}
+{##}
+{#</script>#}
