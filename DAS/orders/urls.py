@@ -26,4 +26,6 @@ urlpatterns = [
 
     path('get_cars_for_client/', login_required(GetCarsForClientView.as_view()),
          name='get_cars_for_client'),
+    # path('get_workers_for_station/', login_required(GetWorkersForStationView.as_view()),
+    #      name='get_workers_for_station'),
 ]

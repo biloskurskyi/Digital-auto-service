@@ -2,6 +2,7 @@ from django.db import models
 
 from accounts.models import AccountUsers
 from orders.models import Order
+from stations.models import Station
 
 
 class Worker(models.Model):

@@ -42,6 +42,38 @@
             {{ form.workers }}
         </div>
     </div>
+
+        {#        {% for worker in page_obj %}#}
+        {#            <!-- Display worker details here -->#}
+        {#            <p>{{ worker }}</p>#}
+        {#            <!-- Add more worker details as needed -->#}
+        {#        {% endfor %}#}
+        {#        {% if page_obj.has_other_pages %}#}
+        {#            <nav aria-label="Page navigation example">#}
+        {#                <ul class="pagination">#}
+        {#                    {% if page_obj.has_previous %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page=1" aria-label="First"><span#}
+        {#                                aria-hidden="true">««</span><span class="sr-only">First</span></a></li>#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"#}
+        {#                                                 aria-label="Previous"><span aria-hidden="true">«</span><span#}
+        {#                                class="sr-only">Previous</span></a></li>#}
+        {#                    {% endif %}#}
+        {#                    {% for num in page_obj.paginator.page_range %}#}
+        {#                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">#}
+        {#                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>#}
+        {#                        </li>#}
+        {#                    {% endfor %}#}
+        {#                    {% if page_obj.has_next %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"#}
+        {#                                                 aria-label="Next"><span aria-hidden="true">»</span><span#}
+        {#                                class="sr-only">Next</span></a></li>#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"#}
+        {#                                                 aria-label="Last"><span aria-hidden="true">»»</span><span#}
+        {#                                class="sr-only">Last</span></a></li>#}
+        {#                    {% endif %}#}
+        {#                </ul>#}
+        {#            </nav>#}
+        {#        {% endif %}#}
     <div class="col-sm-12 mb-4">
         <div class="form-group">
             <label for="exampleInputEmail1">Info</label>
@@ -51,16 +83,17 @@
     {% if form.instance.id %}
         <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
         {% for car in form.instance.get_all_cars %}
-             <ul>
-                <li >
-                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car Number: {{ car.car_number }}</a><br>
+            <ul>
+                <li>
+                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car
+                        Number: {{ car.car_number }}</a><br>
                     Mark: {{ car.mark }}<br>
                     Model: {{ car.model }}<br>
                     Year: {{ car.year }}<br>
                     Engine: {{ car.engine }}<br>
                     Gear Type: {{ car.gear_type }}<br>
                     Comment: {{ car.comment }}<br></li>
-             </ul>
+            </ul>
         {% endfor %}
     {% endif %}
 {% endblock %}
