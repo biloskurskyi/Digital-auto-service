@@ -30,5 +30,6 @@ urlpatterns = [
     path('', include('workers.urls', namespace='workers')),
 
 ]
-# if settings.DEBUG:
-#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if settings.DEBUG:
+    urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
