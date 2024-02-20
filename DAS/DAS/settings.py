@@ -158,6 +158,17 @@ EMAIL_HOST_USER = 'your_email@example.com'
 EMAIL_HOST_PASSWORD = 'server-password'
 EMAIL_USE_SSL = True
 
+# Celery settings
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': '',
+#     }
+# }
+
+
 # EMAIL_OAUTH2_CLIENT_ID = 'your_client_id'
 # EMAIL_OAUTH2_CLIENT_SECRET = 'your_client_secret'
 # EMAIL_OAUTH2_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'

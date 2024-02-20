@@ -9,6 +9,7 @@ from common.views import (AccountDeleteView, AccountProfileView, BaseView,
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers
+# from accounts.tasks import check_profile_access
 
 
 class IndexView(BaseView):
@@ -62,6 +63,12 @@ class CreateManagerView(CreateAccountView):
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
 
+
+# profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+#        print(profile_user, request.user)
+#        if request.user != profile_user:
+#            raise Http404("User not found")
+#        return super().dispatch(request, *args, **kwargs)
 
 class OwnerAccountProfileView(AccountProfileView):
     template_name = 'accounts/owner_profile.html'

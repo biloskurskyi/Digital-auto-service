@@ -5,7 +5,6 @@ from django.core.validators import MaxLengthValidator, MaxValueValidator
 
 from clients.models import Client
 
-
 # class CreateClientForm(forms.ModelForm):
 #     first_name = forms.CharField(
 #         widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter first name'}))

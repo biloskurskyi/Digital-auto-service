@@ -1,4 +1,5 @@
-from common.views import WorkerCreateView, WorkerUpdateView, ClientDeleteView, WorkerDeleteView
+from common.views import (ClientDeleteView, WorkerCreateView, WorkerDeleteView,
+                          WorkerUpdateView)
 from orders.models import Order
 
 
@@ -71,4 +72,3 @@ class WorkerManagerDeleteView(WorkerDeleteView):
 
     def check_access(self, request, profile_user):
         return profile_user.owner == request.user.owner
-

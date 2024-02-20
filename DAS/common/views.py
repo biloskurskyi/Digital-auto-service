@@ -21,6 +21,7 @@ from stations.forms import CreateStationForm
 from stations.models import Station
 from workers.forms import WorkerForm
 from workers.models import Worker
+from accounts.tasks import get_success_url
 
 
 class TitleMixin:
@@ -80,7 +81,8 @@ class AccountProfileView(CommonContextMixin, TitleMixin, UpdateView):
     profile = 'profile'
 
     def get_success_url(self):
-        return reverse_lazy(f'accounts:{self.profile}', args=(self.object.id,))
+        success_url = get_success_url.delay(self.profile, self.object.id)
+        return success_url.get()
 
     def form_valid(self, form):
         messages.success(self.request, 'Profile updated successfully.')
@@ -663,4 +665,3 @@ class WorkerDeleteView(TitleMixin, DeleteView):
 
     def check_access(self, request, profile_user):
         raise NotImplementedError("Subclasses must implement the check_access method")
-

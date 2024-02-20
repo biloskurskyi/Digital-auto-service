@@ -5,7 +5,6 @@ from .models import Station
 # from location_field.models.plain import PlainLocationField
 
 
-
 class CreateStationForm(forms.ModelForm):
     name = forms.CharField(
         widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter station name'}))
