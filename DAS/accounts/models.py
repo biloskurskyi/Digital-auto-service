@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, User, UserManager
+from django.core.mail import send_mail
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -35,8 +36,8 @@ class AccountUsers(AbstractUser):
         super().save(*args, **kwargs)
 
     class Meta:
-        verbose_name = "Owner"
-        verbose_name_plural = "Owners"
+        verbose_name = "Account"
+        verbose_name_plural = "Accounts"
 
     objects = AccountUsersManager()
 
@@ -74,3 +75,26 @@ class AccountUsers(AbstractUser):
     #     managers = AccountUsers.objects.filter(owner=self.id)
     #     user_info = [(user.username, user.id, user.first_name, user.last_name) for user in managers]
     #     return user_info
+
+
+class EmailVerification(models.Model):
+    code = models.UUIDField(unique=True)
+    user = models.ForeignKey(to=AccountUsers, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField()
+
+    def __str__(self):
+        return f'Email verification object for{self.user.email}'
+
+    def send_verification_email(self):
+        send_mail(
+            "Subject here",
+            "Test verification email.",
+            "from@example.com",
+            [self.user.email],
+            fail_silently=False,
+        )
+
+    class Meta:
+        verbose_name = "Email Verification Model"
+        verbose_name_plural = "Email Verification Models"

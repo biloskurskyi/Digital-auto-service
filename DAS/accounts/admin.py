@@ -1,14 +1,15 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.admin import UserAdmin
 
-from accounts.models import AccountUsers
+from accounts.models import AccountUsers, EmailVerification
 
 all_info = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'is_active', 'owner', 'is_superuser')
 
-admin.site.register(AccountUsers, UserAdmin)
+
+# admin.site.register(AccountUsers, UserAdmin)
 
 
-# @admin.register(AccountUsers)
+@admin.register(AccountUsers)
 class AccountUserAdmin(admin.ModelAdmin):
     list_display = all_info
     search_fields = ('email',)
@@ -33,3 +34,10 @@ class AccountUserAdmin(admin.ModelAdmin):
         queryset = queryset.filter(owner__isnull=True)
         self.message_user(request, f'{len(queryset)} users were set as owners.')
         return queryset, use_distinct
+
+
+@admin.register(EmailVerification)
+class EmailVerificationModelAdmin(admin.ModelAdmin):
+    list_display = ('code', 'user', 'expiration',)
+    created = ('code', 'user', 'expiration', 'created',)
+    readonly_fields = ('created',)
