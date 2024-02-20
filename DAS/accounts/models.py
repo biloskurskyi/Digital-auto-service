@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser, User, UserManager
 from django.db import models
+from django.utils.translation import gettext as _
 
 
 class AccountUsersManager(UserManager):
@@ -60,6 +61,14 @@ class AccountUsers(AbstractUser):
         verbose_name_plural = "Owners"
 
     objects = AccountUsersManager()
+
+    is_active = models.BooleanField(
+        _("active"),
+        default=False,
+        help_text=_('Designates whether this user should be treated as '
+                    'active. Unselect this instead of deleting accounts.'
+                    ),
+    )
 
     # def get_managers(self):
     #     managers = AccountUsers.objects.filter(owner=self.id)

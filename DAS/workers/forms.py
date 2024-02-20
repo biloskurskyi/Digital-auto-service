@@ -6,6 +6,7 @@ from django.db.models import Q
 
 from orders.models import Order
 from stations.models import Station
+
 from .models import Worker
 
 
@@ -41,7 +42,7 @@ class WorkerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         owner = kwargs.pop('owner', None)
         manager = kwargs.pop('manager', None)
-        orders = kwargs.pop('orders', None)
+        # orders = kwargs.pop('orders', None)
         super(WorkerForm, self).__init__(*args, **kwargs)
 
         if owner:

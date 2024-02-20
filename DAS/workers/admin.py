@@ -1,4 +1,5 @@
 from django.contrib import admin
+
 from workers.models import Worker
 
 all_info = ('first_name',

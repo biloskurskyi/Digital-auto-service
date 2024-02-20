@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from workers.views import (WorkerManagerCreateView, WorkerOwnerCreateView, WorkerOwnerUpdateView,
-                           WorkerManagerUpdateView, WorkerOwnerDeleteView, WorkerManagerDeleteView)
+from workers.views import (WorkerManagerCreateView, WorkerManagerDeleteView,
+                           WorkerManagerUpdateView, WorkerOwnerCreateView,
+                           WorkerOwnerDeleteView, WorkerOwnerUpdateView)
 
 app_name = 'workers'
 
