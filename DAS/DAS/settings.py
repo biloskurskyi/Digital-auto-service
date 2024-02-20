@@ -151,11 +151,16 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 # email settings
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'your_email@example.com'
-EMAIL_HOST_PASSWORD = 'server-password'
-EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.gmail.com'  # Адреса вашого SMTP сервера (у цьому випадку, Gmail)
+EMAIL_PORT = 587  # Порт SMTP сервера (587 для TLS)
+EMAIL_HOST_USER = 'your_email@example.com'  # Ваша адреса електронної пошти
+EMAIL_HOST_PASSWORD = 'your_password'  # Ваш пароль електронної пошти
+EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'your_email@example.com'
+# EMAIL_HOST_PASSWORD = 'server-password'
+# EMAIL_USE_SSL = True
 
 # Celery settings
 CELERY_BROKER_URL = "redis://localhost:6379"
