@@ -146,7 +146,6 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/success/login/'
 LOGOUT_REDIRECT_URL = '/login/'
 AUTH_USER_MODEL = 'accounts.AccountUsers'
-
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # email settings
