@@ -19,6 +19,13 @@
                         <i class="feather icon-user-plus auth-icon"></i>
                     </div>
                     <h3 class="mb-4">Sign up</h3>
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div style="font-size: 18px; color: #ff0000">{{ message }}</div>
+                        {% else %}
+                            <div style="font-size: 18px; color: #00d000">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
                     {% for field in form %}
                         <div class="input-group mb-3">
                             {{ field }}

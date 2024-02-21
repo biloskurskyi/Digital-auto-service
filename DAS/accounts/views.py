@@ -1,14 +1,17 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
+from django.views.generic import TemplateView
 
 from common.views import (AccountDeleteView, AccountProfileView, BaseView,
                           CreateAccountView, GeneratePDFView, TitleMixin)
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
-from .models import AccountUsers
+from .models import AccountUsers, EmailVerification
+
+
 # from accounts.tasks import check_profile_access
 
 
@@ -126,3 +129,19 @@ class OwnerGeneratePDFView(GeneratePDFView):
 class ManagerGeneratePDFView(GeneratePDFView):
     def check_access(self, request, profile_user):
         return request.user == profile_user and request.user.is_active and request.user.owner is not None
+
+
+class EmailVerificationView(TitleMixin, TemplateView):
+    title = 'DAS - Email verification'
+    template_name = 'accounts/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        code = kwargs['code']
+        user = AccountUsers.objects.get(email=kwargs['email'])
+        email_verifications = EmailVerification.objects.filter(user=user, code=code)
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user.is_verified_email = True
+            user.save()
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return HttpResponseRedirect(reverse('index'))
