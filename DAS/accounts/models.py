@@ -1,7 +1,11 @@
 from django.contrib.auth.models import AbstractUser, User, UserManager
 from django.core.mail import send_mail
 from django.db import models
+from django.urls import reverse
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
+
+from DAS import settings
 
 
 class AccountUsersManager(UserManager):
@@ -41,13 +45,13 @@ class AccountUsers(AbstractUser):
 
     objects = AccountUsersManager()
 
-    is_active = models.BooleanField(
-        _("active"),
-        default=False,
-        help_text=_('Designates whether this user should be treated as '
-                    'active. Unselect this instead of deleting accounts.'
-                    ),
-    )
+    # is_active = models.BooleanField(
+    #     _("active"),
+    #     default=False,
+    #     help_text=_('Designates whether this user should be treated as '
+    #                 'active. Unselect this instead of deleting accounts.'
+    #                 ),
+    # )
 
     # groups = models.ManyToManyField(
     #     'auth.Group',
@@ -87,14 +91,25 @@ class EmailVerification(models.Model):
         return f'Email verification object for{self.user.email}'
 
     def send_verification_email(self):
+        link = reverse('accounts:email_verification', kwargs={'email': self.user.email, 'code': self.code})
+        verification_link = f'{settings.DOMAIN_NAME}{link}'
+        subject = f'User confirmation {self.user.username}'
+        message = 'To verify the identity of {}, follow the link: {}'.format(
+            self.user.email,
+            verification_link
+        )
+
         send_mail(
-            "Subject here",
-            "Test verification email.",
-            "from@example.com",
-            [self.user.email],
+            subject=subject,
+            message=message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[self.user.email],
             fail_silently=False,
         )
 
     class Meta:
         verbose_name = "Email Verification Model"
         verbose_name_plural = "Email Verification Models"
+
+    def is_expired(self):
+        return True if now() >= self.expiration else False
