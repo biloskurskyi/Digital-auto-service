@@ -1,8 +1,10 @@
 <nav class="pcoded-navbar">
     <div class="navbar-wrapper">
         <div class="navbar-brand header-logo">
-            <span class="b-title" href="{% url 'accounts:owner_profile' user.id %}">DAS</span>
+            <a class="b-title" href="{% url 'accounts:owner_profile' user.id %}"><i
+                    class="feather icon-home"></i> DAS</a>
         </div>
+
         {% if request.user.owner.id is None %}
             <div class="navbar-content scroll-div">
                 <ul class="nav pcoded-inner-navbar">

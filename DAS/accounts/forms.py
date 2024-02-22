@@ -51,6 +51,13 @@ class CreateAccountUserForm(UserCreationForm):
         # send_email_verification.delay(user.id)
         return user
 
+    # def clean_email(self):
+    #     email = self.cleaned_data.get('email')
+    #     if AccountUsers.objects.filter(email=email, is_active=False).exists():
+    #         return email
+    #     else:
+    #         raise forms.ValidationError("This email is already associated with an active account.")
+
 
 class CreateManagerUserForm(UserCreationForm):
     # email = forms.EmailField()

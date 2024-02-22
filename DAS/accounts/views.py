@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy, reverse
+from django.utils.timezone import now
 from django.views.generic import TemplateView
 
 from common.views import (AccountDeleteView, AccountProfileView, BaseView,
@@ -64,7 +65,6 @@ class CreateManagerView(CreateAccountView):
 
     def dispatch(self, request, *args, **kwargs):
         profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-        print(profile_user, request.user)
         if request.user != profile_user:
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
@@ -145,16 +145,39 @@ class EmailVerificationView(TitleMixin, TemplateView):
     template_name = 'accounts/email_verification.html'
 
     def get(self, request, *args, **kwargs):
+        user_id = kwargs['pk']
         code = kwargs['code']
-        user = AccountUsers.objects.get(email=kwargs['email'])
+        email = kwargs['email']
+
+        # Отримати всіх користувачів з поточною електронною адресою
+        users_with_same_email = AccountUsers.objects.filter(email=email)
+
+        # Перевірити, чи є серед них хоча б один користувач з підтвердженою електронною адресою
+        has_verified_user = users_with_same_email.filter(is_verified_email=True).exists()
+
+        # Якщо є користувач з підтвердженою адресою, перенаправити на головну сторінку
+        if has_verified_user:
+            return HttpResponseRedirect(reverse('accounts:base'))
+
+        user = AccountUsers.objects.get(email=email, pk=user_id)
+
         email_verifications = EmailVerification.objects.filter(user=user, code=code)
+
         if email_verifications.exists() and not email_verifications.first().is_expired():
             # user.is_verified_email = True
+
+            user.is_verified_email = True
             user.is_active = True
             user.save()
+
+            # user = AccountUsers.objects.get(pk=user_id)
+            EmailVerification.objects.filter(user=user).exclude(code=code).update(expiration=now())
+            email_verifications.delete()
+
             return super(EmailVerificationView, self).get(request, *args, **kwargs)
         else:
-            return HttpResponseRedirect(reverse('index'))
+            # check_expired_tokens.delay()
+            return HttpResponseRedirect(reverse('accounts:base'))
 
     # def dispatch(self, request, *args, **kwargs):
     #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])

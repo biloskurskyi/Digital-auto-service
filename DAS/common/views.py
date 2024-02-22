@@ -11,7 +11,7 @@ from xhtml2pdf import pisa
 
 import accounts
 from accounts.forms import AccountProfileForm
-from accounts.models import AccountUsers
+from accounts.models import AccountUsers, EmailVerification
 from cars.forms import CreateCarForm
 from cars.models import Car
 from clients.forms import ClientForm
