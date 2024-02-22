@@ -1,6 +1,9 @@
 from django.contrib.auth.models import AbstractUser, User, UserManager
+from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -31,13 +34,20 @@ class AccountUsers(AbstractUser):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     username = models.CharField(max_length=32, unique=True)
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
     phone_number = models.CharField(max_length=15, unique=True)
     owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
+    is_verified_email = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        self.is_superuser = False
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.is_superuser = False
+    #     if not self.is_active:
+    #         existing_inactive_users = AccountUsers.objects.filter(email=self.email, is_active=False)
+    #         if existing_inactive_users.exists():
+    #             # Якщо неактивний користувач з таким емейлом існує, не перевіряти унікальність
+    #             super().save(*args, **kwargs)
+    #             return
+    #     super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Account"
@@ -53,32 +63,23 @@ class AccountUsers(AbstractUser):
                     ),
     )
 
-    # groups = models.ManyToManyField(
-    #     'auth.Group',
-    #     verbose_name='groups',
-    #     blank=True,
-    #     help_text='The groups this user belongs to.',
-    #     related_name='owner_users_groups'
-    # )
-    #
-
-    # user_permissions = models.ManyToManyField(
-    #     'auth.Permission',
-    #     verbose_name='user permissions',
-    #     blank=True,
-    #     help_text='Specific permissions for this user.',
-    #     related_name='owner_users_permissions'
-    # )
     # def save(self, *args, **kwargs):
-    #     is_creating_superuser = kwargs.pop('creating_superuser', False)
-    #     if not self.is_superuser and is_creating_superuser:
-    #         self.is_superuser = True
+    #     if not self.is_active:
+    #         # Якщо користувач неактивний, встановити email на None, щоб уникнути перевірки унікальності
+    #         self.email = None
     #     super().save(*args, **kwargs)
 
-    # def get_managers(self):
-    #     managers = AccountUsers.objects.filter(owner=self.id)
-    #     user_info = [(user.username, user.id, user.first_name, user.last_name) for user in managers]
-    #     return user_info
+    def save(self, *args, **kwargs):
+        if self.is_active and not self.is_verified_email:
+            self.is_verified_email = True
+        self.is_superuser = False
+        super().save(*args, **kwargs)
+
+
+# @receiver(pre_save, sender=AccountUsers)
+# def check_unique_email(sender, instance, **kwargs):
+#     if instance.is_active and AccountUsers.objects.filter(email=instance.email, is_active=True).exists():
+#         raise ValidationError("User with this email already exists")
 
 
 class EmailVerification(models.Model):
@@ -91,7 +92,8 @@ class EmailVerification(models.Model):
         return f'Email verification object for{self.user.email}'
 
     def send_verification_email(self):
-        link = reverse('accounts:email_verification', kwargs={'email': self.user.email, 'code': self.code})
+        link = reverse('accounts:email_verification',
+                       kwargs={'pk': self.user.pk, 'email': self.user.email, 'code': self.code})
         verification_link = f'{settings.DOMAIN_NAME}{link}'
         subject = f'User confirmation {self.user.username}'
         message = 'To verify the identity of {}, follow the link: {}'.format(
@@ -112,4 +114,31 @@ class EmailVerification(models.Model):
         verbose_name_plural = "Email Verification Models"
 
     def is_expired(self):
-        return True if now() >= self.expiration else False
+        return (self.user.delete()) if now() >= self.expiration else False
+
+# groups = models.ManyToManyField(
+#     'auth.Group',
+#     verbose_name='groups',
+#     blank=True,
+#     help_text='The groups this user belongs to.',
+#     related_name='owner_users_groups'
+# )
+#
+
+# user_permissions = models.ManyToManyField(
+#     'auth.Permission',
+#     verbose_name='user permissions',
+#     blank=True,
+#     help_text='Specific permissions for this user.',
+#     related_name='owner_users_permissions'
+# )
+# def save(self, *args, **kwargs):
+#     is_creating_superuser = kwargs.pop('creating_superuser', False)
+#     if not self.is_superuser and is_creating_superuser:
+#         self.is_superuser = True
+#     super().save(*args, **kwargs)
+
+# def get_managers(self):
+#     managers = AccountUsers.objects.filter(owner=self.id)
+#     user_info = [(user.username, user.id, user.first_name, user.last_name) for user in managers]
+#     return user_info
