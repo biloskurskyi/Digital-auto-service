@@ -7,3 +7,4 @@ def get_success_url(profile, object_id):
     return reverse_lazy(f'accounts:{profile}', args=(object_id,))
 
 
+

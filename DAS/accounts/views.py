@@ -11,6 +11,9 @@ from common.views import (AccountDeleteView, AccountProfileView, BaseView,
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers, EmailVerification
 
+from django.db import models
+from django.utils.translation import gettext as _
+
 
 # from accounts.tasks import check_profile_access
 
@@ -39,9 +42,9 @@ class UserLoginView(TitleMixin, LoginView):
 class UserRegistrationView(CreateAccountView):
     form_class = CreateAccountUserForm
     template_name = 'accounts/registration.html'
-    success_message = 'Registration is successfully done!'
+    # success_message = 'Registration is successfully done!'
     title = 'DAS - Registration'
-    success_url = reverse_lazy('accounts:log')
+    success_url = reverse_lazy('accounts:email_message')
 
 
 class CreateManagerView(CreateAccountView):
@@ -131,6 +134,12 @@ class ManagerGeneratePDFView(GeneratePDFView):
         return request.user == profile_user and request.user.is_active and request.user.owner is not None
 
 
+class EmailMessageView(TitleMixin, TemplateView):
+    title = 'DAS - Confirm email'
+    template_name = 'accounts/email_message.html'
+    success_message = 'Registration is successfully done!'
+
+
 class EmailVerificationView(TitleMixin, TemplateView):
     title = 'DAS - Email verification'
     template_name = 'accounts/email_verification.html'
@@ -140,8 +149,15 @@ class EmailVerificationView(TitleMixin, TemplateView):
         user = AccountUsers.objects.get(email=kwargs['email'])
         email_verifications = EmailVerification.objects.filter(user=user, code=code)
         if email_verifications.exists() and not email_verifications.first().is_expired():
-            user.is_verified_email = True
+            # user.is_verified_email = True
+            user.is_active = True
             user.save()
             return super(EmailVerificationView, self).get(request, *args, **kwargs)
         else:
             return HttpResponseRedirect(reverse('index'))
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+    #     if not self.check_access(request, profile_user):  # not
+    #         raise Http404("User not found")
+    #     return super().dispatch(request, *args, **kwargs)
