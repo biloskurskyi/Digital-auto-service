@@ -9,6 +9,7 @@ from django.views.generic import (CreateView, DeleteView, TemplateView,
                                   UpdateView)
 from xhtml2pdf import pisa
 
+import accounts
 from accounts.forms import AccountProfileForm
 from accounts.models import AccountUsers
 from cars.forms import CreateCarForm
@@ -81,8 +82,8 @@ class AccountProfileView(CommonContextMixin, TitleMixin, UpdateView):
     profile = 'profile'
 
     def get_success_url(self):
-        success_url = get_success_url.delay(self.profile, self.object.id)
-        return success_url.get()
+        success_url = get_success_url(self.profile, self.object.id)  # accounts.tasks.
+        return success_url
 
     def form_valid(self, form):
         messages.success(self.request, 'Profile updated successfully.')

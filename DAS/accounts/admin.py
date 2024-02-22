@@ -15,7 +15,7 @@ class AccountUserAdmin(admin.ModelAdmin):
     search_fields = ('email',)
     list_per_page = 15
     ordering = ('username',)
-    readonly_fields = ('password',)
+    readonly_fields = ('password', 'owner',)
     sorted_fields = ('is_superuser',)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

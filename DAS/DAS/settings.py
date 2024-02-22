@@ -152,30 +152,23 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # email settings
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'digitalautoservice2024@gmail.com'
-EMAIL_HOST_PASSWORD = 'pupbqkzrnergcfwk'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'digitalautoservice2024@gmail.com'
+# EMAIL_HOST_PASSWORD = 'pupbqkzrnergcfwk'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_SSL = True
 # EMAIL_PORT = 465
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 # Celery settings
+
 CELERY_BROKER_URL = "redis://localhost:6379"
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
+
 # CACHES = {
 #     'default': {
 #         'BACKEND': 'django_redis.cache.RedisCache',
 #         'LOCATION': '',
 #     }
 # }
-
-
-# EMAIL_OAUTH2_CLIENT_ID = 'your_client_id'
-# EMAIL_OAUTH2_CLIENT_SECRET = 'your_client_secret'
-# EMAIL_OAUTH2_TOKEN_URI = 'https://accounts.google.com/o/oauth2/token'
-# EMAIL_OAUTH2_SCOPE = 'https://www.googleapis.com/auth/gmail.send'
-# EMAIL_OAUTH2_USE_SANDBOX = False
-# EMAIL_OAUTH2_USE_CREDENTIALS = True

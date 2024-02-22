@@ -6,7 +6,7 @@ from .views import (CreateManagerView, IndexView, ManagerAccountDelete,
                     ManagerAccountProfileView, ManagerGeneratePDFView,
                     MianView, OwnerAccountDelete, OwnerAccountProfileView,
                     OwnerGeneratePDFView, OwnerManagerAccountProfileView,
-                    UserLoginView, UserRegistrationView, EmailVerificationView)
+                    UserLoginView, UserRegistrationView, EmailVerificationView, EmailMessageView)
 
 app_name = 'accounts'
 urlpatterns = [
@@ -31,6 +31,7 @@ urlpatterns = [
     path('manager/generate_pdf/<int:pk>/', login_required(ManagerGeneratePDFView.as_view()),
          name='manager_generate_pdf'),
 
-    path('verify/<str:email>/<uuid:code>', EmailVerificationView.as_view(), name='email_verification')
+    path('verify/<str:email>/<uuid:code>', EmailVerificationView.as_view(), name='email_verification'),
+    path('verify/', EmailMessageView.as_view(), name='email_message')
 
 ]

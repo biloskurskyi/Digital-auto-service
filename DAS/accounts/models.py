@@ -45,13 +45,13 @@ class AccountUsers(AbstractUser):
 
     objects = AccountUsersManager()
 
-    # is_active = models.BooleanField(
-    #     _("active"),
-    #     default=False,
-    #     help_text=_('Designates whether this user should be treated as '
-    #                 'active. Unselect this instead of deleting accounts.'
-    #                 ),
-    # )
+    is_active = models.BooleanField(
+        _("active"),
+        default=False,
+        help_text=_('Designates whether this user should be treated as '
+                    'active. Unselect this instead of deleting accounts.'
+                    ),
+    )
 
     # groups = models.ManyToManyField(
     #     'auth.Group',
@@ -102,7 +102,7 @@ class EmailVerification(models.Model):
         send_mail(
             subject=subject,
             message=message,
-            from_email=settings.EMAIL_HOST_USER,
+            from_email='from@example.com',  # settings.EMAIL_HOST_USER
             recipient_list=[self.user.email],
             fail_silently=False,
         )

@@ -18,10 +18,11 @@
                     {#                    <a href="{% url 'accounts:base' %}" style="font-size: 18px;">Main page</a>#}
                     {#                    <a href="{% url 'accounts:log' %}" style="font-size: 18px;">Log in</a>#}
 
-                    <h3 class="mb-4">Email confirmed <i class="feather icon-mail auth-icon"></i></h3>
-                    <div class="mb-4" style="font-size: 18px">Your account was created successfully <i class="feather icon-check-circle"></i> <hr>Now you can sign in <i class="feather icon-log-in"></i></div>
+                    <h3 class="mb-4">Confirm your email address<i class="feather icon-user auth-icon"></i></h3>
+                    <div class="mb-4" style="font-size: 18px">We have sent you an email containing the link to configure your settings<i class="feather icon-settings"></i></div>
 {#                    <a href="{% url 'accounts:log' %}" style="font-size: 18px;">Log in</a>#}
-                    <button type="button" onclick="window.location.href='{% url 'accounts:log' %}'" class="btn btn-outline-light" data-toggle="tooltip">Log in</button>
+                    <hr>
+                    <button type="button" onclick="window.location.href='{% url 'accounts:base' %}'" class="btn btn-outline-light" data-toggle="tooltip">Main page</button>
                 </form>
             </div>
         </div>
