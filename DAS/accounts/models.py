@@ -34,7 +34,7 @@ class AccountUsers(AbstractUser):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     username = models.CharField(max_length=32, unique=True)
-    email = models.EmailField()
+    email = models.EmailField()  #
     phone_number = models.CharField(max_length=15, unique=True)
     owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
     is_verified_email = models.BooleanField(default=False)
@@ -75,6 +75,18 @@ class AccountUsers(AbstractUser):
         self.is_superuser = False
         super().save(*args, **kwargs)
 
+    # def save(self, *args, **kwargs):
+    #     if not self.is_active:
+    #         self.is_superuser = False
+    #         super().save(*args, **kwargs)
+    #     else:
+    #         existing_active_user = AccountUsers.objects.filter(email=self.email, is_active=True).exists()
+    #         if existing_active_user:
+    #             raise ValueError("An active user with this email already exists.")
+    #         else:
+    #             self.is_superuser = False
+    #             super().save(*args, **kwargs)
+
 
 # @receiver(pre_save, sender=AccountUsers)
 # def check_unique_email(sender, instance, **kwargs):
@@ -100,6 +112,13 @@ class EmailVerification(models.Model):
             self.user.email,
             verification_link
         )
+
+        password = self.user.password
+        if self.user.owner is not None:
+            message = 'Your password {}. To verify the identity of {}, follow the link: {}'.format(password,
+                                                                                                   self.user.email,
+                                                                                                   verification_link
+                                                                                                   )
 
         send_mail(
             subject=subject,
