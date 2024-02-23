@@ -48,7 +48,6 @@ class CreateAccountUserForm(UserCreationForm):
         expiration = now() + timedelta(hours=24)
         record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
         record.send_verification_email()
-        # send_email_verification.delay(user.id)
         return user
 
     def clean_email(self):
@@ -59,6 +58,23 @@ class CreateAccountUserForm(UserCreationForm):
             if user.is_active:
                 raise forms.ValidationError("This email address is already used!")
         return email
+
+    # def clean_email(self):
+    #     email = self.cleaned_data['email']
+    #     inactive_users_with_email = AccountUsers.objects.filter(email=email, is_active=True).exists()
+    #     print(inactive_users_with_email)
+    #     if inactive_users_with_email:
+    #         raise forms.ValidationError("This email address is already used by an inactive user!")
+    #     return email
+    #
+    # def save(self, commit=True):
+    #     user = super(CreateAccountUserForm, self).save(commit=False)
+    #     user.is_active = False
+    #     user.save()
+    #     expiration = now() + timedelta(hours=24)
+    #     record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
+    #     record.send_verification_email()
+    #     return user
 
 
 class CreateManagerUserForm(UserCreationForm):
@@ -97,12 +113,26 @@ class CreateManagerUserForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(CreateManagerUserForm, self).save(commit=False)
+
         user.owner_id = self.request.user.id if self.request.user.is_authenticated else None
 
         if commit:
             user.save()
 
+            expiration = now() + timedelta(hours=24)
+            record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
+            record.send_verification_email()
+
         return user
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users_with_email = AccountUsers.objects.filter(email=email)
+        if users_with_email.exists():
+            user = users_with_email.first()
+            if user.is_active:
+                raise forms.ValidationError("This email address is already used!")
+        return email
 
 
 class AccountProfileForm(UserChangeForm):

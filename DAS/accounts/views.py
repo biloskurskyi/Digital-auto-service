@@ -51,7 +51,7 @@ class UserRegistrationView(CreateAccountView):
 class CreateManagerView(CreateAccountView):
     form_class = CreateManagerUserForm
     template_name = 'accounts/create_manager.html'
-    success_message = 'Manager is successfully create!'
+    success_message = 'Manager is create! For activation, he needs to confirm his/her identity in a letter at the post office'
     title = 'DAS - create manager'
 
     def get_success_url(self):
@@ -140,6 +140,11 @@ class EmailMessageView(TitleMixin, TemplateView):
     success_message = 'Registration is successfully done!'
 
 
+class EmailNotVerified(TitleMixin, TemplateView):
+    title = 'DAS - Email not verified'
+    template_name = 'accounts/email_not_verif.html'
+
+
 class EmailVerificationView(TitleMixin, TemplateView):
     title = 'DAS - Email verification'
     template_name = 'accounts/email_verification.html'
@@ -154,9 +159,12 @@ class EmailVerificationView(TitleMixin, TemplateView):
         has_verified_user = users_with_same_email.filter(is_verified_email=True).exists()
 
         if has_verified_user:
-            return HttpResponseRedirect(reverse('accounts:base'))
+            return HttpResponseRedirect(reverse('accounts:email_not_verified'))
 
-        user = AccountUsers.objects.get(email=email, pk=user_id)
+        try:
+            user = AccountUsers.objects.get(email=email, pk=user_id)
+        except AccountUsers.DoesNotExist:
+            return HttpResponseRedirect(reverse('accounts:email_not_verified'))
 
         email_verifications = EmailVerification.objects.filter(user=user, code=code)
 
@@ -170,7 +178,7 @@ class EmailVerificationView(TitleMixin, TemplateView):
 
             return super(EmailVerificationView, self).get(request, *args, **kwargs)
         else:
-            return HttpResponse(reverse('accounts:base'))
+            return redirect('accounts:base')
 
     # def dispatch(self, request, *args, **kwargs):
     #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
