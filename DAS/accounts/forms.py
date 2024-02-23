@@ -51,12 +51,14 @@ class CreateAccountUserForm(UserCreationForm):
         # send_email_verification.delay(user.id)
         return user
 
-    # def clean_email(self):
-    #     email = self.cleaned_data.get('email')
-    #     if AccountUsers.objects.filter(email=email, is_active=False).exists():
-    #         return email
-    #     else:
-    #         raise forms.ValidationError("This email is already associated with an active account.")
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users_with_email = AccountUsers.objects.filter(email=email)
+        if users_with_email.exists():
+            user = users_with_email.first()
+            if user.is_active:
+                raise forms.ValidationError("This email address is already used!")
+        return email
 
 
 class CreateManagerUserForm(UserCreationForm):

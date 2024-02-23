@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.http import Http404, HttpResponseRedirect, HttpResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
 from django.utils.timezone import now
 from django.views.generic import TemplateView
@@ -149,13 +149,10 @@ class EmailVerificationView(TitleMixin, TemplateView):
         code = kwargs['code']
         email = kwargs['email']
 
-        # Отримати всіх користувачів з поточною електронною адресою
         users_with_same_email = AccountUsers.objects.filter(email=email)
 
-        # Перевірити, чи є серед них хоча б один користувач з підтвердженою електронною адресою
         has_verified_user = users_with_same_email.filter(is_verified_email=True).exists()
 
-        # Якщо є користувач з підтвердженою адресою, перенаправити на головну сторінку
         if has_verified_user:
             return HttpResponseRedirect(reverse('accounts:base'))
 
@@ -164,20 +161,16 @@ class EmailVerificationView(TitleMixin, TemplateView):
         email_verifications = EmailVerification.objects.filter(user=user, code=code)
 
         if email_verifications.exists() and not email_verifications.first().is_expired():
-            # user.is_verified_email = True
-
             user.is_verified_email = True
             user.is_active = True
             user.save()
 
-            # user = AccountUsers.objects.get(pk=user_id)
             EmailVerification.objects.filter(user=user).exclude(code=code).update(expiration=now())
             email_verifications.delete()
 
             return super(EmailVerificationView, self).get(request, *args, **kwargs)
         else:
-            # check_expired_tokens.delay()
-            return HttpResponseRedirect(reverse('accounts:base'))
+            return HttpResponse(reverse('accounts:base'))
 
     # def dispatch(self, request, *args, **kwargs):
     #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
