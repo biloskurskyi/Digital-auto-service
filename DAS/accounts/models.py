@@ -39,16 +39,6 @@ class AccountUsers(AbstractUser):
     owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
     is_verified_email = models.BooleanField(default=False)
 
-    # def save(self, *args, **kwargs):
-    #     self.is_superuser = False
-    #     if not self.is_active:
-    #         existing_inactive_users = AccountUsers.objects.filter(email=self.email, is_active=False)
-    #         if existing_inactive_users.exists():
-    #             # Якщо неактивний користувач з таким емейлом існує, не перевіряти унікальність
-    #             super().save(*args, **kwargs)
-    #             return
-    #     super().save(*args, **kwargs)
-
     class Meta:
         verbose_name = "Account"
         verbose_name_plural = "Accounts"
@@ -63,35 +53,11 @@ class AccountUsers(AbstractUser):
                     ),
     )
 
-    # def save(self, *args, **kwargs):
-    #     if not self.is_active:
-    #         # Якщо користувач неактивний, встановити email на None, щоб уникнути перевірки унікальності
-    #         self.email = None
-    #     super().save(*args, **kwargs)
-
     def save(self, *args, **kwargs):
         if self.is_active and not self.is_verified_email:
             self.is_verified_email = True
         self.is_superuser = False
         super().save(*args, **kwargs)
-
-    # def save(self, *args, **kwargs):
-    #     if not self.is_active:
-    #         self.is_superuser = False
-    #         super().save(*args, **kwargs)
-    #     else:
-    #         existing_active_user = AccountUsers.objects.filter(email=self.email, is_active=True).exists()
-    #         if existing_active_user:
-    #             raise ValueError("An active user with this email already exists.")
-    #         else:
-    #             self.is_superuser = False
-    #             super().save(*args, **kwargs)
-
-
-# @receiver(pre_save, sender=AccountUsers)
-# def check_unique_email(sender, instance, **kwargs):
-#     if instance.is_active and AccountUsers.objects.filter(email=instance.email, is_active=True).exists():
-#         raise ValidationError("User with this email already exists")
 
 
 class EmailVerification(models.Model):
@@ -103,7 +69,7 @@ class EmailVerification(models.Model):
     def __str__(self):
         return f'Email verification object for{self.user.email}'
 
-    def send_verification_email(self):
+    def send_verification_email(self, password):
         link = reverse('accounts:email_verification',
                        kwargs={'pk': self.user.pk, 'email': self.user.email, 'code': self.code})
         verification_link = f'{settings.DOMAIN_NAME}{link}'
@@ -112,13 +78,12 @@ class EmailVerification(models.Model):
             self.user.email,
             verification_link
         )
-
-        password = self.user.password
+        from .forms import CreateManagerUserForm
         if self.user.owner is not None:
-            message = 'Your password {}. To verify the identity of {}, follow the link: {}'.format(password,
-                                                                                                   self.user.email,
-                                                                                                   verification_link
-                                                                                                   )
+            message = 'Your password {} To verify the identity of {}, follow the link: {}'.format(password,
+                                                                                                  self.user.email,
+                                                                                                  verification_link
+                                                                                                  )
 
         send_mail(
             subject=subject,
