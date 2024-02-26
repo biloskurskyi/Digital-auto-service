@@ -1,5 +1,9 @@
+import secrets
+import string
+
 from django.contrib import messages
 from django.contrib.auth.views import LoginView
+from django.core.mail import send_mail
 from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse_lazy, reverse
@@ -11,7 +15,7 @@ from common.views import (AccountDeleteView, AccountProfileView, BaseView,
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers, EmailVerification
-
+from django.contrib.auth import views as auth_views
 from django.db import models
 from django.utils.translation import gettext as _
 
@@ -51,7 +55,8 @@ class UserRegistrationView(CreateAccountView):
 class CreateManagerView(CreateAccountView):
     form_class = CreateManagerUserForm
     template_name = 'accounts/create_manager.html'
-    success_message = 'Manager is create! For activation, he needs to confirm his/her identity in a letter at the post office'
+    success_message = ('Manager is create! For activation,'
+                       ' he needs to confirm his/her identity in a letter at the post office')
     title = 'DAS - create manager'
 
     def get_success_url(self):
@@ -69,12 +74,6 @@ class CreateManagerView(CreateAccountView):
             raise Http404("User not found")
         return super().dispatch(request, *args, **kwargs)
 
-
-# profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
-#        print(profile_user, request.user)
-#        if request.user != profile_user:
-#            raise Http404("User not found")
-#        return super().dispatch(request, *args, **kwargs)
 
 class OwnerAccountProfileView(AccountProfileView):
     template_name = 'accounts/owner_profile.html'

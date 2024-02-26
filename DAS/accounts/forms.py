@@ -5,6 +5,7 @@ from datetime import timedelta
 from django import forms
 from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
                                        UserCreationForm)
+from django.forms import CheckboxInput
 from django.utils.timezone import now
 
 from accounts.models import AccountUsers, EmailVerification
@@ -59,23 +60,6 @@ class CreateAccountUserForm(UserCreationForm):
                 raise forms.ValidationError("This email address is already used!")
         return email
 
-    # def clean_email(self):
-    #     email = self.cleaned_data['email']
-    #     inactive_users_with_email = AccountUsers.objects.filter(email=email, is_active=True).exists()
-    #     print(inactive_users_with_email)
-    #     if inactive_users_with_email:
-    #         raise forms.ValidationError("This email address is already used by an inactive user!")
-    #     return email
-    #
-    # def save(self, commit=True):
-    #     user = super(CreateAccountUserForm, self).save(commit=False)
-    #     user.is_active = False
-    #     user.save()
-    #     expiration = now() + timedelta(hours=24)
-    #     record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
-    #     record.send_verification_email()
-    #     return user
-
 
 class CreateManagerUserForm(UserCreationForm):
     # email = forms.EmailField()
@@ -98,22 +82,17 @@ class CreateManagerUserForm(UserCreationForm):
         self.request = kwargs.pop('request', None)
         super(CreateManagerUserForm, self).__init__(*args, **kwargs)
 
-        password = secrets.token_urlsafe(12)
-
-        self.fields['password1'].initial = password
-        self.fields['password2'].initial = password
-
         self.fields['password1'].widget = forms.HiddenInput()
         self.fields['password2'].widget = forms.HiddenInput()
-
-        # self.fields['password1'].widget = forms.TextInput(
-        #     attrs={'readonly': 'readonly', 'style': 'background-color: #ddd;'})
-        # self.fields['password2'].widget = forms.TextInput(
-        #     attrs={'readonly': 'readonly', 'style': 'background-color: #ddd;'})
+        self.fields['password1'].required = False
+        self.fields['password2'].required = False
 
     def save(self, commit=True):
         user = super(CreateManagerUserForm, self).save(commit=False)
 
+        password = secrets.token_urlsafe(8)
+        print(password)
+        user.set_password(password)
         user.owner_id = self.request.user.id if self.request.user.is_authenticated else None
 
         if commit:
@@ -121,7 +100,7 @@ class CreateManagerUserForm(UserCreationForm):
 
             expiration = now() + timedelta(hours=24)
             record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
-            record.send_verification_email()
+            record.send_verification_email(password)
 
         return user
 
@@ -141,12 +120,20 @@ class AccountProfileForm(UserChangeForm):
     username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
     email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': True}))
     phone_number = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
+    # is_active = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4', 'readonly': 'readonly'}))
+    is_active = forms.BooleanField(required=False, widget=CheckboxInput(attrs={'disabled': 'true'}))
 
     class Meta:
         model = AccountUsers
-        fields = ('first_name', 'last_name', 'username', 'email', 'phone_number',)
+        fields = ('first_name', 'last_name', 'username', 'email', 'phone_number', 'is_active')
 
     def __init__(self, *args, **kwargs):
         super(AccountProfileForm, self).__init__(*args, **kwargs)
+        # is_active_value = self.initial.get('is_active', False)
+        # self.fields['is_active'].initial = "Yes" if self.initial.get('is_active') else "No"
 
         self.fields['password'].widget = forms.HiddenInput()
+
+    # def clean_is_active(self):
+    #     is_active = self.cleaned_data['is_active']
+    #     return "Yes" if is_active else "No"
