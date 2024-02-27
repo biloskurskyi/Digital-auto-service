@@ -1,5 +1,7 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
@@ -36,6 +38,7 @@ class TitleMixin:
 
 
 class CommonContextMixin:
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -72,16 +75,6 @@ class CommonContextMixin:
 
             workers = cache_data('workers', Worker, owner=manager)
             context['workers'] = workers
-            # clients = Client.objects.filter(owner=manager)
-            # context['clients'] = [client for client in clients]
-            # cars = Car.objects.filter(client__owner=manager)
-            # context['cars'] = cars
-            # orders = Order.objects.filter(client__owner=manager)
-            # context['orders'] = orders
-            # stations = Station.objects.filter(owner=manager)
-            # context['stations'] = stations
-            # workers = Worker.objects.filter(owner=manager)
-            # context['workers'] = workers
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
 
@@ -99,18 +92,6 @@ class CommonContextMixin:
 
             workers = cache_data('workers', Worker, owner=owner)
             context['workers'] = workers
-
-
-            # clients = Client.objects.filter(owner=owner)
-            # context['clients'] = [client for client in clients]
-            # cars = Car.objects.filter(client__owner=owner)
-            # context['cars'] = cars
-            # orders = Order.objects.filter(client__owner=owner)
-            # context['orders'] = orders
-            # stations = Station.objects.filter(owner=owner)
-            # context['stations'] = stations
-            # workers = Worker.objects.filter(owner=owner)
-            # context['workers'] = workers
         return context
 
 
@@ -382,7 +363,7 @@ class CarDeleteView(TitleMixin, DeleteView):
 
 class GeneratePDFView(TitleMixin, View):
     title = "pdf report"
-    template_name = 'accounts/pdf_clients.html'
+    template_name = 'accounts/pdf_report.html'
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -425,7 +406,7 @@ class GeneratePDFView(TitleMixin, View):
         html = template.render(context)
 
         response = HttpResponse(content_type='application/pdf; charset=utf-8')
-        response['Content-Disposition'] = 'filename="clients_report.pdf"'
+        response['Content-Disposition'] = 'filename="company_report.pdf"'
 
         pisa_status = pisa.CreatePDF(html, dest=response)
 
