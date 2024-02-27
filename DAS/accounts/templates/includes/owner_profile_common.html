@@ -43,14 +43,16 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-                    <div class="d-flex align-items-center justify-content-center flex-column">
-                        <div class="text-center">
-                            <h4 class="font-weight-bold h6">User Statistic</h4>
-                            <p class="font-italic text-muted">Displayed below is the information for user:
-                                <strong>{{ form.username.value }}</strong></p>
+{#                    {% load cache %}#}
+{#                    {% cache 30 block_section %}#}
+                        <div class="d-flex align-items-center justify-content-center flex-column">
+                            <div class="text-center">
+                                <h4 class="font-weight-bold h6">User Statistic</h4>
+                                <p class="font-italic text-muted">Displayed below is the information for user:
+                                    <strong>{{ form.username.value }}</strong></p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <div class="small font-weight-light mt-4 text-center text-muted">
                         <p>Managers count: {{ managers|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for manager, manager_id, manager_first_name, manager_last_name in managers %}
@@ -82,6 +84,15 @@
                                 </li>
                             {% endfor %}
                         </ul>
+                        <p>Workers count: {{ workers|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for worker in workers %}
+                                <li>
+                                    <a href="{% url 'workers:worker_owner' pk=worker.id %}">
+                                        {{ worker.first_name }} {{ worker.last_name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                         <p>Orders count: {{ orders|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for order in orders %}
@@ -102,6 +113,7 @@
                                 </li>
                             {% endfor %}
                         </ul>
+{#                    {% endcache %}#}
                     </div>
                 </div>
             </div>

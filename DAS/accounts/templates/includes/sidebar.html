@@ -1,8 +1,13 @@
 <nav class="pcoded-navbar">
     <div class="navbar-wrapper">
         <div class="navbar-brand header-logo">
+            {% if request.user.owner_id is none %}
             <a class="b-title" href="{% url 'accounts:owner_profile' user.id %}"><i
                     class="feather icon-home"></i> DAS</a>
+            {% else %}
+            <a class="b-title" href="{% url 'accounts:manager_profile' user.id %}"><i
+                    class="feather icon-home"></i> DAS</a>
+            {% endif %}
         </div>
 
         {% if request.user.owner.id is None %}

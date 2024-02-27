@@ -2,61 +2,67 @@
 
 {% block edit_profile %}Owner{% endblock %}
 {% block post %}{% url 'accounts:owner_profile' pk=form.instance.pk %}{% endblock %}
-{% block form %}
-    <div class="col-sm-12 mb-4">
-        <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            {{ form.email }}
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email
-                with
-                anyone
-                else.</small>
+{#{% load cache %}#}
+{#{% cache 30 block_section %}#}
+    {% block form %}
+        <div class="col-sm-12 mb-4">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                {{ form.email }}
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email
+                    with
+                    anyone
+                    else.</small>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-6 mb-4">
-        <div class="form-group">
-            <label for="fn">First Name</label>
-            {{ form.first_name }}
+        <div class="col-sm-6 mb-4">
+            <div class="form-group">
+                <label for="fn">First Name</label>
+                {{ form.first_name }}
+            </div>
         </div>
-    </div>
-    <div class="col-sm-6 mb-4">
-        <div class="form-group">
-            <label for="ln">Last Name</label>
-            {{ form.last_name }}
+        <div class="col-sm-6 mb-4">
+            <div class="form-group">
+                <label for="ln">Last Name</label>
+                {{ form.last_name }}
+            </div>
         </div>
-    </div>
-    <div class="col-sm-12 mb-4">
-        <div class="form-group">
-            <label for="add">Username</label>
-            {{ form.username }}
-            <small id="addd" class="form-text text-muted">This is your unique
-                username</small>
+        <div class="col-sm-12 mb-4">
+            <div class="form-group">
+                <label for="add">Username</label>
+                {{ form.username }}
+                <small id="addd" class="form-text text-muted">This is your unique
+                    username</small>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-12 mb-4">
-        <div class="form-group">
-            <label for="abt">Phone number</label>
-            {{ form.phone_number }}
-            <small id="addd" class="form-text text-muted">Enter you real phone
-                number</small>
+        <div class="col-sm-12 mb-4">
+            <div class="form-group">
+                <label for="abt">Phone number</label>
+                {{ form.phone_number }}
+                <small id="addd" class="form-text text-muted">Enter you real phone
+                    number</small>
+            </div>
         </div>
-    </div>
-    <div class="col-sm-12 mb-4" style="display: inline-block;">
-    <a href="{% url 'accounts:owner_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf" style="font-size: 25px; display: inline-block;">
-        Download Report
-        <img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;">
-    </a>
-</div>
+        <div class="col-sm-12 mb-4" style="display: inline-block;">
+            <a href="{% url 'accounts:owner_generate_pdf' user.id %}" target="_blank" download="clients_report.pdf"
+               style="font-size: 25px; display: inline-block;">
+                Download Report
+                <img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;">
+            </a>
+        </div>
 
-    <hr>
-{% endblock %}
+        <hr>
+    {% endblock %}
+{#{% endcache %}#}
+
+
 {% block logout %}<a href="{% url 'accounts:log_out' %}">Log out</a>
-{#<button type="button" onclick="window.location.href='{% url 'accounts:log_out' %}'" class="btn btn-outline-light" data-toggle="tooltip">Log out</button>#}
+    {#<button type="button" onclick="window.location.href='{% url 'accounts:log_out' %}'" class="btn btn-outline-light" data-toggle="tooltip">Log out</button>#}
 {% endblock %}
 {% block delete %}
     <a href="{% url 'accounts:delete_owner' user.id %}" style="color: red;">Delete
         account</a>
-{#<button type="button" onclick="window.location.href='{% url 'accounts:delete_owner' user.id %}'" class="btn btn-outline-danger" data-toggle="tooltip">Delete account</button>#}
+    {#<button type="button" onclick="window.location.href='{% url 'accounts:delete_owner' user.id %}'" class="btn btn-outline-danger" data-toggle="tooltip">Delete account</button>#}
 {% endblock %}
 {#{% extends 'layouts/base.html' %}#}
 {#{% load static %}#}

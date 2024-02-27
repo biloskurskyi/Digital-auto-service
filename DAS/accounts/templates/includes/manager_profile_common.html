@@ -70,6 +70,15 @@
                                 </li>
                             {% endfor %}
                         </ul>
+                        <p>Workers count: {{ workers|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for worker in workers %}
+                                <li>
+                                    <a href="{% url 'workers:worker_manager' pk=worker.id %}">
+                                        {{ worker.first_name }} {{ worker.last_name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                         <p>Orders count: {{ orders|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for order in orders %}
