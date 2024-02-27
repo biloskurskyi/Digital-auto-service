@@ -9,8 +9,8 @@ The project was developed using Django 4 (Python 3) and incorporates PostgreSQL,
 The project follows the MTV (Model-Template-View) architecture, with all database class tables defined in the models file and stored in PostgreSQL. An ORM simplifies writing queries in code files.  
 Database data is incorporated into templates using Jinja. Templates are located in the 'templates/app_name' directory, while CSS, fonts, images, JavaScript, and plugins are stored in the 'static/vendor' folder.  
 Each app resides in its own folder, containing directories for migrations and templates, along with Python files for models, views, forms, tasks, tests, apps, admin, init and urls. The main folder for settings is named 'DAS'.
-
-On this project worked:
-https://github.com/biloskurskyi
-https://www.linkedin.com/in/valerii-biloskurskyi-175429281/
+     
+On this project worked:   
+https://github.com/biloskurskyi    
+https://www.linkedin.com/in/valerii-biloskurskyi-175429281/   
 
