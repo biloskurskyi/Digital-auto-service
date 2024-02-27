@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django.http import Http404, HttpResponse, JsonResponse
+from django.core.cache import cache
+from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template.loader import get_template
 from django.urls import reverse_lazy
@@ -11,9 +10,9 @@ from django.views.generic import (CreateView, DeleteView, TemplateView,
                                   UpdateView)
 from xhtml2pdf import pisa
 
-import accounts
 from accounts.forms import AccountProfileForm
-from accounts.models import AccountUsers, EmailVerification
+from accounts.models import AccountUsers
+from accounts.tasks import get_success_url
 from cars.forms import CreateCarForm
 from cars.models import Car
 from clients.forms import ClientForm
@@ -24,8 +23,6 @@ from stations.forms import CreateStationForm
 from stations.models import Station
 from workers.forms import WorkerForm
 from workers.models import Worker
-from accounts.tasks import get_success_url
-from django.core.cache import cache
 
 
 class TitleMixin:
@@ -55,12 +52,6 @@ class CommonContextMixin:
         if self.request.user.owner is not None:
             manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
 
-            # clients = cache.get('clients')
-            # if not clients:
-            #     context['clients'] = Client.objects.filter(owner=manager)
-            #     cache.set('clients', context['clients'], 30)
-            # else:
-            #     context['clients'] = clients
             clients = cache_data('clients', Client, owner=manager)
             context['clients'] = clients
 

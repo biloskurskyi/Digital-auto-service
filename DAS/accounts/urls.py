@@ -2,12 +2,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LogoutView
 from django.urls import path
 
-from .views import (CreateManagerView, IndexView, ManagerAccountDelete,
+from .views import (CreateManagerView, EmailMessageView, EmailNotVerified,
+                    EmailVerificationView, IndexView, ManagerAccountDelete,
                     ManagerAccountProfileView, ManagerGeneratePDFView,
                     MianView, OwnerAccountDelete, OwnerAccountProfileView,
                     OwnerGeneratePDFView, OwnerManagerAccountProfileView,
-                    UserLoginView, UserRegistrationView, EmailVerificationView, EmailMessageView, EmailNotVerified)
-from django.views.decorators.cache import cache_page
+                    UserLoginView, UserRegistrationView)
 
 app_name = 'accounts'
 urlpatterns = [

@@ -1,12 +1,7 @@
-import secrets
-import string
-
-from django.contrib import messages
 from django.contrib.auth.views import LoginView
-from django.core.mail import send_mail
-from django.http import Http404, HttpResponseRedirect, HttpResponse
-from django.shortcuts import get_object_or_404, render, redirect
-from django.urls import reverse_lazy, reverse
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
 from django.views.generic import TemplateView
 
@@ -15,12 +10,6 @@ from common.views import (AccountDeleteView, AccountProfileView, BaseView,
 
 from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers, EmailVerification
-from django.contrib.auth import views as auth_views
-from django.db import models
-from django.utils.translation import gettext as _
-
-
-# from accounts.tasks import check_profile_access
 
 
 class IndexView(BaseView):

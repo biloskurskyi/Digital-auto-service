@@ -152,12 +152,12 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # email settings
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'digitalautoservice2024@gmail.com'
-# EMAIL_HOST_PASSWORD = 'pupbqkzrnergcfwk'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'digitalautoservice2024@gmail.com'
+EMAIL_HOST_PASSWORD = 'pupbqkzrnergcfwk'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_SSL = True
 # EMAIL_PORT = 465

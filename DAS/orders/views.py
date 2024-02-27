@@ -1,11 +1,7 @@
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.http import JsonResponse
 from django.views import View
 
 from cars.models import Car
 from common.views import OrderCreateView, OrderDeleteView, OrderUpdateView
-from orders.models import Order
-from workers.models import Worker
 
 
 class OrderOwnerCreateView(OrderCreateView):
@@ -83,7 +79,6 @@ class GetCarsForClientView(View):
 
             return JsonResponse({'car_choices': car_choices}, )
         return JsonResponse({'car_choices': []})
-
 
 # class GetWorkersForStationView(View):
 #     def get(self, request, *args, **kwargs):
