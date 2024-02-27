@@ -1,7 +1,9 @@
 from django.contrib import admin
-# from django.contrib.auth.admin import UserAdmin
 
 from accounts.models import AccountUsers, EmailVerification
+
+# from django.contrib.auth.admin import UserAdmin
+
 
 all_info = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'is_active', 'owner', 'is_superuser')
 
