@@ -4,8 +4,13 @@
     <div class="m-header">
         <a class="mobile-menu" id="mobile-collapse1" href="javascript:"><span></span></a>
         <a class="b-brand">
-            <a class="b-title" href="{% url 'accounts:owner_profile' user.id %}" style="font-size: 18px"><i
-                    class="feather icon-home"></i> Data auto service</a>
+            {% if request.user.owner_id is none %}
+                <a class="b-title" href="{% url 'accounts:owner_profile' user.id %}" style="font-size: 18px"><i
+                        class="feather icon-home"></i> Data auto service</a>
+            {% else %}
+                <a class="b-title" href="{% url 'accounts:manager_profile' user.id %}" style="font-size: 18px"><i
+                        class="feather icon-home"></i> Data auto service</a>
+            {% endif %}
         </a>
     </div>
     <a class="mobile-menu" id="mobile-header" href="javascript:">

@@ -23,6 +23,7 @@ from stations.models import Station
 from workers.forms import WorkerForm
 from workers.models import Worker
 from accounts.tasks import get_success_url
+from django.core.cache import cache
 
 
 class TitleMixin:
@@ -41,30 +42,75 @@ class CommonContextMixin:
         managers = AccountUsers.objects.get_managers(self.request.user.id)
         context['managers'] = managers
 
+        def cache_data(element_key, element_model, **kwargs):
+            element = cache.get(element_key)
+            if not element:
+                element = element_model.objects.filter(**kwargs)
+                cache.set(element_key, element, 30)
+            return element
+
         if self.request.user.owner is not None:
             manager = get_object_or_404(AccountUsers, id=self.request.user.owner_id)
-            clients = Client.objects.filter(owner=manager)
+
+            # clients = cache.get('clients')
+            # if not clients:
+            #     context['clients'] = Client.objects.filter(owner=manager)
+            #     cache.set('clients', context['clients'], 30)
+            # else:
+            #     context['clients'] = clients
+            clients = cache_data('clients', Client, owner=manager)
             context['clients'] = clients
-            cars = Car.objects.filter(client__owner=manager)
+
+            cars = cache_data('cars', Car, client__owner=manager)
             context['cars'] = cars
-            orders = Order.objects.filter(client__owner=manager)
+
+            orders = cache_data('orders', Order, client__owner=manager)
             context['orders'] = orders
-            stations = Station.objects.filter(owner=manager)
+
+            stations = cache_data('stations', Station, owner=manager)
             context['stations'] = stations
-            workers = Worker.objects.filter(owner=manager)
+
+            workers = cache_data('workers', Worker, owner=manager)
             context['workers'] = workers
+            # clients = Client.objects.filter(owner=manager)
+            # context['clients'] = [client for client in clients]
+            # cars = Car.objects.filter(client__owner=manager)
+            # context['cars'] = cars
+            # orders = Order.objects.filter(client__owner=manager)
+            # context['orders'] = orders
+            # stations = Station.objects.filter(owner=manager)
+            # context['stations'] = stations
+            # workers = Worker.objects.filter(owner=manager)
+            # context['workers'] = workers
         else:
             owner = get_object_or_404(AccountUsers, id=self.request.user.id)
-            clients = Client.objects.filter(owner=owner)
-            context['clients'] = [client for client in clients]
-            cars = Car.objects.filter(client__owner=owner)
+
+            clients = cache_data('clients', Client, owner=owner)
+            context['clients'] = clients
+
+            cars = cache_data('cars', Car, client__owner=owner)
             context['cars'] = cars
-            orders = Order.objects.filter(client__owner=owner)
+
+            orders = cache_data('orders', Order, client__owner=owner)
             context['orders'] = orders
-            stations = Station.objects.filter(owner=owner)
+
+            stations = cache_data('stations', Station, owner=owner)
             context['stations'] = stations
-            workers = Worker.objects.filter(owner=owner)
+
+            workers = cache_data('workers', Worker, owner=owner)
             context['workers'] = workers
+
+
+            # clients = Client.objects.filter(owner=owner)
+            # context['clients'] = [client for client in clients]
+            # cars = Car.objects.filter(client__owner=owner)
+            # context['cars'] = cars
+            # orders = Order.objects.filter(client__owner=owner)
+            # context['orders'] = orders
+            # stations = Station.objects.filter(owner=owner)
+            # context['stations'] = stations
+            # workers = Worker.objects.filter(owner=owner)
+            # context['workers'] = workers
         return context
 
 
@@ -346,6 +392,7 @@ class GeneratePDFView(TitleMixin, View):
             managers = None
             clients = Client.objects.filter(owner=manager)
             cars = Car.objects.filter(client__owner=manager)
+            workers = Worker.objects.filter(owner=manager)
             orders = Order.objects.filter(car__order__client__owner=manager)
             stations = None
         else:
@@ -353,11 +400,13 @@ class GeneratePDFView(TitleMixin, View):
             managers = AccountUsers.objects.filter(owner__isnull=False, owner=owner).distinct()
             clients = Client.objects.filter(owner=owner)
             cars = Car.objects.filter(client__owner=owner)
+            workers = Worker.objects.filter(owner=owner)
             orders = Order.objects.filter(car__order__client__owner=owner)
             stations = Station.objects.filter(owner=self.request.user.id)
         context['managers'] = managers
         context['clients'] = clients
         context['cars'] = cars
+        context['workers'] = workers
         context['orders'] = orders
         context['username'] = self.request.user.username
         context['stations'] = stations

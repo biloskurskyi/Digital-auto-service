@@ -56,6 +56,8 @@ class AccountUsers(AbstractUser):
     def save(self, *args, **kwargs):
         if self.is_active and not self.is_verified_email:
             self.is_verified_email = True
+        if self.pk:
+            self.is_active = True
         self.is_superuser = False
         super().save(*args, **kwargs)
 

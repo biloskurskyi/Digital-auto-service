@@ -45,10 +45,12 @@ class CreateAccountUserForm(UserCreationForm):
         db_table = 'account_users'
 
     def save(self, commit=True):
-        user = super(CreateAccountUserForm, self).save(commit=True)
-        expiration = now() + timedelta(hours=24)
-        record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
-        record.send_verification_email()
+        user = super(CreateAccountUserForm, self).save(commit=False)
+        if commit:
+            user.save()
+            expiration = now() + timedelta(hours=24)
+            record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
+            record.send_verification_email(self.cleaned_data['password1'])
         return user
 
     def clean_email(self):
@@ -89,19 +91,15 @@ class CreateManagerUserForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(CreateManagerUserForm, self).save(commit=False)
-
-        password = secrets.token_urlsafe(8)
-        print(password)
-        user.set_password(password)
-        user.owner_id = self.request.user.id if self.request.user.is_authenticated else None
-
         if commit:
+            password = secrets.token_urlsafe(8)
+            user.set_password(password)
+            user.owner_id = self.request.user.id if self.request.user.is_authenticated else None
             user.save()
 
             expiration = now() + timedelta(hours=24)
             record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
             record.send_verification_email(password)
-
         return user
 
     def clean_email(self):

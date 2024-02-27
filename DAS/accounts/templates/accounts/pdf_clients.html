@@ -46,11 +46,11 @@
     </style>
 </head>
 <body>
-
 <h1>Clients Report for {{ username }}</h1>
+<hr>
 {% if managers is not none %}
     <div class="section">
-        <h2>Manager Report</h2>
+        <h2>Managers Report</h2>
         <div class="section-content">
             <ul>
                 {% for manager in managers %}
@@ -61,9 +61,9 @@
         </div>
     </div>
 {% endif %}
-
+<hr>
 <div class="section">
-    <h2>Client Report</h2>
+    <h2>Clients Report</h2>
     <div class="section-content">
         <ul>
             {% for client in clients %}
@@ -80,9 +80,9 @@
 {#        <li>{{ manager }} {{ manager.first_name }} {{ manager.last_name }} {{ manager.email }} {{ phone.number }}</li>#}
 {#    {% endfor %}#}
 {#{% endif %}#}
-
+<hr>
 <div class="section">
-    <h2>Car Report</h2>
+    <h2>Cars Report</h2>
     <div class="section-content">
         <ul>
             {% for car in cars %}
@@ -93,7 +93,29 @@
         </ul>
     </div>
 </div>
-
+<hr>
+<div class="section">
+    <h2>Workers Report</h2>
+    <div class="section-content">
+        <ul>
+            {% for worker in workers %}
+                <li>{{ worker.first_name }} {{ worker.last_name }} with {{ worker.years_of_experience }} years of
+                    experience.
+                    Salary - {{ worker.salary }}.
+                    Orders:
+                    <br>
+                    <ul>
+                        Orders:
+                        {% for worker_order in worker.workerorder_set.all %}
+                            <li>{{ worker_order.order }}</li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+<hr>
 <div class="section">
     <h2>Orders Report</h2>
     <div class="section-content">
@@ -103,15 +125,25 @@
                     Car: {{ order.car.car_number }} {{ order.car.mark }} {{ order.car.model }}, Start
                     Date: {{ order.start_date }}, Service
                     Station: {{ order.service_station.name }} {{ order.service_station.address }}, Process
-                    Status: {{ order.process_status }}, Info: {{ order.info }}</li>
+                    Status: {{ order.process_status }}, Info: {{ order.info }}
+                    <br>
+                    Workers:
+                    <ul>
+                        {% for worker in workers %}
+                            {% for worker_order in worker.workerorder_set.all %}
+                                <li>{{ worker_order.worker }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </li>
             {% endfor %}
         </ul>
     </div>
 </div>
-
+<hr>
 {% if stations is not none %}
     <div class="section">
-        <h2>Station Report</h2>
+        <h2>Stations Report</h2>
         <div class="section-content">
             <ul>
                 {% for station in stations %}
@@ -121,6 +153,10 @@
         </div>
     </div>
 {% endif %}
+<div style="text-align: center">
+    <h1 style="margin-bottom: 0;">DAS 2024</h1>
+    <h3 style="margin-top: 0; padding-top: 0;">digital auto service</h3>
+</div>
 
 </body>
 {#<body>#}

@@ -7,6 +7,7 @@ from .views import (CreateManagerView, IndexView, ManagerAccountDelete,
                     MianView, OwnerAccountDelete, OwnerAccountProfileView,
                     OwnerGeneratePDFView, OwnerManagerAccountProfileView,
                     UserLoginView, UserRegistrationView, EmailVerificationView, EmailMessageView, EmailNotVerified)
+from django.views.decorators.cache import cache_page
 
 app_name = 'accounts'
 urlpatterns = [
@@ -20,7 +21,10 @@ urlpatterns = [
     path('delete/owner/<int:pk>/', login_required(OwnerAccountDelete.as_view()), name='delete_owner'),
     path('delete/manager/<int:pk>/', login_required(ManagerAccountDelete.as_view()), name='delete_manager'),
 
-    path('owner/profile/<int:pk>/', login_required(OwnerAccountProfileView.as_view()), name='owner_profile'),
+    path('owner/profile/<int:pk>/', login_required(OwnerAccountProfileView.as_view()),
+         name='owner_profile'),
+    # path('owner/profile/<int:pk>/', cache_page(30)(login_required(OwnerAccountProfileView.as_view())),
+    #      name='owner_profile'),
     path('owner/manager/profile/<int:pk>/', login_required(OwnerManagerAccountProfileView.as_view()),
          name='owner_manager_profile'),
     path('manager/profile/<int:pk>/', login_required(ManagerAccountProfileView.as_view()), name='manager_profile'),
