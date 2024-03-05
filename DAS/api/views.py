@@ -22,6 +22,4 @@ class AccountViewSet(ModelViewSet):
         queryset = super().get_queryset()
         if self.request.method == 'GET':  # and self.request.user.owner is None
             queryset = AccountUsers.objects.filter(owner=self.request.user)
-        # elif self.request.method == 'GET' and self.request.user.owner is not None:
-        #     queryset = None
         return queryset
