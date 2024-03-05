@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 from DAS import settings
+from rest_framework.authtoken import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +29,8 @@ urlpatterns = [
     path('', include('orders.urls', namespace='orders')),
     path('', include('stations.urls', namespace='stations')),
     path('', include('workers.urls', namespace='workers')),
+    path('api/', include('api.urls', namespace='api')),
+    path('api-token-auth/', views.obtain_auth_token),
 
 ]
 if settings.DEBUG:
