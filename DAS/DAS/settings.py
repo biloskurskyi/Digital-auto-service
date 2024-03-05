@@ -22,9 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^pbo3e1iy$&b2octwxzc(q4bboi(2b!xqx-p=uq$@qw+f==qjx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = []
 
 DOMAIN_NAME = 'http://localhost:8009/'
 
@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
 
     'accounts',
     'clients',
@@ -149,10 +151,9 @@ LOGIN_REDIRECT_URL = '/success/login/'
 LOGOUT_REDIRECT_URL = '/login/'
 AUTH_USER_MODEL = 'accounts.AccountUsers'
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-
 # email settings
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'digitalautoservice2024@gmail.com'
 EMAIL_HOST_PASSWORD = 'pupbqkzrnergcfwk'
@@ -174,4 +175,17 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         }
     }
+}
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 5,
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
