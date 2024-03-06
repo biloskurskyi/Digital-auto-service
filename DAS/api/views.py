@@ -36,10 +36,15 @@ class AccountViewSet(ModelViewSet):
         profile_user = get_object_or_404(AccountUsers, pk=self.kwargs['pk'])
         if (
                 self.request.method == 'DELETE' and
-                self.request.user == profile_user and
+                (self.request.user == profile_user or self.request.user == profile_user.owner) and
                 self.request.user.is_active and
                 self.request.user.owner is None
         ):
+            # serializer.delete()
+            if self.request.user == profile_user:
+                manager_user = AccountUsers.objects.filter(owner=profile_user)
+                print(manager_user)
+                manager_user.delete()
             serializer.delete()
         else:
             raise PermissionDenied("You don't have permission to perform this action.")
