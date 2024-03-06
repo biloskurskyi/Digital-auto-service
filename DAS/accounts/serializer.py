@@ -6,7 +6,7 @@ from accounts.models import AccountUsers
 
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
-    is_active = serializers.BooleanField(default=False, read_only=True)
+    # is_active = serializers.BooleanField(default=False, read_only=True)
 
     class Meta:
         model = AccountUsers

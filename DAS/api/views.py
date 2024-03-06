@@ -1,7 +1,8 @@
 from datetime import timedelta
 import uuid
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
@@ -18,7 +19,7 @@ class AccountViewSet(ModelViewSet):
     permission_classes = (IsAuthenticated,)
 
     def get_permissions(self):
-        if self.action in ('create', 'update', 'partial_update'):
+        if self.action in ('update', 'partial_update'):
             self.permission_classes = (IsAdminUser,)
         if self.action in ('create',):
             return []
@@ -28,7 +29,20 @@ class AccountViewSet(ModelViewSet):
         queryset = super().get_queryset()
         if self.request.method == 'GET':  # and self.request.user.owner is None
             queryset = AccountUsers.objects.filter(owner=self.request.user)
+
         return queryset
+
+    def perform_destroy(self, serializer):
+        profile_user = get_object_or_404(AccountUsers, pk=self.kwargs['pk'])
+        if (
+                self.request.method == 'DELETE' and
+                self.request.user == profile_user and
+                self.request.user.is_active and
+                self.request.user.owner is None
+        ):
+            serializer.delete()
+        else:
+            raise PermissionDenied("You don't have permission to perform this action.")
 
     def create(self, request, *args, **kwargs):
         request.data['is_active'] = False  # Set is_active to False in the request data
