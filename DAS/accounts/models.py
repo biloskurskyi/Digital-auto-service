@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, User, UserManager
 from django.core.exceptions import ValidationError
 from django.core.mail import send_mail
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -35,7 +36,8 @@ class AccountUsers(AbstractUser):
     last_name = models.CharField(max_length=32)
     username = models.CharField(max_length=32, unique=True)
     email = models.EmailField()  #
-    phone_number = models.CharField(max_length=15, unique=True)
+    phone_number = models.CharField(max_length=10, unique=True, validators=[
+        RegexValidator(regex='^\d{10}$', message='Phone number must be a 10-digit number.')])
     owner = models.ForeignKey('AccountUsers', on_delete=models.PROTECT, null=True)
     is_verified_email = models.BooleanField(default=False)
 
