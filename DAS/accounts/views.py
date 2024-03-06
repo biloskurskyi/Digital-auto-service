@@ -1,5 +1,6 @@
+from django.contrib import messages
 from django.contrib.auth.views import LoginView
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils.timezone import now
@@ -26,6 +27,15 @@ class UserLoginView(TitleMixin, LoginView):
     template_name = 'accounts/login.html'
     form_class = UserLoginForm
     title = 'DAS - Login'
+
+    # def form_valid(self, form):
+    #     user = form.get_user()
+    #     if user.is_verified_email:
+    #         return super().form_valid(form)
+    #     else:
+    #         messages.error(self.request,
+    #                        'Please enter a correct username and password. Note that both fields may be case-sensitive.')
+    #         return super().form_invalid(form)
 
     # def form_valid(self, form):
     #     response = super().form_valid(form)

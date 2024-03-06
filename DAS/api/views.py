@@ -31,17 +31,15 @@ class AccountViewSet(ModelViewSet):
         return queryset
 
     def create(self, request, *args, **kwargs):
-        request.data['is_active'] = False
+        request.data['is_active'] = False  # Set is_active to False in the request data
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.save(is_active=False)
+        user = serializer.save()  # Remove setting is_active=False here
         expiration = now() + timedelta(hours=24)
         record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
         record.send_verification_email(
             serializer.validated_data['password'])
-        user.is_active = False  # Встановлюємо is_active на False перед збереженням користувача
-        # for i in user:
-        #     print(i)
+        user.is_active = False  # Setting is_active to False directly should not be necessary here
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
