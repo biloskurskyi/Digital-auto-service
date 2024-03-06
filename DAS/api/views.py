@@ -1,5 +1,7 @@
 from datetime import timedelta
 import uuid
+
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404
 from django.utils.timezone import now
 from rest_framework.exceptions import PermissionDenied
@@ -43,22 +45,89 @@ class AccountViewSet(ModelViewSet):
             # serializer.delete()
             if self.request.user == profile_user:
                 manager_user = AccountUsers.objects.filter(owner=profile_user)
-                print(manager_user)
                 manager_user.delete()
             serializer.delete()
         else:
             raise PermissionDenied("You don't have permission to perform this action.")
 
     def create(self, request, *args, **kwargs):
-        request.data['is_active'] = False  # Set is_active to False in the request data
+        # if not request.user.is_authenticated:
+        #     return Response({"error": "User is not authenticated."}, status=status.HTTP_401_UNAUTHORIZED)
+        #
+        # if request.user.is_authenticated:
+        #     print("true")
+        # profile_user = get_object_or_404(AccountUsers, pk=self.kwargs['pk'])
+        # request.data['is_active'] = False  # Set is_active to False in the request data
+        # request.data['owner'] = self.request.user.id
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = serializer.save()  # Remove setting is_active=False here
+        # Save user
+        user = serializer.save()
+
+        # Create email verification record
         expiration = now() + timedelta(hours=24)
         record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
-        record.send_verification_email(
-            serializer.validated_data['password'])
-        user.is_active = False  # Setting is_active to False directly should not be necessary here
+        record.send_verification_email(serializer.validated_data['password'])
+
+        # Deactivate user
+        user.is_active = False
+        # Setting is_active to False directly should not be necessary here
+        # print('111')
+
+        # pk = kwargs.get('pk')
+        # print(profile_user.id)
+        # if self.request.method == 'POST':
+        #     # Assuming <pk> is passed as a URL parameter
+        #     pk = kwargs.get('pk')
+        #     print('kk')
+        #     # Assuming Account is your model
+        #     account = get_object_or_404(AccountUsers, pk=pk)
+        #     # Further check for the URL pattern
+        #     print(request.path.startswith('/api/accounts/') and pk)
+        #     if request.path.startswith('/api/accounts/') and pk:
+        #         print('ok')
+        #         # Your logic for POST method with the correct URL pattern
+        #         return Response({'message': 'Action completed'}, status=status.HTTP_200_OK)
+        #     else:
+        #         raise Http404("Invalid URL pattern or missing user ID")
+        # else:
+        #     return Response({'message': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        # if self.request.user == profile_user:
+        #     request.data['is_active'] = False  # Set is_active to False in the request data
+        #     serializer = self.get_serializer(data=request.data)
+        #     serializer.is_valid(raise_exception=True)
+        #
+        #     user = serializer.save()  # Remove setting is_active=False here
+        #     user.owner = request.user.id
+        #     expiration = now() + timedelta(hours=24)
+        #     record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
+        #     record.send_verification_email(
+        #         serializer.validated_data['password'])
+        #     user.is_active = False
+
+        # elif self.request.user == None:
+        #     print('ok')
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    # def create_manager(self, request, *args, **kwargs):
+    #     print('----')
+    #     if self.request.method == 'POST':
+    #         print('-')
+    #         # Assuming <pk> is passed as a URL parameter
+    #         pk = kwargs.get('pk')
+    #         # Assuming Account is your model
+    #         account = get_object_or_404(AccountUsers, pk=pk)
+    #         # Further check for the URL pattern
+    #         print(request.path.startswith('/api/accounts/') and pk)
+    #         if request.path.startswith('/api/accounts/') and pk:
+    #             print('ok')
+    #             # Your logic for POST method with the correct URL pattern
+    #             return Response({'message': 'Action completed'}, status=status.HTTP_200_OK)
+    #         else:
+    #             raise Http404("Invalid URL pattern or missing user ID")
+    #     else:
+    #         return Response({'message': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
