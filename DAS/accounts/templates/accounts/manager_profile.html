@@ -35,15 +35,17 @@
         <div class="form-group">
             <label for="abt">Phone number</label>
             {{ form.phone_number }}
-            <small id="addd" class="form-text text-muted">Enter you real phone number</small>
+            <small id="addd" class="form-text text-muted">Enter you real phone number which contains 10
+                characters</small>
         </div>
     </div>
 
     <div class="col-sm-12 mb-4" style="display: inline-block;">
-    <a href="{% url 'accounts:manager_generate_pdf' user.id %}" target="_blank" download="company_report.pdf" style="font-size: 25px; display: inline-block;">
-        Download Report
-        <img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;">
-    </a>
+        <a href="{% url 'accounts:manager_generate_pdf' user.id %}" target="_blank" download="company_report.pdf"
+           style="font-size: 25px; display: inline-block;">
+            Download Report
+            <img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;">
+        </a>
     </div>
 
     <hr>
