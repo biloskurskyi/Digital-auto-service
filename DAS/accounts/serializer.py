@@ -1,13 +1,11 @@
 from rest_framework import fields, serializers
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, PermissionDenied
 
 from accounts.models import AccountUsers
 
 
 class AccountSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True)
-
-    # is_active = serializers.BooleanField(default=False, read_only=True)
 
     class Meta:
         model = AccountUsers
@@ -22,8 +20,10 @@ class AccountSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if not request.user.is_authenticated:
             validated_data['owner'] = None
-        if request.user.is_authenticated:
+        elif request.user.is_authenticated and request.user.owner is None:
             validated_data['owner'] = self.context['request'].user
+        else:
+            raise PermissionDenied("You don't have permission to perform this action.")
 
         validated_data['is_active'] = False
         password = validated_data.pop('password')
@@ -31,3 +31,10 @@ class AccountSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+    def perform_update(self, instance, validated_data):
+        request = self.context.get('request')
+        if request.user.is_authenticate:
+            raise PermissionDenied("You don't have permission to perform this action.")
+
+
