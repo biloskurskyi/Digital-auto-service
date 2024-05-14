@@ -1,0 +1,163 @@
+{% extends 'includes/owner_profile_common.html' %}
+
+{% block edit_profile %}Замовлення{% endblock %}
+{% block post %}{% url 'orders:order_owner' pk=form.instance.pk %}{% endblock %}
+{% block form %}
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+{#            <label for="exampleInputEmail1">Client</label>#}
+{#            {{ form.client }}#}
+{#            <small id="addd" class="form-text text-muted">You can't change this field</small>#}
+            <label for="exampleInputEmail1">Клієнт</label>
+            {{ form.client }}
+            <small id="addd" class="form-text text-muted">Ви не можете змінити це поле</small>
+
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+{#            <label for="fn">Car</label>#}
+{#            {{ form.car }}#}
+{#            <small id="addd" class="form-text text-muted">You can't change this field</small>#}
+            <label for="fn">Автомобіль</label>
+            {{ form.car }}
+            <small id="addd" class="form-text text-muted">Ви не можете змінити це поле</small>
+
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+{#            <label for="ln">Start date</label>#}
+            <label for="ln">Дата початку</label>
+            {{ form.start_date }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+{#            <label for="add">Process status</label>#}
+            <label for="add">Статус процесу</label>
+            {{ form.process_status }}
+            <small id="addd" class="form-text text-muted"></small>
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+{#            <label for="add">Service station</label>#}
+            <label for="add">СТО (Сервісна станція)</label>
+            {{ form.service_station }}
+        </div>
+    </div>
+    <div class="col-sm-6 mb-4">
+        <div class="form-group">
+            <label for="add">{# Workers #}Працівники</label>
+            {{ form.workers }}
+        </div>
+    </div>
+
+        {#        {% for worker in page_obj %}#}
+        {#            <!-- Display worker details here -->#}
+        {#            <p>{{ worker }}</p>#}
+        {#            <!-- Add more worker details as needed -->#}
+        {#        {% endfor %}#}
+        {#        {% if page_obj.has_other_pages %}#}
+        {#            <nav aria-label="Page navigation example">#}
+        {#                <ul class="pagination">#}
+        {#                    {% if page_obj.has_previous %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page=1" aria-label="First"><span#}
+        {#                                aria-hidden="true">««</span><span class="sr-only">First</span></a></li>#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"#}
+        {#                                                 aria-label="Previous"><span aria-hidden="true">«</span><span#}
+        {#                                class="sr-only">Previous</span></a></li>#}
+        {#                    {% endif %}#}
+        {#                    {% for num in page_obj.paginator.page_range %}#}
+        {#                        <li class="page-item {% if page_obj.number == num %}active{% endif %}">#}
+        {#                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>#}
+        {#                        </li>#}
+        {#                    {% endfor %}#}
+        {#                    {% if page_obj.has_next %}#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"#}
+        {#                                                 aria-label="Next"><span aria-hidden="true">»</span><span#}
+        {#                                class="sr-only">Next</span></a></li>#}
+        {#                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}"#}
+        {#                                                 aria-label="Last"><span aria-hidden="true">»»</span><span#}
+        {#                                class="sr-only">Last</span></a></li>#}
+        {#                    {% endif %}#}
+        {#                </ul>#}
+        {#            </nav>#}
+        {#        {% endif %}#}
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Інформація{# Info #}</label>
+            {{ form.info }}
+        </div>
+    </div>
+    {% if form.instance.id %}
+{#        <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>#}
+{#        {% for car in form.instance.get_all_cars %}#}
+{#            <ul>#}
+{#                <li>#}
+{#                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car#}
+{#                        Number: {{ car.car_number }}</a><br>#}
+{#                    Mark: {{ car.mark }}<br>#}
+{#                    Model: {{ car.model }}<br>#}
+{#                    Year: {{ car.year }}<br>#}
+{#                    Engine: {{ car.engine }}<br>#}
+{#                    Gear Type: {{ car.gear_type }}<br>#}
+{#                    Comment: {{ car.comment }}<br></li>#}
+{#            </ul>#}
+{#        {% endfor %}#}
+        <h3 class="col-sm-12 mb-4">Автомобілі для {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
+        {% for car in form.instance.get_all_cars %}
+            <ul>
+                <li>
+                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Номер автомобіля: {{ car.car_number }}</a><br>
+                    Марка: {{ car.mark }}<br>
+                    Модель: {{ car.model }}<br>
+                    Рік: {{ car.year }}<br>
+                    Двигун: {{ car.engine }}<br>
+                    Тип коробки передач: {{ car.gear_type }}<br>
+                    Коментар: {{ car.comment }}<br></li>
+            </ul>
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}
+
+{% block logout %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">{# Owner account #}Профіль власника</a>{% endblock %}
+
+{% block delete %}
+    <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">{# Delete order#}Видалити замовлення</a>{% endblock %}
+
+
+
+
+{#{% load static %}#}
+{##}
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<div class="profile">#}
+{#    You are still owner!#}
+{#    {% for message in messages %}#}
+{#        <div>{{ message }}</div>#}
+{#    {% endfor %}#}
+{#    <form method="post" action="{% url 'orders:order_owner' pk=form.instance.pk %}">#}
+{#        {% csrf_token %}#}
+{#        {{ form.as_p }}#}
+{#        <button type="submit">Submit</button>#}
+{#        <br>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:log_out' %}">Log out</a>#}
+{#        <br>#}
+{#        <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>#}
+{#        <br>#}
+{#        <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">Delete order</a>#}
+{#    </form>#}
+{#</div>#}
+{#</body>#}
+{#</html>#}
