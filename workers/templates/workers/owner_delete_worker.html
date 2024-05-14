@@ -1,0 +1,6 @@
+{% extends 'includes/delete_common.html' %}
+
+{% block name_delete %}{{ object.first_name }} {{ object.last_name }}{% endblock %}
+{% block button %}'{% url 'workers:owner_delete_worker' pk=object.pk %}'{% endblock %}
+{% block button_name %}Delete worker{% endblock %}
+{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}

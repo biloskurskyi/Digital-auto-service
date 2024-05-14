@@ -1,0 +1,109 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block breadcrumbs %}{% endblock breadcrumbs %}
+
+{% block content %}
+
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Edit {% block edit_profile %}{% endblock %} profile</h5>
+                </div>
+                <div class="card-block">
+                    {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                            <div style="font-size: 18px; color: #ff0000">{{ message }}</div>
+                        {% else %}
+                            <div style="font-size: 18px; color: #00d000">{{ message }}</div>
+                        {% endif %}
+                    {% endfor %}
+                    <br>
+
+                    <form method="post"
+                          action="{% block post %}{% endblock %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            {% block form %}
+                            {% endblock %}
+                        </div>
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Submit</button>
+                        <hr>
+                        {% block logout %}{% endblock %}
+                        <br>
+                        <br>
+                        {% block delete %}{% endblock %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-block">
+                    <div class="d-flex align-items-center justify-content-center flex-column">
+                        <div class="text-center">
+                            <h4 class="font-weight-bold h6">User Statistic</h4>
+                            <p class="font-italic text-muted">Displayed below is the information for user:
+                                <strong>{{ form.username.value }}</strong></p>
+                        </div>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>Clients count: {{ clients|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for client in clients %}
+                                <li>
+                                    <a href="{% url 'clients:client_manager' pk=client.id %}">
+                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Cars count: {{ cars|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for car in cars %}
+                                <li>
+                                    <a href="{% url 'cars:car_manager' pk=car.id %}">
+                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Workers count: {{ workers|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for worker in workers %}
+                                <li>
+                                    <a href="{% url 'workers:worker_manager' pk=worker.id %}">
+                                        {{ worker.first_name }} {{ worker.last_name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Orders count: {{ orders|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for order in orders %}
+                                <li>
+                                    <a href="{% url 'orders:order_manager' pk=order.id %}">
+                                        Client {{ order.client }} with car {{ order.car }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <p>Stations count: {{ stations|length }}</p>
+                        <ul style="list-style-type: none; padding: 0;">
+                            {% for station in stations %}
+                                <li>
+                                    <a href="{% url 'stations:station_manager' pk=station.id %}">
+                                        {{ station.name }} on {{ station.address }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- [ Main Content ] end -->
+
+{% endblock content %}

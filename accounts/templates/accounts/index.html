@@ -1,0 +1,63 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <title>{{ title }}</title>#}
+{#</head>#}
+{#<body>#}
+{#<a href="{% url 'accounts:reg' %}">Registration</a>#}
+{#<a href="{% url 'accounts:log' %}">Log in</a>#}
+{#</body>#}
+{#</html>#}
+{% extends 'layouts/base-auth.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <form method="post" class="card-body text-center">
+                    {% csrf_token %}
+{#                    <div class="mb-4">#}
+{#                        <i class="feather auth-icon mb-4">Welcome🚘</i>#}
+{#                    </div>#}
+                    {#                    <h3 class="mb-4">Please sign up or register for upcoming actions</h3>#}
+                    {#                    <label for="checkbox-fill-a1" class="cr">Digital Auto Service is a free application🖥️ designed to help#}
+                    {#                        you manage your auto service🔨️ efficiently. After just 2 minutes of registration📃, as an owner, you#}
+                    {#                        gain full control privileges over all your managers💼, clients🤝, their cars🚗, and orders📋. Start now#}
+                    {#                        and streamline your auto service management📈!</label>#}
+                    {#                    <p class="mb-0 text-muted" style="font-size: 18px;">Already have an account? <a#}
+                    {#                            href="{% url 'accounts:log' %}">Log in</a></p>#}
+                    {#                    <p class="mb-0 text-muted" style="font-size: 18px;">Don’t have an account? <a#}
+                    {#                            href="{% url 'accounts:reg' %}">Sign up</a></p>#}
+                    <div class="mb-4">
+                        <i class="feather auth-icon mb-4">Ласкаво просимо🚘</i>
+                    </div>
+                    <h3 class="mb-4">Будь ласка, зареєструйтеся або увійдіть для наступних дій</h3>
+                    <label for="checkbox-fill-a1" class="cr">DAS(Digital Auto Service) - безкоштовний додаток🖥️, призначений
+                        для допомоги
+                        вам ефективно керувати вашим автосервісом🔨️. Після всього 2 хвилин реєстрації📃, як власник, ви
+                        отримуєте повні привілеї управління всіма своїми менеджерами💼, клієнтами🤝, їх автомобілями🚗 та
+                        замовленнями📋. Почніть зараз
+                        і оптимізуйте управління вашим автосервісом📈!</label>
+                    <p class="mb-0 text-muted" style="font-size: 18px;">Вже є обліковий запис? <a
+                            href="{% url 'accounts:log' %}">Увійдіть</a></p>
+                    <p class="mb-0 text-muted" style="font-size: 18px;">Не маєте облікового запису? <a
+                            href="{% url 'accounts:reg' %}">Зареєструйтесь</a></p>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <label class="d-none">
+        <i class="icon feather icon-sun" id="theme-indicator"></i>
+        <input type="checkbox" id="theme-switch" class="d-none">
+    </label>
+{% endblock content %}

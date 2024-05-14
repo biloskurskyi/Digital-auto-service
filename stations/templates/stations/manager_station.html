@@ -1,0 +1,22 @@
+{% extends 'includes/manager_profile_common.html' %}
+
+{% block edit_profile %}Station{% endblock %}
+{% block post %}{% url 'stations:station_manager' pk=form.instance.pk %}{% endblock %}
+{% block form %}
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Name</label>
+            {{ form.name }}
+        </div>
+    </div>
+    <div class="col-sm-12 mb-4">
+        <div class="form-group">
+            <label for="fn">Address</label>
+            {{ form.address }}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block logout %}
+    <a href="{% url 'accounts:manager_profile' pk=request.user.pk %}">Manager account</a>{% endblock %}
