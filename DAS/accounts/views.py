@@ -1,0 +1,185 @@
+from django.contrib import messages
+from django.contrib.auth.views import LoginView
+from django.http import Http404, HttpResponseRedirect, HttpResponseBadRequest
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse, reverse_lazy
+from django.utils.timezone import now
+from django.views.generic import TemplateView
+
+from common.views import (AccountDeleteView, AccountProfileView, BaseView,
+                          CreateAccountView, GeneratePDFView, TitleMixin)
+
+from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
+from .models import AccountUsers, EmailVerification
+
+
+class IndexView(BaseView):
+    template_name = "accounts/index.html"
+    title = "DAS"
+
+
+class MianView(BaseView):
+    template_name = "accounts/successful_login.html"
+    title = "DAS - Login success"
+
+
+class UserLoginView(TitleMixin, LoginView):
+    template_name = 'accounts/login.html'
+    form_class = UserLoginForm
+    title = 'DAS - Login'
+
+    # def form_valid(self, form):
+    #     user = form.get_user()
+    #     if user.is_verified_email:
+    #         return super().form_valid(form)
+    #     else:
+    #         messages.error(self.request,
+    #                        'Please enter a correct username and password. Note that both fields may be case-sensitive.')
+    #         return super().form_invalid(form)
+
+    # def form_valid(self, form):
+    #     response = super().form_valid(form)
+    #     messages.success(self.request, "You have successfully logged in.")
+    #     return response
+
+
+class UserRegistrationView(CreateAccountView):
+    form_class = CreateAccountUserForm
+    template_name = 'accounts/registration.html'
+    # success_message = 'Registration is successfully done!'
+    title = 'DAS - Registration'
+    success_url = reverse_lazy('accounts:email_message')
+
+
+class CreateManagerView(CreateAccountView):
+    form_class = CreateManagerUserForm
+    template_name = 'accounts/create_manager.html'
+    success_message = ('Manager is create! For activation,'
+                       ' he needs to confirm his/her identity in a letter at the post office')
+    title = 'DAS - create manager'
+
+    def get_success_url(self):
+        creator_user = self.request.user
+        return reverse_lazy('accounts:owner_profile', kwargs={'pk': creator_user.pk})
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def dispatch(self, request, *args, **kwargs):
+        profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+        if request.user != profile_user:
+            raise Http404("User not found")
+        return super().dispatch(request, *args, **kwargs)
+
+
+class OwnerAccountProfileView(AccountProfileView):
+    template_name = 'accounts/owner_profile.html'
+    title = 'DAS - owner account profile'
+    profile = 'owner_profile'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
+
+
+class ManagerAccountProfileView(AccountProfileView):
+    template_name = "accounts/manager_profile.html"
+    title = 'DAS - manager account profile'
+    profile = 'manager_profile'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
+
+
+class OwnerManagerAccountProfileView(AccountProfileView):
+    template_name = "accounts/owner_manager_profile.html"
+    title = 'DAS - manager account profile'
+    profile = 'owner_manager_profile'
+
+    def check_access(self, request, profile_user):
+        if profile_user.id == request.user.id or (profile_user.id and profile_user.owner is None):
+            raise Http404("User not found")
+        return request.user.id == profile_user.owner.id and request.user.is_active
+
+
+class OwnerAccountDelete(AccountDeleteView):
+    template_name = 'accounts/delete_owner.html'
+
+    def get_success_url(self):
+        return reverse_lazy('accounts:reg')
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user
+
+
+class ManagerAccountDelete(AccountDeleteView):
+    template_name = 'accounts/delete_manager.html'
+    reverse_page = 'owner_profile'
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user.owner
+
+
+class OwnerGeneratePDFView(GeneratePDFView):
+
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is None
+
+
+class ManagerGeneratePDFView(GeneratePDFView):
+    def check_access(self, request, profile_user):
+        return request.user == profile_user and request.user.is_active and request.user.owner is not None
+
+
+class EmailMessageView(TitleMixin, TemplateView):
+    title = 'DAS - Confirm email'
+    template_name = 'accounts/email_message.html'
+    success_message = 'Registration is successfully done!'
+
+
+class EmailNotVerified(TitleMixin, TemplateView):
+    title = 'DAS - Email not verified'
+    template_name = 'accounts/email_not_verif.html'
+
+
+class EmailVerificationView(TitleMixin, TemplateView):
+    title = 'DAS - Email verification'
+    template_name = 'accounts/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        user_id = kwargs['pk']
+        code = kwargs['code']
+        email = kwargs['email']
+
+        users_with_same_email = AccountUsers.objects.filter(email=email)
+
+        has_verified_user = users_with_same_email.filter(is_verified_email=True).exists()
+
+        if has_verified_user:
+            return HttpResponseRedirect(reverse('accounts:email_not_verified'))
+
+        try:
+            user = AccountUsers.objects.get(email=email, pk=user_id)
+        except AccountUsers.DoesNotExist:
+            return HttpResponseRedirect(reverse('accounts:email_not_verified'))
+
+        email_verifications = EmailVerification.objects.filter(user=user, code=code)
+
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user.is_verified_email = True
+            user.is_active = True
+            user.save()
+
+            EmailVerification.objects.filter(user=user).exclude(code=code).update(expiration=now())
+            email_verifications.delete()
+
+            return super(EmailVerificationView, self).get(request, *args, **kwargs)
+        else:
+            return redirect('accounts:base')
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     profile_user = get_object_or_404(AccountUsers, pk=kwargs['pk'])
+    #     if not self.check_access(request, profile_user):  # not
+    #         raise Http404("User not found")
+    #     return super().dispatch(request, *args, **kwargs)

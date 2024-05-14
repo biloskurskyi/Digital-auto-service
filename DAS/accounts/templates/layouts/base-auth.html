@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'includes/head.html' %}
+    {% block extrastyle %}{% endblock extrastyle %}
+</head>
+<body>
+
+{% block content %}{% endblock content %}
+
+{% include 'includes/scripts.html' %}
+{% block extra_js %}{% endblock extra_js %}
+
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#id_client").change(function () {
+            var clientId = $(this).val();
+            if (clientId) {
+                $.ajax({
+                    url: '{% url "orders:get_cars_for_client" %}',
+                    type: 'GET',
+                    data: {'client_id': clientId},
+                    success: function (data) {
+                        $("#id_car").html('');
+
+                        // Iterate over car_choices and append options
+                        for (var i = 0; i < data.car_choices.length; i++) {
+                            var option = $('<option/>');
+                            option.attr('value', data.car_choices[i][0]);
+                            option.text(data.car_choices[i][1]);
+                            $("#id_car").append(option);
+                        }
+                    }
+                });
+            } else {
+                $("#id_car").html('');
+            }
+        });
+    });
+    {#$(document).ready(function () {#}
+    {#    $("#id_service_station").change(function () {#}
+    {#        var stationId = $(this).val();#}
+    {#        if (stationId) {#}
+    {#            $.ajax({#}
+    {#                url: '{% url "orders:get_workers_for_station" %}',#}
+    {#                type: 'GET',#}
+    {#                data: {'station_id': stationId},#}
+    {#                success: function (data) {#}
+    {#                    $("#id_workers").html('');#}
+    {##}
+    {#                    // Iterate over worker_choices and append checkboxes#}
+    {#                    for (var i = 0; i < data.worker_choices.length; i++) {#}
+    {#                        var option = $('<option/>');#}
+    {#                        option.attr('value', data.worker_choices[i][0]);#}
+    {#                        option.text(data.worker_choices[i][1]);#}
+    {#                        $("#id_cworker").append(option);#}
+    {#                    }#}
+    {#                }#}
+    {#            });#}
+    {#        } else {#}
+    {#            $("#id_workers").html('');#}
+    {#        }#}
+    {#    });#}
+
+</script>
+{#<script>#}
+{#    $(document).ready(function () {#}
+{#        $("#id_service_station").change(function () {#}
+{#            var stationId = $(this).val();#}
+{#            if (stationId) {#}
+{#                $.ajax({#}
+{#                    url: '{% url "orders:get_workers_for_station" %}',#}
+{#                    type: 'GET',#}
+{#                    data: {'station_id': stationId},#}
+{#                    success: function (data) {#}
+{#                        $("#id_workers").html('');#}
+{##}
+{#                        // Iterate over worker_choices and append checkboxes#}
+{#                        for (var i = 0; i < data.worker_choices.length; i++) {#}
+{#                            var checkbox = $('<input/>');#}
+{#                            checkbox.attr('type', 'checkbox');#}
+{#                            checkbox.attr('class', 'form-check-input');#}
+{#                            checkbox.attr('id', 'worker_' + data.worker_choices[i][0]);#}
+{#                            checkbox.attr('name', 'workers');#}
+{#                            checkbox.attr('value', data.worker_choices[i][0]);#}
+{#                            if (data.worker_choices[i][0] in data.selected_workers) {#}
+{#                                checkbox.prop('checked', true);#}
+{#                            }#}
+{#                            var label = $('<label/>');#}
+{#                            label.attr('class', 'form-check-label');#}
+{#                            label.attr('for', 'worker_' + data.worker_choices[i][0]);#}
+{#                            label.text(data.worker_choices[i][1]);#}
+{#                            var div = $('<div/>');#}
+{#                            div.attr('class', 'form-group form-check');#}
+{#                            div.append(checkbox);#}
+{#                            div.append(label);#}
+{#                            $("#id_workers").append(div);#}
+{#                        }#}
+{#                    }#}
+{#                });#}
+{#            } else {#}
+{#                $("#id_workers").html('');#}
+{#            }#}
+{#        });#}
+{#    });#}
+{##}
+{##}
+{#</script>#}
