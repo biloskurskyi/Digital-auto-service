@@ -1,56 +1,55 @@
 {% extends 'includes/owner_profile_common.html' %}
 
-{% block edit_profile %}Manager{% endblock %}
+{% block edit_profile %}Менеджера{% endblock %}
 {% block post %}{% url 'accounts:owner_manager_profile' pk=form.instance.pk %}{% endblock %}
 
 {% block form %}
-    <div class="col-sm-12 mb-4">
+    <div class="col-sm-12 mb-4">{#  #}
         <div class="form-group">
-            <label for="ln">Username</label>
+            <label for="ln">{# Username #}Ім'я користувача</label>
             {{ form.username }}
-            <small id="addd" class="form-text text-muted">Vin number is also unique and have to have 17 numbers</small>
+            <small id="addd" class="form-text text-muted">Унікальне ім'я користувача</small>
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">First name</label>
+            <label for="fn">{# First Name #}Ім'я</label>
             {{ form.first_name }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="fn">Last name</label>
+            <label for="ln">{# Last Name #}Прізвище</label>
             {{ form.last_name }}
         </div>
     </div>
 
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="add">Email</label>
+            <label for="exampleInputEmail1">Адреса електронної пошти</label>
             {{ form.email }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="abt">Phone number</label>
+            <label for="abt">{# Phone number #}Номер телефону</label>
             {{ form.phone_number }}
-            <small id="addd" class="form-text text-muted">Enter you real phone number which contains 10
-                characters</small>
+            <small id="addd" class="form-text text-muted">{# Enter you real phone number which contains 10 characters #}Введіть реальний номер телефону, який містить 10 символів</small>
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="abt">Is active</label><br>
+            <label for="abt">{#  Is active #}Активний</label><br>
             {{ form.is_active }}
         </div>
     </div>
 {% endblock %}
 
 {% block logout %}
-    <a href="{% url 'accounts:owner_profile' pk=form.instance.owner.pk %}">Owner account</a>{% endblock %}
+    <a href="{% url 'accounts:owner_profile' pk=form.instance.owner.pk %}">{# Owner account #}Профіль власника</a>{% endblock %}
 
 {% block delete %}
-    <a href="{% url 'accounts:delete_manager' form.instance.pk %}" style="color: red;">Delete manager</a>{% endblock %}
+    <a href="{% url 'accounts:delete_manager' form.instance.pk %}" style="color: red;">{# Delete manager #} Видалити менеджера</a>{% endblock %}
 
 
 

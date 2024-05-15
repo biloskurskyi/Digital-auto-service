@@ -10,7 +10,8 @@
         <div class="col-sm-8">
             <div class="card">
                 <div class="card-header">
-                    <h5>Edit {% block edit_profile %}{% endblock %} profile</h5>
+                    {#                    <h5>Edit {% block edit_profile %}{% endblock %} profile</h5>#}
+                    <h5>Відредагувати профіль {% block edit_profile %}{% endblock %}</h5>
                 </div>
                 <div class="card-block">
                     {% for message in messages %}
@@ -29,7 +30,7 @@
                             {% block form %}
                             {% endblock %}
                         </div>
-                        <button type="submit" class="btn btn-primary shadow-2 mb-4">Submit</button>
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">{# Submit #} Підтвердити</button>
                         <hr>
                         {% block logout %}{% endblock %}
                         <br>
@@ -43,48 +44,52 @@
         <div class="col-sm-4">
             <div class="card">
                 <div class="card-block">
-{#                    {% load cache %}#}
-{#                    {% cache 30 block_section %}#}
-                        <div class="d-flex align-items-center justify-content-center flex-column">
-                            <div class="text-center">
-                                <h4 class="font-weight-bold h6">User Statistic</h4>
-                                <p class="font-italic text-muted">Displayed below is the information for user:
-                                    <strong>{{ form.username.value }}</strong></p>
-                            </div>
+                    {#                    {% load cache %}#}
+                    {#                    {% cache 30 block_section %}#}
+                    <div class="d-flex align-items-center justify-content-center flex-column">
+                        <div class="text-center">
+                            {#                                <h4 class="font-weight-bold h6">User Statistic</h4>#}
+                            {#                                <p class="font-italic text-muted">Displayed below is the information for user:#}
+                            {#                                    <strong>{{ form.username.value }}</strong></p>#}
+                            <h4 class="font-weight-bold h6">Статистика користувача</h4>
+                            <p class="font-italic text-muted">Нижче відображена інформація для користувача:
+                                <strong>{{ form.username.value }}</strong></p>
+
                         </div>
-                        <div class="small font-weight-light mt-4 text-center text-muted">
-                        <p>Managers count: {{ managers|length }}</p>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{#Managers count#}Кількість менеджерів: {{ managers|length }}</p>{# #}
                         <ul style="list-style-type: none; padding: 0;">
                             {% for manager, manager_id, manager_first_name, manager_last_name in managers %}
                                 <li>
                                     <a href="{% url 'accounts:owner_manager_profile' pk=manager_id %}">{{ manager_first_name }} {{ manager_last_name }}
-                                        with username: {{ manager }}</a>
+                                        {# with username #} під іменем: {{ manager }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p>Clients count: {{ clients|length }}</p>
+                        <p>{#Clients count #}Кількість клієнтів: {{ clients|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for client in clients %}
                                 <li>
                                     <a href="{% url 'clients:client_owner' pk=client.id %}">
-                                        {{ client.first_name }} {{ client.last_name }} with
-                                        email {{ client.email }}
+                                        {{ client.first_name }} {{ client.last_name }} {#  with email#} з електроною
+                                        поштою {{ client.email }}
                                     </a>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p>Cars count: {{ cars|length }}</p>
+                        <p>{# Cars count #}Кількість машин: {{ cars|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for car in cars %}
                                 <li>
                                     <a href="{% url 'cars:car_owner' pk=car.id %}">
-                                        {{ car.mark }} {{ car.model }} with number
-                                        plate: {{ car.car_number }}
+                                        {{ car.mark }} {{ car.model }} {# with number plate#} з номерами
+                                        машини: {{ car.car_number }}
                                     </a>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p>Workers count: {{ workers|length }}</p>
+                        <p>{# Workers count #} Кількість робітників: {{ workers|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for worker in workers %}
                                 <li>
@@ -93,27 +98,27 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p>Orders count: {{ orders|length }}</p>
+                        <p>{# Orders count #} Кількість замовлень: {{ orders|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for order in orders %}
                                 <li>
                                     <a href="{% url 'orders:order_owner' pk=order.id %}">
-                                        Client {{ order.client }} with car {{ order.car }}
+                                        Client {{ order.client }} {# with car #} з машиною {{ order.car }}
                                     </a>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <p>Stations count: {{ stations|length }}</p>
+                        <p>{#Stations count #} Кількість СТО: {{ stations|length }}</p>
                         <ul style="list-style-type: none; padding: 0;">
                             {% for station in stations %}
                                 <li>
                                     <a href="{% url 'stations:station_owner' pk=station.id %}">
-                                        {{ station.name }} on {{ station.address }}
+                                        {{ station.name }} {# on#} на {{ station.address }}
                                     </a>
                                 </li>
                             {% endfor %}
                         </ul>
-{#                    {% endcache %}#}
+                        {#                    {% endcache %}#}
                     </div>
                 </div>
             </div>

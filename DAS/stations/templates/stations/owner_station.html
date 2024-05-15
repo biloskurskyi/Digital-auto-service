@@ -1,17 +1,17 @@
 {% extends 'includes/owner_profile_common.html' %}
 
-{% block edit_profile %}Station{% endblock %}
+{% block edit_profile %}Станції{% endblock %}
 {% block post %}{% url 'stations:station_owner' pk=form.instance.pk %}{% endblock %}
 {% block form %}
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Name</label>
+            <label for="exampleInputEmail1">{# Name #}Назва</label>
             {{ form.name }}
         </div>
     </div>
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="fn">Address</label>
+            <label for="fn">{#Address  #}Адреса</label>
             {{ form.address }}
         </div>
     </div>
@@ -20,11 +20,11 @@
 {% endblock %}
 
 {% block logout %}
-    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">{#  Owner account#}Акаунт власника</a>{% endblock %}
 
 {% block delete %}
-    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">Delete
-        station</a>{% endblock %}
+    <a href="{% url 'stations:owner_delete_station' form.instance.pk %}" style="color: red;">{# Delete station #}Видалити
+        станцію</a>{% endblock %}
 
 {#{% load static %}#}
 {##}

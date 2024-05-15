@@ -6,5 +6,7 @@
         <i class="feather icon-user-plus auth-icon"></i>
     </div>
 {% endblock %}
-{% block create_name %}Create Worker{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block create_name %}{# Create Worker #}Створити робітника{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}

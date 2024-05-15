@@ -2,8 +2,10 @@
 
 {% block name_delete %}{{ object.mark }} {{ object.model }} {{ object.car_number }}{% endblock %}
 {% block button %}'{% url 'cars:owner_delete_car' pk=object.pk %}'{% endblock %}
-{% block button_name %}Delete car{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block button_name %}{# Delete car #}Видалити машину{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}
 
 
 {#{% load static %}#}

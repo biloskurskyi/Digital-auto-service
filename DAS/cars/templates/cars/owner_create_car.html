@@ -5,8 +5,10 @@
     </div>
 {% endblock %}
 {% block creator_status %}{% url 'cars:car_owner_create' user.id %}{% endblock %}
-{% block create_name %}Create Car{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block create_name %}{# Create Car #}Добавити машину{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}
 {#{% extends 'layouts/base-auth.html' %}#}
 {##}
 {#{% load static %}#}

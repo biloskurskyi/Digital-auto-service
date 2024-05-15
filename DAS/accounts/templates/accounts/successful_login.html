@@ -30,16 +30,26 @@
             <div class="card">
                 <form method="post" class="card-body text-center">
                     {% csrf_token %}
-                    <h3 class="mb-4">You have successfully logged in as <a
-                            style="color: #00d000">{{ request.user.username }}</a> and can start to
-                        work🔧!</h3>
+{#                    <h3 class="mb-4">You have successfully logged in as <a#}
+{#                            style="color: #00d000">{{ request.user.username }}</a> and can start to#}
+{#                        work🔧!</h3>#}
+{#                    {% if user.owner.id %}#}
+{#                        <a href="{% url 'accounts:manager_profile' user.id %}" style="font-size: 18px;">Your account</a>#}
+{#                    {% else %}#}
+{#                        <a href="{% url 'accounts:owner_profile' user.id %}" style="font-size: 18px;">Your account</a>#}
+{#                    {% endif %}#}
+{#                    <br>#}
+{#                    <a href="{% url 'accounts:log_out' %}" style="font-size: 18px;">Log out</a>#}
+                    <h3 class="mb-4">Ви успішно увійшли як <a
+                            style="color: #00d000">{{ request.user.username }}</a> і можете почати працювати🔧!</h3>
                     {% if user.owner.id %}
-                        <a href="{% url 'accounts:manager_profile' user.id %}" style="font-size: 18px;">Your account</a>
+                        <a href="{% url 'accounts:manager_profile' user.id %}" style="font-size: 18px;">Ваш обліковий запис</a>
                     {% else %}
-                        <a href="{% url 'accounts:owner_profile' user.id %}" style="font-size: 18px;">Your account</a>
+                        <a href="{% url 'accounts:owner_profile' user.id %}" style="font-size: 18px;">Ваш обліковий запис</a>
                     {% endif %}
                     <br>
-                    <a href="{% url 'accounts:log_out' %}" style="font-size: 18px;">Log out</a>
+                    <a href="{% url 'accounts:log_out' %}" style="font-size: 18px;">Вийти</a>
+
                 </form>
             </div>
         </div>

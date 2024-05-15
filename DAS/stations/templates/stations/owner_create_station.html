@@ -5,8 +5,10 @@
     </div>
 {% endblock %}
 {% block creator_status %}{% url 'stations:station_owner_create' user.id %}{% endblock %}
-{% block create_name %}Create Station{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block create_name %}{# Create Station #}Добавити станцію{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}
 
 {#{% load static %}#}
 {##}

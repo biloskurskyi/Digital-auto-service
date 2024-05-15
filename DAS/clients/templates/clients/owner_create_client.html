@@ -5,9 +5,11 @@
     <div class="mb-4">
         <i class="feather icon-user-plus auth-icon"></i>
     </div>
-{% endblock %}
-{% block create_name %}Create Client{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% endblock %}{#  #}
+{% block create_name %}{# Create Client #}Добавити клієнта{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}
 
 {#{% extends 'layouts/base-auth.html' %}#}
 {##}

@@ -19,9 +19,15 @@
                     {#                    <a href="{% url 'accounts:log' %}" style="font-size: 18px;">Log in</a>#}
 
                     <h3 class="mb-4">Error <i class="feather icon-x auth-icon"></i></h3>
-                    <div class="mb-4" style="font-size: 18px">The link is invalid or this email is already registered!</div>
-{#                    <a href="{% url 'accounts:log' %}" style="font-size: 18px;">Log in</a>#}
-                    <button type="button" onclick="window.location.href='{% url 'accounts:reg' %}'" class="btn btn-outline-light" data-toggle="tooltip">Sign up</button>
+                    {#                    <div class="mb-4" style="font-size: 18px">The link is invalid or this email is already registered!</div>#}
+                    {#                    <button type="button" onclick="window.location.href='{% url 'accounts:reg' %}'" class="btn btn-outline-light" data-toggle="tooltip">Sign up</button>#}
+                    <div class="mb-4" style="font-size: 18px">Посилання недійсне або ця електронна пошта вже
+                        зареєстрована!
+                    </div>
+                    <button type="button" onclick="window.location.href='{% url 'accounts:reg' %}'"
+                            class="btn btn-outline-light" data-toggle="tooltip">Зареєструватися
+                    </button>
+
                 </form>
             </div>
         </div>
