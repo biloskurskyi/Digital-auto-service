@@ -54,8 +54,9 @@ class UserRegistrationView(CreateAccountView):
 class CreateManagerView(CreateAccountView):
     form_class = CreateManagerUserForm
     template_name = 'accounts/create_manager.html'
-    success_message = ('Manager is create! For activation,'
-                       ' he needs to confirm his/her identity in a letter at the post office')
+    # success_message = ('Manager is create! For activation,'
+    #                    ' he needs to confirm his/her identity in a letter at the post office')
+    success_message = ('Менеджер створений! Для активації йому необхідно підтвердити свою особу в листі на пошті')
     title = 'DAS - create manager'
 
     def get_success_url(self):

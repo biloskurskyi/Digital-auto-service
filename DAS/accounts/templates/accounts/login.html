@@ -16,7 +16,8 @@
                     <div class="mb-4">
                         <i class="feather icon-unlock auth-icon"></i>
                     </div>
-                    <h3 class="mb-4">Login</h3>
+                    {#                    <h3 class="mb-4">Login</h3>#}
+                    <h3 class="mb-4">Вхід</h3>
                     {% for message in messages %}
                         {% if message.tags == 'error' %}
                             <div style="font-size: 18px; color: #ff0000">{{ message }}</div>
@@ -39,11 +40,14 @@
                     <div class="form-group text-left mt-4">
                         <div class="checkbox checkbox-fill d-inline">
                             <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
-                            <label for="checkbox-fill-a1" class="cr"> Save Details</label>
+                            {#                            <label for="checkbox-fill-a1" class="cr"> Save Details</label>#}
+                            <label for="checkbox-fill-a1" class="cr"> Запам'ятати користувач</label>
                         </div>
                     </div>
-                    <button class="btn btn-primary shadow-2 mb-4">Login</button>
-                    <p class="mb-0 text-muted">Don’t have an account? <a href="{% url 'accounts:reg' %}">Signup</a></p>
+{#                    <button class="btn btn-primary shadow-2 mb-4">Login</button>#}
+                <button class="btn btn-primary shadow-2 mb-4">Увійти</button>
+                    {#                    <p class="mb-0 text-muted">Don’t have an account? <a href="{% url 'accounts:reg' %}">Signup</a></p>#}
+                    <p class="mb-0 text-muted">Не маєте досі аккаунта? <a href="{% url 'accounts:reg' %}">Зареєструватися</a></p>
                 </form>
             </div>
         </div>

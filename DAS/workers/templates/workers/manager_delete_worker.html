@@ -2,5 +2,7 @@
 
 {% block name_delete %}{{ object.first_name }} {{ object.last_name }}{% endblock %}
 {% block button %}'{% url 'workers:manager_delete_worker' pk=object.pk %}'{% endblock %}
-{% block button_name %}Delete worker{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:manager_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block button_name %}{# Delete worker #}Видалити робітника{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:manager_profile' user.id %}">{#Return manager page #}Повернутися на сторінку
+        менеджера</a>{% endblock %}

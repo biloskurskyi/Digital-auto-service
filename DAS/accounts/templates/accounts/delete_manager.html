@@ -2,8 +2,10 @@
 
 {% block name_delete %}{{ object.username }}{% endblock %}
 {% block button %}'{% url 'accounts:delete_manager' pk=object.pk %}'{% endblock %}
-{% block button_name %}Delete manager{% endblock %}
-{% block status_page %}<a href="{% url 'accounts:owner_profile' user.id %}">Return on owner page</a>{% endblock %}
+{% block button_name %}{# Delete manager #}Видалити менеджера{% endblock %}
+{% block status_page %}
+    <a href="{% url 'accounts:owner_profile' user.id %}">{# Return on owner page #}Повернутися на сторінку
+        власника</a>{% endblock %}
 
 {#{% load static %}#}
 {##}

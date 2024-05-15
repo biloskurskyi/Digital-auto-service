@@ -1,56 +1,56 @@
 {% extends 'includes/manager_profile_common.html' %}
 
-{% block edit_profile %}Owner{% endblock %}
+{% block edit_profile %}Менеджера{% endblock %}
 {% block post %}{% url 'accounts:manager_profile' pk=form.instance.pk %}{% endblock %}
 {% block form %}
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
+            <label for="exampleInputEmail1">Адреса електронної пошти</label>
             {{ form.email }}
-            <small id="emailHelp" class="form-text text-muted">We'll never share your email with
-                anyone
-                else.</small>
+            <small id="emailHelp" class="form-text text-muted">Ми не передамо вашу електронну пошту нікому
+                іншому.</small>
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="fn">First Name</label>
+            <label for="fn">{# First Name #}Ім'я</label>
             {{ form.first_name }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="ln">Last Name</label>
+            <label for="ln">{# Last Name #}Прізвище</label>
             {{ form.last_name }}
         </div>
     </div>
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="add">Username</label>
+            <label for="add">{# Username #}Ім'я користувача</label>
             {{ form.username }}
-            <small id="addd" class="form-text text-muted">This is your unique username</small>
+            <small id="addd" class="form-text text-muted">Це ваше унікальний ім'я</small>
         </div>
     </div>
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="abt">Phone number</label>
+            <label for="abt">{# Phone number #}Номер телефону</label>
             {{ form.phone_number }}
-            <small id="addd" class="form-text text-muted">Enter you real phone number which contains 10
-                characters</small>
+            <small id="addd" class="form-text text-muted">Введіть ваш реальний номер телефону, який складається з 10
+                символів</small>
         </div>
     </div>
 
     <div class="col-sm-12 mb-4" style="display: inline-block;">
         <a href="{% url 'accounts:manager_generate_pdf' user.id %}" target="_blank" download="company_report.pdf"
            style="font-size: 25px; display: inline-block;">
-            Download Report
+            {#            Download Report#}
+            Завантажити звіт
             <img src="/static/vendor/images/pdf.svg" id="pdf" style="width: 35px; height: auto;">
         </a>
     </div>
 
     <hr>
 {% endblock %}
-{% block logout %}<a href="{% url 'accounts:log_out' %}">Log out</a>{% endblock %}
+{% block logout %}<a href="{% url 'accounts:log_out' %}">{# Log out #}Вийти</a>{% endblock %}
 
 
 {#{% load static %}#}

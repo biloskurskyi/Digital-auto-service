@@ -1,44 +1,55 @@
 {% extends 'includes/owner_profile_common.html' %}
 
-{% block edit_profile %}Order{% endblock %}
+{% block edit_profile %}Замовлення{% endblock %}
 {% block post %}{% url 'orders:order_owner' pk=form.instance.pk %}{% endblock %}
 {% block form %}
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Client</label>
+{#            <label for="exampleInputEmail1">Client</label>#}
+{#            {{ form.client }}#}
+{#            <small id="addd" class="form-text text-muted">You can't change this field</small>#}
+            <label for="exampleInputEmail1">Клієнт</label>
             {{ form.client }}
-            <small id="addd" class="form-text text-muted">You can't change this field</small>
+            <small id="addd" class="form-text text-muted">Ви не можете змінити це поле</small>
+
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="fn">Car</label>
+{#            <label for="fn">Car</label>#}
+{#            {{ form.car }}#}
+{#            <small id="addd" class="form-text text-muted">You can't change this field</small>#}
+            <label for="fn">Автомобіль</label>
             {{ form.car }}
-            <small id="addd" class="form-text text-muted">You can't change this field</small>
+            <small id="addd" class="form-text text-muted">Ви не можете змінити це поле</small>
+
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="ln">Start date</label>
+{#            <label for="ln">Start date</label>#}
+            <label for="ln">Дата початку</label>
             {{ form.start_date }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="add">Process status</label>
+{#            <label for="add">Process status</label>#}
+            <label for="add">Статус процесу</label>
             {{ form.process_status }}
             <small id="addd" class="form-text text-muted"></small>
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="add">Service station</label>
+{#            <label for="add">Service station</label>#}
+            <label for="add">СТО (Сервісна станція)</label>
             {{ form.service_station }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="add">Workers</label>
+            <label for="add">{# Workers #}Працівники</label>
             {{ form.workers }}
         </div>
     </div>
@@ -76,34 +87,47 @@
         {#        {% endif %}#}
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Info</label>
+            <label for="exampleInputEmail1">Інформація{# Info #}</label>
             {{ form.info }}
         </div>
     </div>
     {% if form.instance.id %}
-        <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
+{#        <h3 class="col-sm-12 mb-4">Cars for {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>#}
+{#        {% for car in form.instance.get_all_cars %}#}
+{#            <ul>#}
+{#                <li>#}
+{#                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car#}
+{#                        Number: {{ car.car_number }}</a><br>#}
+{#                    Mark: {{ car.mark }}<br>#}
+{#                    Model: {{ car.model }}<br>#}
+{#                    Year: {{ car.year }}<br>#}
+{#                    Engine: {{ car.engine }}<br>#}
+{#                    Gear Type: {{ car.gear_type }}<br>#}
+{#                    Comment: {{ car.comment }}<br></li>#}
+{#            </ul>#}
+{#        {% endfor %}#}
+        <h3 class="col-sm-12 mb-4">Автомобілі для {{ form.instance.first_name }} {{ form.instance.last_name }} :</h3>
         {% for car in form.instance.get_all_cars %}
             <ul>
                 <li>
-                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Car
-                        Number: {{ car.car_number }}</a><br>
-                    Mark: {{ car.mark }}<br>
-                    Model: {{ car.model }}<br>
-                    Year: {{ car.year }}<br>
-                    Engine: {{ car.engine }}<br>
-                    Gear Type: {{ car.gear_type }}<br>
-                    Comment: {{ car.comment }}<br></li>
+                    <a href="{% url "cars:car_owner" pk=car.id %}" style="color: #8cc6e5">Номер автомобіля: {{ car.car_number }}</a><br>
+                    Марка: {{ car.mark }}<br>
+                    Модель: {{ car.model }}<br>
+                    Рік: {{ car.year }}<br>
+                    Двигун: {{ car.engine }}<br>
+                    Тип коробки передач: {{ car.gear_type }}<br>
+                    Коментар: {{ car.comment }}<br></li>
             </ul>
         {% endfor %}
+
     {% endif %}
 {% endblock %}
 
 {% block logout %}
-    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">{# Owner account #}Профіль власника</a>{% endblock %}
 
 {% block delete %}
-    <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">Delete
-        order</a>{% endblock %}
+    <a href="{% url 'orders:owner_delete_order' form.instance.pk %}" style="color: red;">{# Delete order#}Видалити замовлення</a>{% endblock %}
 
 
 

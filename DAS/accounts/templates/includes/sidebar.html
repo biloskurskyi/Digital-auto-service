@@ -14,21 +14,22 @@
             <div class="navbar-content scroll-div">
                 <ul class="nav pcoded-inner-navbar">
                     <li class="nav-item pcoded-menu-caption">
-                        <label>Navigation</label>
+{#                        <label>Navigation</label>#}
+                         <label>Навігація</label>
                     </li>
 
                     <li class="nav-item pcoded-hasmenu {% if 'basic_components' in parent %}active pcoded-trigger{% endif %}">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Managers</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Managers #}Менеджери</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
                             <li>
-                                <a href="{% url 'accounts:create_manager' user.id %}">Create new manager</a>
+                                <a href="{% url 'accounts:create_manager' user.id %}">Добавити нового менеджера{# Create new manager #}</a>
                             </li>
                             <hr>
                             {% for manager, manager_id, manager_first_name, manager_last_name in managers %}
                                 <li>
-                                    <a href="{% url 'accounts:owner_manager_profile' pk=manager_id %}">{{ manager_first_name }} {{ manager_last_name }}
-                                        with username: {{ manager }}</a>
+                                <a href="{% url 'accounts:owner_manager_profile' pk=manager_id %}">{{ manager_first_name }} {{ manager_last_name }}
+                                        {# with username #} під іменем: {{ manager }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
@@ -36,14 +37,15 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Clients</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Clients #}Клієнти</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'clients:client_owner_create' user.id %}">Create new client</a></li>
+                            <li><a href="{% url 'clients:client_owner_create' user.id %}">{#  Create new client#}Добавити нового клієнта</a></li>
                             <hr>
                             {% for client in clients %}
                                 <li>
-                                    <a href="{% url 'clients:client_owner' pk=client.id %}">
-                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                     <a href="{% url 'clients:client_owner' pk=client.id %}">
+                                        {{ client.first_name }} {{ client.last_name }} {#  with email#} з електроною
+                                        поштою {{ client.email }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -51,14 +53,15 @@
                     </li>
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Cars</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Cars #}Машини</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'cars:car_owner_create' user.id %}">Create new car</a></li>
+                            <li><a href="{% url 'cars:car_owner_create' user.id %}">{# Create new car #} Добавити нові машини</a></li>
                             <hr>
                             {% for car in cars %}
                                 <li>
                                     <a href="{% url 'cars:car_owner' pk=car.id %}">
-                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                        {{ car.mark }} {{ car.model }} {# with number plate#} з номерами
+                                        машини: {{ car.car_number }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -67,9 +70,9 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Workers</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Workers #}Робітники</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'workers:worker_owner_create' user.id %}">Create new worker</a></li>
+                            <li><a href="{% url 'workers:worker_owner_create' user.id %}">{# Create new worker #}Добавити нових робітників</a></li>
                             <hr>
                             {% for worker in workers %}
                                 <li>
@@ -83,14 +86,14 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Orders #}Замовлення</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'orders:order_owner_create' user.id %}">Create new order</a></li>
+                            <li><a href="{% url 'orders:order_owner_create' user.id %}">{#  Create new order#}Добавити замовлення</a></li>
                             <hr>
                             {% for order in orders %}
                                 <li>
                                     <a href="{% url 'orders:order_owner' pk=order.id %}">
-                                        {{ order.client }} {{ order.car }}
+                                        Client {{ order.client }} {# with car #} з машиною {{ order.car }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -100,14 +103,14 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Stations</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Stations #}Станції</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'stations:station_owner_create' user.id %}">Create new station</a></li>
+                            <li><a href="{% url 'stations:station_owner_create' user.id %}">{# Create new station #}Добавити нову станцію</a></li>
                             <hr>
                             {% for station in stations %}
                                 <li>
                                     <a href="{% url 'stations:station_owner' pk=station.id %}">
-                                        {{ station.name }} on {{ station.address }}
+                                        {{ station.name }} на{# on #} {{ station.address }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -121,19 +124,21 @@
             <div class="navbar-content scroll-div">
                 <ul class="nav pcoded-inner-navbar">
                     <li class="nav-item pcoded-menu-caption">
-                        <label>Navigation</label>
+                         {#<label>Navigation</label>#}
+                         <label>Навігація</label>
                     </li>
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Clients</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Clients #}Клієнти</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'clients:client_manager_create' user.id %}">Create new client</a></li>
+                            <li><a href="{% url 'clients:client_manager_create' user.id %}">{#  Create new client#}Добавити нового клієнта</a></li>
                             <hr>
                             {% for client in clients %}
                                 <li>
                                     <a href="{% url 'clients:client_manager' pk=client.id %}">
-                                        {{ client.first_name }} {{ client.last_name }} with email {{ client.email }}
+                                        {{ client.first_name }} {{ client.last_name }} {#  with email#} з електроною
+                                        поштою {{ client.email }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -141,14 +146,15 @@
                     </li>
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Cars</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Cars #}Машини</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'cars:car_manager_create' user.id %}">Create new car</a></li>
+                            <li><a href="{% url 'cars:car_manager_create' user.id %}">{# Create new car #} Добавити нові машини</a></li>
                             <hr>
                             {% for car in cars %}
                                 <li>
                                     <a href="{% url 'cars:car_manager' pk=car.id %}">
-                                        {{ car.mark }} {{ car.model }} with number plate: {{ car.car_number }}
+                                        {{ car.mark }} {{ car.model }} {# with number plate#} з номерами
+                                        машини: {{ car.car_number }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -157,9 +163,9 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Workers</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Workers #}Робітники</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'workers:worker_manager_create' user.id %}">Create new worker</a></li>
+                            <li><a href="{% url 'workers:worker_manager_create' user.id %}">{# Create new worker #}Добавити нових робітників</a></li>
                             <hr>
                             {% for worker in workers %}
                                 <li>
@@ -173,14 +179,14 @@
 
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Orders</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Orders #}Замовлення</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
-                            <li><a href="{% url 'orders:order_manager_create' user.id %}">Create new order</a></li>
+                            <li><a href="{% url 'orders:order_manager_create' user.id %}">{#  Create new order#}Добавити замовлення</a></li>
                             <hr>
                             {% for order in orders %}
                                 <li>
                                     <a href="{% url 'orders:order_manager' pk=order.id %}">
-                                        {{ order.client }} {{ order.car }}
+                                        {{ order.client }} {# with car #} з машиною {{ order.car }}
                                     </a>
                                 </li>
                             {% endfor %}
@@ -188,12 +194,12 @@
                     </li>
                     <li class="nav-item pcoded-hasmenu">
                         <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                                class="feather icon-box"></i></span><span class="pcoded-mtext">Stations</span></a>
+                                class="feather icon-box"></i></span><span class="pcoded-mtext">{# Stations #}Станції</span></a>
                         <ul class="pcoded-submenu" style="list-style-type: none; padding: 0;">
                             {% for station in stations %}
                                 <li>
                                     <a href="{% url 'stations:station_manager' pk=station.id %}">
-                                        {{ station.name }} on {{ station.address }}
+                                        {{ station.name }} на{# on #} {{ station.address }}
                                     </a>
                                 </li>
                             {% endfor %}

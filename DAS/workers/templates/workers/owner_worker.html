@@ -1,56 +1,59 @@
 {% extends 'includes/owner_profile_common.html' %}
 
-{% block edit_profile %}Worker{% endblock %}
+{#{% block edit_profile %}Worker{% endblock %}#}
+
+{% block edit_profile %}Працівника{% endblock %}
 {% block post %}{% url 'workers:worker_owner' pk=form.instance.pk %}{% endblock %}
 {% block form %}
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Name</label>
+{#            <label for="exampleInputEmail1">Name</label>#}
+            <label for="exampleInputEmail1">Ім'я</label>
             {{ form.first_name }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="fn">Surname</label>
+         <label for="ln">{# Last Name #}Прізвище</label>
             {{ form.last_name }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
-        <label for="exampleInputEmail1">Date</label>
+        <label for="exampleInputEmail1">{# Date #}Дата народження</label>
         <div class="form-group">
             {{ form.date_of_birth }}
-            <small id="addd" class="form-text text-muted">The date of birth cannot be greater than today</small>
+{#            <small id="addd" class="form-text text-muted">The date of birth cannot be greater than today</small>#}
+            <small id="addd" class="form-text text-muted">Дата народження не може бути пізнішою за сьогодні</small>
         </div>
     </div>
     <div class="col-sm-6 mb-4">
-        <label for="exampleInputEmail1">Years of experience</label>
+        <label for="exampleInputEmail1">{# Years of experience #}Років досвіду</label>
         <div class="form-group">
             {{ form.years_of_experience }}
         </div>
     </div>
     <div class="col-sm-12 mb-4">
         <div class="form-group">
-            <label for="exampleInputEmail1">Skills</label>
+            <label for="exampleInputEmail1">{# Skills #}Навички</label>
             {{ form.skills }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
-        <label for="exampleInputEmail1">Salary</label>
+        <label for="exampleInputEmail1">{#  Salary#}Зарплата</label>
         <div class="form-group">
             {{ form.salary }}
         </div>
     </div>
     <div class="col-sm-6 mb-4">
         <div class="form-group">
-            <label for="add">Orders</label>
+            <label for="add">{# Orders #}Замовлення</label>
             {{ form.orders }}
         </div>
     </div>
 {% endblock %}
 
 {% block logout %}
-    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">Owner account</a>{% endblock %}
+    <a href="{% url 'accounts:owner_profile' pk=request.user.pk %}">{# Owner account #}Профіль власника</a>{% endblock %}
 
 {% block delete %}
-    <a href="{% url 'workers:owner_delete_worker' form.instance.pk %}" style="color: red;">Delete
-        worker</a>{% endblock %}
+    <a href="{% url 'workers:owner_delete_worker' form.instance.pk %}" style="color: red;">{# Delete worker #}Видалити працівника</a>{% endblock %}
