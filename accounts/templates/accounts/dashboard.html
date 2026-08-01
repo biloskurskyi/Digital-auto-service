@@ -77,6 +77,14 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Orders count:' %} {{ nav.orders|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for order in nav.orders %}
+                                <li><a href="{% url 'order_edit' order.pk %}">{{ order }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                     {% if nav.is_owner %}
                         <div class="small font-weight-light mt-4 text-center text-muted">
                             <p>{% trans 'Stations count:' %} {{ nav.stations|length }}</p>
