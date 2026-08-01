@@ -1,0 +1,49 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% trans 'Edit client' %}</h5>
+                </div>
+                <div class="card-block">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for error in form.non_field_errors %}
+                            <span class="text-danger d-block my-3">{{ error }}</span>
+                        {% endfor %}
+                        {% for field in form %}
+                            {% include 'partials/form_field.html' with labeled=True %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Submit' %}</button>
+                    </form>
+                    <hr>
+                    <a class="text-danger" href="{% url 'client_delete' object.pk %}">{% trans 'Delete client' %}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% blocktrans with name=object %}Cars for {{ name }}{% endblocktrans %}</h5>
+                </div>
+                <div class="card-block">
+                    <ul class="list-unstyled">
+                        {% for car in cars %}
+                            <li class="mb-3">
+                                <a href="{% url 'car_edit' car.pk %}">{{ car }}</a>
+                                <div class="small text-muted">
+                                    {{ car.year }} · {{ car.engine }} · {{ car.get_gear_type_display }}
+                                </div>
+                            </li>
+                        {% empty %}
+                            <li class="text-muted">{% trans 'No cars yet.' %}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

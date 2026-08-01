@@ -1,0 +1,8 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    {% url 'client_edit' object.pk as cancel_url %}
+    {% trans 'Delete client' as button_label %}
+    {% include 'partials/confirm_delete.html' with subject=object %}
+{% endblock %}
