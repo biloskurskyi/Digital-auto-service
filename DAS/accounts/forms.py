@@ -3,64 +3,11 @@ import uuid
 from datetime import timedelta
 
 from django import forms
-from django.contrib.auth.forms import (AuthenticationForm, UserChangeForm,
-                                       UserCreationForm)
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import CheckboxInput
 from django.utils.timezone import now
 
 from accounts.models import AccountUsers, EmailVerification
-
-
-class UserLoginForm(AuthenticationForm):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter exist username'}))
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter correct Password'}))
-
-    class Meta:
-        model = AccountUsers
-        fields = ('username', 'password',)
-        db_table = 'account_users'
-
-
-class CreateAccountUserForm(UserCreationForm):
-    first_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter first name'}))
-    last_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter last name'}))
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter username'}))
-    email = forms.CharField(
-        widget=forms.EmailInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter email'}))
-    phone_number = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter phone number'}))
-    password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control py-4', 'placeholder': 'Enter Password'}))
-    password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control py-4', 'placeholder': 'Repeat the password'}))
-
-    class Meta:
-        model = AccountUsers
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2',)
-        db_table = 'account_users'
-
-    def save(self, commit=True):
-        user = super(CreateAccountUserForm, self).save(commit=False)
-        if commit:
-            user.save()
-            expiration = now() + timedelta(hours=24)
-            record = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
-            record.send_verification_email(self.cleaned_data['password1'])
-        return user
-
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        users_with_email = AccountUsers.objects.filter(email=email)
-        if users_with_email.exists():
-            user = users_with_email.first()
-            if user.is_active:
-                raise forms.ValidationError("This email address is already used!")
-        return email
 
 
 class CreateManagerUserForm(UserCreationForm):

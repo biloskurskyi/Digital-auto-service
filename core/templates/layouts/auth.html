@@ -4,7 +4,20 @@
     {% include 'partials/head.html' %}
 </head>
 <body>
-{% block content %}{% endblock %}
+<div class="auth-wrapper">
+    <div class="auth-content">
+        <div class="auth-bg">
+            <span class="r"></span>
+            <span class="r s"></span>
+            <span class="r s"></span>
+            <span class="r"></span>
+        </div>
+        <div class="card">
+            {% include 'partials/messages.html' %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</div>
 {% include 'partials/scripts.html' %}
 </body>
 </html>
