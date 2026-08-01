@@ -1,0 +1,8 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    {% url 'worker_edit' object.pk as cancel_url %}
+    {% trans 'Delete worker' as button_label %}
+    {% include 'partials/confirm_delete.html' with subject=object %}
+{% endblock %}

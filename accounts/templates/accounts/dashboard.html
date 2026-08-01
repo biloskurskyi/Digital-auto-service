@@ -69,6 +69,24 @@
                             {% endfor %}
                         </ul>
                     </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Workers count:' %} {{ nav.workers|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for worker in nav.workers %}
+                                <li><a href="{% url 'worker_edit' worker.pk %}">{{ worker }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% if nav.is_owner %}
+                        <div class="small font-weight-light mt-4 text-center text-muted">
+                            <p>{% trans 'Stations count:' %} {{ nav.stations|length }}</p>
+                            <ul class="list-unstyled">
+                                {% for station in nav.stations %}
+                                    <li><a href="{% url 'station_edit' station.pk %}">{{ station }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

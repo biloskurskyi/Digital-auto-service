@@ -4,15 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from core.services import tenant_of
-from core.views import FlashMessagesMixin
+from core.views import FlashMessagesMixin, TenantScopedMixin
 
 from .forms import CarForm
 from .models import Car
-
-
-class CarScopedMixin(LoginRequiredMixin):
-    def get_queryset(self):
-        return Car.objects.for_tenant(tenant_of(self.request.user))
 
 
 class CarFormMixin:
@@ -32,14 +27,16 @@ class CarCreateView(FlashMessagesMixin, CarFormMixin, LoginRequiredMixin, Create
     error_message = _('Error creating car.')
 
 
-class CarUpdateView(FlashMessagesMixin, CarFormMixin, CarScopedMixin, UpdateView):
+class CarUpdateView(FlashMessagesMixin, CarFormMixin, TenantScopedMixin, UpdateView):
+    model = Car
     template_name = 'cars/car_edit.html'
     extra_context = {'title': 'DAS - Car profile'}
     success_message = _('Car updated successfully.')
     error_message = _('Error updating car.')
 
 
-class CarDeleteView(FlashMessagesMixin, CarScopedMixin, DeleteView):
+class CarDeleteView(FlashMessagesMixin, TenantScopedMixin, DeleteView):
+    model = Car
     template_name = 'cars/car_delete.html'
     success_url = reverse_lazy('dashboard')
     extra_context = {'title': 'DAS - Car delete'}
