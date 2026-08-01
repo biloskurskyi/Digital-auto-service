@@ -66,3 +66,9 @@ def activate_manager(verification, password_form):
     with transaction.atomic():
         password_form.save()
         complete_verification(verification)
+
+
+def delete_owner_account(owner):
+    with transaction.atomic():
+        User.objects.for_tenant(owner).delete()
+        owner.delete()
