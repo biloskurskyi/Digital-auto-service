@@ -27,6 +27,30 @@
                         </ul>
                     </li>
                 {% endif %}
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-users"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Clients' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'client_new' %}">{% trans 'Create new client' %}</a></li>
+                        {% for client in nav.clients %}
+                            <li><a href="{% url 'client_edit' client.pk %}">{{ client }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-truck"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Cars' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'car_new' %}">{% trans 'Create new car' %}</a></li>
+                        {% for car in nav.cars %}
+                            <li><a href="{% url 'car_edit' car.pk %}">{{ car }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>

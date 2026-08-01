@@ -24,6 +24,8 @@ INSTALLED_APPS = [
 
     'core',
     'accounts',
+    'clients',
+    'cars',
 ]
 
 MIDDLEWARE = [

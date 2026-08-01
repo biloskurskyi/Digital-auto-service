@@ -53,6 +53,22 @@
                             </ul>
                         </div>
                     {% endif %}
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Clients count:' %} {{ nav.clients|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for client in nav.clients %}
+                                <li><a href="{% url 'client_edit' client.pk %}">{{ client }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Cars count:' %} {{ nav.cars|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for car in nav.cars %}
+                                <li><a href="{% url 'car_edit' car.pk %}">{{ car }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

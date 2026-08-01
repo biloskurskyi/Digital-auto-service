@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
@@ -6,6 +5,8 @@ from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView
+
+from core.views import FlashMessagesMixin
 
 from . import services
 from .forms import LoginForm, ManagerInviteForm, PasswordResetEmailForm, PasswordSetForm, ProfileForm, RegistrationForm
@@ -17,23 +18,6 @@ class OwnerRequiredMixin(LoginRequiredMixin):
         if request.user.is_authenticated and request.user.owner_id is not None:
             raise Http404
         return super().dispatch(request, *args, **kwargs)
-
-
-class ProfileMessagesMixin:
-    def form_valid(self, form):
-        messages.success(self.request, _('Profile updated successfully.'))
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('Error updating profile.'))
-        return super().form_invalid(form)
-
-
-class DeletedMessageMixin:
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        messages.success(self.request, _('Account deleted successfully.'))
-        return response
 
 
 class LandingView(TemplateView):
@@ -123,41 +107,46 @@ class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
     extra_context = {'title': 'DAS - Password reset complete'}
 
 
-class DashboardView(ProfileMessagesMixin, LoginRequiredMixin, UpdateView):
+class DashboardView(FlashMessagesMixin, LoginRequiredMixin, UpdateView):
     template_name = 'accounts/dashboard.html'
     form_class = ProfileForm
     success_url = reverse_lazy('dashboard')
     extra_context = {'title': 'DAS - Dashboard'}
+    success_message = _('Profile updated successfully.')
+    error_message = _('Error updating profile.')
 
     def get_object(self, queryset=None):
         return self.request.user
 
 
-class AccountDeleteView(DeletedMessageMixin, OwnerRequiredMixin, DeleteView):
+class AccountDeleteView(FlashMessagesMixin, OwnerRequiredMixin, DeleteView):
     template_name = 'accounts/account_delete.html'
     success_url = reverse_lazy('register')
     extra_context = {'title': 'DAS - Account delete'}
+    success_message = _('Account deleted successfully.')
 
     def get_object(self, queryset=None):
         return self.request.user
 
 
-class ManagerCreateView(OwnerRequiredMixin, FormView):
+class ManagerCreateView(FlashMessagesMixin, OwnerRequiredMixin, FormView):
     template_name = 'accounts/manager_new.html'
     form_class = ManagerInviteForm
     success_url = reverse_lazy('dashboard')
     extra_context = {'title': 'DAS - Create manager'}
+    success_message = _('Manager created. An activation link has been emailed to them.')
 
     def form_valid(self, form):
         services.invite_manager(self.request, form, self.request.user)
-        messages.success(self.request, _('Manager created. An activation link has been emailed to them.'))
         return super().form_valid(form)
 
 
-class ManagerUpdateView(ProfileMessagesMixin, LoginRequiredMixin, UpdateView):
+class ManagerUpdateView(FlashMessagesMixin, LoginRequiredMixin, UpdateView):
     template_name = 'accounts/manager_edit.html'
     form_class = ProfileForm
     extra_context = {'title': 'DAS - Manager profile'}
+    success_message = _('Profile updated successfully.')
+    error_message = _('Error updating profile.')
 
     def get_queryset(self):
         return User.objects.for_tenant(self.request.user)
@@ -166,10 +155,11 @@ class ManagerUpdateView(ProfileMessagesMixin, LoginRequiredMixin, UpdateView):
         return reverse('manager_edit', kwargs={'pk': self.object.pk})
 
 
-class ManagerDeleteView(DeletedMessageMixin, LoginRequiredMixin, DeleteView):
+class ManagerDeleteView(FlashMessagesMixin, LoginRequiredMixin, DeleteView):
     template_name = 'accounts/manager_delete.html'
     success_url = reverse_lazy('dashboard')
     extra_context = {'title': 'DAS - Account delete'}
+    success_message = _('Account deleted successfully.')
 
     def get_queryset(self):
         return User.objects.for_tenant(self.request.user)

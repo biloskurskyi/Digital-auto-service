@@ -2,16 +2,9 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, SetPasswordForm, UserCreationForm
 from django.utils.translation import gettext_lazy as _
 
+from core.forms import StyledForm
+
 from .models import User
-
-
-class StyledForm:
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            if not isinstance(field.widget, forms.CheckboxInput):
-                field.widget.attrs.setdefault('class', 'form-control py-4')
-                field.widget.attrs.setdefault('placeholder', field.label)
 
 
 class UniqueActiveEmailMixin:
