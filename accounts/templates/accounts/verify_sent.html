@@ -1,0 +1,12 @@
+{% extends 'layouts/auth.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="card-body text-center">
+        <h3 class="mb-4">{% trans 'Confirm your email address' %} <i class="feather icon-user auth-icon"></i></h3>
+        <p class="mb-4">{% trans 'We have sent you an email containing the verification link' %}
+            <i class="feather icon-settings"></i></p>
+        <hr>
+        <a href="{% url 'landing' %}" class="btn btn-outline-light">{% trans 'Main page' %}</a>
+    </div>
+{% endblock %}

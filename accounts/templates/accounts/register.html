@@ -1,0 +1,21 @@
+{% extends 'layouts/auth.html' %}
+{% load i18n %}
+
+{% block content %}
+    <form method="post" class="card-body text-center">
+        {% csrf_token %}
+        <div class="mb-4">
+            <i class="feather icon-user-plus auth-icon"></i>
+        </div>
+        <h3 class="mb-4">{% trans 'Sign up' %}</h3>
+        {% for error in form.non_field_errors %}
+            <span class="text-danger d-block my-3">{{ error }}</span>
+        {% endfor %}
+        {% for field in form %}
+            {% include 'partials/form_field.html' %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Sign up' %}</button>
+        <p class="mb-0 text-muted">{% trans 'Already have an account?' %}
+            <a href="{% url 'login' %}">{% trans 'Log in' %}</a></p>
+    </form>
+{% endblock %}

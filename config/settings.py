@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import environ
+from django.contrib.messages import constants as message_constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -62,6 +63,10 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'accounts.User'
 
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'login_success'
+LOGOUT_REDIRECT_URL = 'login'
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -82,6 +87,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
+MESSAGE_TAGS = {message_constants.ERROR: 'danger'}
 
 EMAIL_BACKEND = env('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', default='')
