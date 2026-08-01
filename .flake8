@@ -1,5 +1,5 @@
 [flake8]
-exclude = migrations,.venv,DAS
+exclude = migrations,.venv
 ignore = F401, W503
 
 max-line-length = 120
