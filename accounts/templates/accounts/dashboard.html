@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-{% load i18n %}
+{% load i18n static %}
 
 {% block content %}
     <div class="row">
@@ -24,6 +24,10 @@
                         {% csrf_token %}
                         <button type="submit" class="btn btn-outline-secondary">{% trans 'Log out' %}</button>
                     </form>
+                    <a class="d-block mt-3 h5" href="{% url 'company_report' %}" target="_blank">
+                        {% trans 'Download report' %}
+                        <img src="{% static 'vendor/images/pdf.svg' %}" alt="" width="35" height="35">
+                    </a>
                     {% if nav.is_owner %}
                         <a class="d-block mt-3 text-danger" href="{% url 'account_delete' %}">{% trans 'Delete account' %}</a>
                     {% endif %}

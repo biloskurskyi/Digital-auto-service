@@ -1,0 +1,134 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans 'Company report' %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333333;
+            font-size: 25px;
+        }
+
+        h2 {
+            color: #333333;
+            font-size: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            font-size: 15px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .footer {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<h1>{% blocktrans with username=username %}Report for {{ username }}{% endblocktrans %}</h1>
+{% if managers is not None %}
+    <hr>
+    <div class="section">
+        <h2>{% trans 'Managers' %}</h2>
+        <ul>
+            {% for manager in managers %}
+                <li>{{ manager.first_name }} {{ manager.last_name }} — {{ manager.email }} — {{ manager.phone_number }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<hr>
+<div class="section">
+    <h2>{% trans 'Clients' %}</h2>
+    <ul>
+        {% for client in clients %}
+            <li>{{ client.first_name }} {{ client.last_name }} — {{ client.email }} — {{ client.phone_number }}</li>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+<div class="section">
+    <h2>{% trans 'Cars' %}</h2>
+    <ul>
+        {% for car in cars %}
+            <li>
+                {{ car.car_number }} {{ car.mark }} {{ car.model }} —
+                {% trans 'owner:' %} {{ car.client.first_name }} {{ car.client.last_name }} ({{ car.client.email }}) —
+                {{ car.comment }}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+<div class="section">
+    <h2>{% trans 'Workers' %}</h2>
+    <ul>
+        {% for worker in workers %}
+            <li>
+                {{ worker.first_name }} {{ worker.last_name }},
+                {% blocktrans with years=worker.years_of_experience %}{{ years }} years of experience{% endblocktrans %},
+                {% trans 'salary:' %} {{ worker.salary }}
+                <ul>
+                    {% for order in worker.orders.all %}
+                        <li>{{ order }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+<div class="section">
+    <h2>{% trans 'Orders' %}</h2>
+    <ul>
+        {% for order in orders %}
+            <li>
+                {% trans 'Client:' %} {{ order.client.first_name }} {{ order.client.last_name }} ({{ order.client.email }}),
+                {% trans 'car:' %} {{ order.car.car_number }} {{ order.car.mark }} {{ order.car.model }},
+                {% trans 'start date:' %} {{ order.start_date }},
+                {% trans 'station:' %} {{ order.station.name }} {{ order.station.address }},
+                {% trans 'status:' %} {{ order.get_process_status_display }},
+                {% trans 'info:' %} {{ order.info }}
+                <ul>
+                    {% for worker in order.workers.all %}
+                        <li>{{ worker }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% if stations is not None %}
+    <hr>
+    <div class="section">
+        <h2>{% trans 'Stations' %}</h2>
+        <ul>
+            {% for station in stations %}
+                <li>{{ station.name }} — {{ station.address }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+<hr>
+<div class="footer">
+    <h1>DAS</h1>
+    <h3>{% trans 'digital auto service' %}</h3>
+</div>
+</body>
+</html>
