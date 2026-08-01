@@ -1,0 +1,17 @@
+{% load i18n %}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <form method="post" class="card-body text-center">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <i class="feather icon-trash auth-icon text-danger"></i>
+                </div>
+                <p>{% blocktrans %}Are you sure you want to delete "{{ subject }}"?{% endblocktrans %}</p>
+                <button type="submit" class="btn btn-outline-danger">{{ button_label }}</button>
+                <hr>
+                <a href="{{ cancel_url }}">{% trans 'Cancel' %}</a>
+            </form>
+        </div>
+    </div>
+</div>

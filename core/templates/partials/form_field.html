@@ -1,0 +1,7 @@
+<div class="form-group mb-3 text-left">
+    <label{% if not labeled %} class="sr-only"{% endif %} for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% for error in field.errors %}
+        <span class="text-danger d-block mb-2">{{ error }}</span>
+    {% endfor %}
+</div>

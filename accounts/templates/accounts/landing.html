@@ -1,0 +1,19 @@
+{% extends 'layouts/auth.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="card-body text-center">
+        <div class="mb-4">
+            <i class="feather auth-icon mb-4">{% trans 'Welcome🚘' %}</i>
+        </div>
+        <h3 class="mb-4">{% trans 'Please sign up or register for upcoming actions' %}</h3>
+        <p>{% blocktrans %}Digital Auto Service is a free application🖥️ designed to help
+            you manage your auto service🔨️ efficiently. After just 2 minutes of registration📃, as an owner,
+            you gain full control privileges over all your managers💼, clients🤝, their cars🚗, and orders📋.
+            Start now and streamline your auto service management📈!{% endblocktrans %}</p>
+        <p class="mb-0 text-muted">{% trans 'Already have an account?' %}
+            <a href="{% url 'login' %}">{% trans 'Log in' %}</a></p>
+        <p class="mb-0 text-muted">{% trans "Don't have an account?" %}
+            <a href="{% url 'register' %}">{% trans 'Sign up' %}</a></p>
+    </div>
+{% endblock %}

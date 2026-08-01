@@ -1,0 +1,23 @@
+{% extends 'layouts/auth.html' %}
+{% load i18n %}
+
+{% block content %}
+    <form method="post" class="card-body text-center">
+        {% csrf_token %}
+        <div class="mb-4">
+            <i class="feather icon-unlock auth-icon"></i>
+        </div>
+        <h3 class="mb-4">{% trans 'Login' %}</h3>
+        {% for error in form.non_field_errors %}
+            <span class="text-danger d-block my-3">{{ error }}</span>
+        {% endfor %}
+        {% for field in form %}
+            {% include 'partials/form_field.html' %}
+        {% endfor %}
+        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Login' %}</button>
+        <p class="mb-2 text-muted">{% trans 'Forgot your password?' %}
+            <a href="{% url 'password_reset' %}">{% trans 'Reset it' %}</a></p>
+        <p class="mb-0 text-muted">{% trans "Don't have an account?" %}
+            <a href="{% url 'register' %}">{% trans 'Sign up' %}</a></p>
+    </form>
+{% endblock %}
