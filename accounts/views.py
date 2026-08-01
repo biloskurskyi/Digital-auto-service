@@ -1,23 +1,15 @@
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView, FormView, TemplateView, UpdateView
 
-from core.views import FlashMessagesMixin
+from core.views import FlashMessagesMixin, OwnerRequiredMixin
 
 from . import services
 from .forms import LoginForm, ManagerInviteForm, PasswordResetEmailForm, PasswordSetForm, ProfileForm, RegistrationForm
 from .models import User
-
-
-class OwnerRequiredMixin(LoginRequiredMixin):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated and request.user.owner_id is not None:
-            raise Http404
-        return super().dispatch(request, *args, **kwargs)
 
 
 class LandingView(TemplateView):

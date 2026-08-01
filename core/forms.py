@@ -6,7 +6,7 @@ class StyledForm:
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             widget = field.widget
-            if isinstance(widget, forms.CheckboxInput):
+            if isinstance(widget, (forms.CheckboxInput, forms.CheckboxSelectMultiple)):
                 continue
             if isinstance(widget, forms.Select):
                 widget.attrs.setdefault('class', 'form-control')

@@ -4,15 +4,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic import CreateView, DeleteView, UpdateView
 
 from core.services import tenant_of
-from core.views import FlashMessagesMixin
+from core.views import FlashMessagesMixin, TenantScopedMixin
 
 from .forms import ClientForm
 from .models import Client
-
-
-class ClientScopedMixin(LoginRequiredMixin):
-    def get_queryset(self):
-        return Client.objects.for_tenant(tenant_of(self.request.user))
 
 
 class ClientCreateView(FlashMessagesMixin, LoginRequiredMixin, CreateView):
@@ -30,7 +25,8 @@ class ClientCreateView(FlashMessagesMixin, LoginRequiredMixin, CreateView):
         return reverse('client_edit', kwargs={'pk': self.object.pk})
 
 
-class ClientUpdateView(FlashMessagesMixin, ClientScopedMixin, UpdateView):
+class ClientUpdateView(FlashMessagesMixin, TenantScopedMixin, UpdateView):
+    model = Client
     template_name = 'clients/client_edit.html'
     form_class = ClientForm
     extra_context = {'title': 'DAS - Client profile'}
@@ -44,7 +40,8 @@ class ClientUpdateView(FlashMessagesMixin, ClientScopedMixin, UpdateView):
         return reverse('client_edit', kwargs={'pk': self.object.pk})
 
 
-class ClientDeleteView(FlashMessagesMixin, ClientScopedMixin, DeleteView):
+class ClientDeleteView(FlashMessagesMixin, TenantScopedMixin, DeleteView):
+    model = Client
     template_name = 'clients/client_delete.html'
     success_url = reverse_lazy('dashboard')
     extra_context = {'title': 'DAS - Client delete'}
