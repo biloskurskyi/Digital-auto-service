@@ -9,20 +9,40 @@ class StyledForm:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.widget.attrs.setdefault('class', 'form-control py-4')
-            field.widget.attrs.setdefault('placeholder', field.label)
+            if not isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs.setdefault('class', 'form-control py-4')
+                field.widget.attrs.setdefault('placeholder', field.label)
 
 
-class RegistrationForm(StyledForm, UserCreationForm):
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number')
-
+class UniqueActiveEmailMixin:
     def clean_email(self):
         email = self.cleaned_data['email']
         if User.objects.filter(email=email, is_active=True).exists():
             raise forms.ValidationError(_('This email address is already used!'))
         return email
+
+
+class RegistrationForm(UniqueActiveEmailMixin, StyledForm, UserCreationForm):
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number')
+
+
+class ManagerInviteForm(UniqueActiveEmailMixin, StyledForm, forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number')
+
+
+class ProfileForm(StyledForm, forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'is_active')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name in ('username', 'email', 'is_active'):
+            self.fields[name].disabled = True
 
 
 class LoginForm(StyledForm, AuthenticationForm):

@@ -1,0 +1,60 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% trans 'Edit profile' %}</h5>
+                </div>
+                <div class="card-block">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for error in form.non_field_errors %}
+                            <span class="text-danger d-block my-3">{{ error }}</span>
+                        {% endfor %}
+                        {% for field in form %}
+                            {% include 'partials/form_field.html' with labeled=True %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Submit' %}</button>
+                    </form>
+                    <hr>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary">{% trans 'Log out' %}</button>
+                    </form>
+                    {% if nav.is_owner %}
+                        <a class="d-block mt-3 text-danger" href="{% url 'account_delete' %}">{% trans 'Delete account' %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-block">
+                    <div class="text-center">
+                        <h4 class="font-weight-bold h6">{% trans 'User statistics' %}</h4>
+                        <p class="font-italic text-muted">
+                            {% blocktrans with username=user.username %}Displayed below is the information for user: {{ username }}{% endblocktrans %}
+                        </p>
+                    </div>
+                    {% if nav.is_owner %}
+                        <div class="small font-weight-light mt-4 text-center text-muted">
+                            <p>{% trans 'Managers count:' %} {{ nav.managers|length }}</p>
+                            <ul class="list-unstyled">
+                                {% for manager in nav.managers %}
+                                    <li>
+                                        <a href="{% url 'manager_edit' manager.pk %}">
+                                            {{ manager.first_name }} {{ manager.last_name }} ({{ manager.username }})
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
