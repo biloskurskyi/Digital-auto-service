@@ -1,0 +1,95 @@
+{% load i18n %}
+<nav class="pcoded-navbar">
+    <div class="navbar-wrapper">
+        <div class="navbar-brand header-logo">
+            <a class="b-title" href="{% url 'dashboard' %}"><i class="feather icon-home"></i> DAS</a>
+        </div>
+        <div class="navbar-content scroll-div">
+            <ul class="nav pcoded-inner-navbar">
+                <li class="nav-item pcoded-menu-caption">
+                    <label>{% trans 'Navigation' %}</label>
+                </li>
+                {% if nav.is_owner %}
+                    <li class="nav-item pcoded-hasmenu">
+                        <a href="javascript:" class="nav-link">
+                            <span class="pcoded-micon"><i class="feather icon-box"></i></span>
+                            <span class="pcoded-mtext">{% trans 'Managers' %}</span>
+                        </a>
+                        <ul class="pcoded-submenu">
+                            <li><a href="{% url 'manager_new' %}">{% trans 'Create new manager' %}</a></li>
+                            {% for manager in nav.managers %}
+                                <li>
+                                    <a href="{% url 'manager_edit' manager.pk %}">
+                                        {{ manager.first_name }} {{ manager.last_name }} ({{ manager.username }})
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endif %}
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-users"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Clients' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'client_new' %}">{% trans 'Create new client' %}</a></li>
+                        {% for client in nav.clients %}
+                            <li><a href="{% url 'client_edit' client.pk %}">{{ client }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-truck"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Cars' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'car_new' %}">{% trans 'Create new car' %}</a></li>
+                        {% for car in nav.cars %}
+                            <li><a href="{% url 'car_edit' car.pk %}">{{ car }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-tool"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Workers' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'worker_new' %}">{% trans 'Create new worker' %}</a></li>
+                        {% for worker in nav.workers %}
+                            <li><a href="{% url 'worker_edit' worker.pk %}">{{ worker }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-file-text"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Orders' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li><a href="{% url 'order_new' %}">{% trans 'Create new order' %}</a></li>
+                        {% for order in nav.orders %}
+                            <li><a href="{% url 'order_edit' order.pk %}">{{ order }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+                <li class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link">
+                        <span class="pcoded-micon"><i class="feather icon-map-pin"></i></span>
+                        <span class="pcoded-mtext">{% trans 'Stations' %}</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        {% if nav.is_owner %}
+                            <li><a href="{% url 'station_new' %}">{% trans 'Create new station' %}</a></li>
+                        {% endif %}
+                        {% for station in nav.stations %}
+                            <li><a href="{% url 'station_edit' station.pk %}">{{ station }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

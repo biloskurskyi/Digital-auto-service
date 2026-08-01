@@ -1,0 +1,15 @@
+{% extends 'layouts/auth.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="card-body text-center">
+        <h3 class="mb-4">
+            {% blocktrans with username=request.user.username %}You have successfully logged in as {{ username }} and can start to work🔧!{% endblocktrans %}
+        </h3>
+        <a href="{% url 'dashboard' %}" class="btn btn-primary mb-3">{% trans 'Go to dashboard' %}</a>
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-outline-light">{% trans 'Log out' %}</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,106 @@
+{% extends 'layouts/base.html' %}
+{% load i18n static %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% trans 'Edit profile' %}</h5>
+                </div>
+                <div class="card-block">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for error in form.non_field_errors %}
+                            <span class="text-danger d-block my-3">{{ error }}</span>
+                        {% endfor %}
+                        {% for field in form %}
+                            {% include 'partials/form_field.html' with labeled=True %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Submit' %}</button>
+                    </form>
+                    <hr>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-secondary">{% trans 'Log out' %}</button>
+                    </form>
+                    <a class="d-block mt-3 h5" href="{% url 'company_report' %}" target="_blank">
+                        {% trans 'Download report' %}
+                        <img src="{% static 'vendor/images/pdf.svg' %}" alt="" width="35" height="35">
+                    </a>
+                    {% if nav.is_owner %}
+                        <a class="d-block mt-3 text-danger" href="{% url 'account_delete' %}">{% trans 'Delete account' %}</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <div class="card-block">
+                    <div class="text-center">
+                        <h4 class="font-weight-bold h6">{% trans 'User statistics' %}</h4>
+                        <p class="font-italic text-muted">
+                            {% blocktrans with username=user.username %}Displayed below is the information for user: {{ username }}{% endblocktrans %}
+                        </p>
+                    </div>
+                    {% if nav.is_owner %}
+                        <div class="small font-weight-light mt-4 text-center text-muted">
+                            <p>{% trans 'Managers count:' %} {{ nav.managers|length }}</p>
+                            <ul class="list-unstyled">
+                                {% for manager in nav.managers %}
+                                    <li>
+                                        <a href="{% url 'manager_edit' manager.pk %}">
+                                            {{ manager.first_name }} {{ manager.last_name }} ({{ manager.username }})
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Clients count:' %} {{ nav.clients|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for client in nav.clients %}
+                                <li><a href="{% url 'client_edit' client.pk %}">{{ client }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Cars count:' %} {{ nav.cars|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for car in nav.cars %}
+                                <li><a href="{% url 'car_edit' car.pk %}">{{ car }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Workers count:' %} {{ nav.workers|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for worker in nav.workers %}
+                                <li><a href="{% url 'worker_edit' worker.pk %}">{{ worker }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="small font-weight-light mt-4 text-center text-muted">
+                        <p>{% trans 'Orders count:' %} {{ nav.orders|length }}</p>
+                        <ul class="list-unstyled">
+                            {% for order in nav.orders %}
+                                <li><a href="{% url 'order_edit' order.pk %}">{{ order }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% if nav.is_owner %}
+                        <div class="small font-weight-light mt-4 text-center text-muted">
+                            <p>{% trans 'Stations count:' %} {{ nav.stations|length }}</p>
+                            <ul class="list-unstyled">
+                                {% for station in nav.stations %}
+                                    <li><a href="{% url 'station_edit' station.pk %}">{{ station }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+{% load i18n %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{% trans 'Create car' %}</h5>
+                </div>
+                <div class="card-block">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for error in form.non_field_errors %}
+                            <span class="text-danger d-block my-3">{{ error }}</span>
+                        {% endfor %}
+                        {% for field in form %}
+                            {% include 'partials/form_field.html' with labeled=True %}
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary shadow-2 mb-4">{% trans 'Create' %}</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
