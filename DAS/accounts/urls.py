@@ -3,7 +3,7 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (CreateManagerView, EmailMessageView, EmailNotVerified,
-                    EmailVerificationView, IndexView, ManagerAccountDelete,
+                    EmailVerificationView, ManagerAccountDelete,
                     ManagerAccountProfileView, ManagerGeneratePDFView,
                     MianView, OwnerAccountDelete, OwnerAccountProfileView,
                     OwnerGeneratePDFView, OwnerManagerAccountProfileView,
@@ -11,8 +11,6 @@ from .views import (CreateManagerView, EmailMessageView, EmailNotVerified,
 
 app_name = 'accounts'
 urlpatterns = [
-    path('', IndexView.as_view(), name='base'),
-
     path('registration/', UserRegistrationView.as_view(), name='reg'),
     path('login/', UserLoginView.as_view(), name='log'),
     path('success/login/', login_required(MianView.as_view()), name='success_log'),

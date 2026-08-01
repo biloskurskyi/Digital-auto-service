@@ -13,11 +13,6 @@ from .forms import CreateAccountUserForm, CreateManagerUserForm, UserLoginForm
 from .models import AccountUsers, EmailVerification
 
 
-class IndexView(BaseView):
-    template_name = "accounts/index.html"
-    title = "DAS"
-
-
 class MianView(BaseView):
     template_name = "accounts/successful_login.html"
     title = "DAS - Login success"
