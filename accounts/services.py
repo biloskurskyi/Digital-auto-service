@@ -17,6 +17,15 @@ def register_owner(request, form):
     return user
 
 
+def invite_manager(request, form, owner):
+    user = form.save(commit=False)
+    user.owner = owner
+    user.set_unusable_password()
+    user.save()
+    send_verification(request, user)
+    return user
+
+
 def send_verification(request, user):
     verification = EmailVerification.objects.create(user=user, expires_at=now() + VERIFICATION_LIFETIME)
     link = request.build_absolute_uri(
@@ -33,20 +42,27 @@ def send_verification(request, user):
     )
 
 
-def verify_email(pk, email, code):
+def pending_verification(pk, email, code):
     EmailVerification.objects.filter(expires_at__lte=now()).delete()
     if User.objects.filter(email=email, is_verified_email=True).exists():
-        return False
+        return None
     user = User.objects.filter(pk=pk, email=email).first()
     if user is None:
-        return False
-    verification = EmailVerification.objects.filter(user=user, code=code, expires_at__gt=now()).first()
-    if verification is None:
-        return False
+        return None
+    return EmailVerification.objects.filter(user=user, code=code, expires_at__gt=now()).select_related('user').first()
+
+
+def complete_verification(verification):
+    user = verification.user
     with transaction.atomic():
         user.is_active = True
         user.is_verified_email = True
         user.save()
         EmailVerification.objects.filter(user=user).exclude(pk=verification.pk).update(expires_at=now())
         verification.delete()
-    return True
+
+
+def activate_manager(verification, password_form):
+    with transaction.atomic():
+        password_form.save()
+        complete_verification(verification)
