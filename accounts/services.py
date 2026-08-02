@@ -44,9 +44,7 @@ def send_verification(request, user):
 
 def pending_verification(pk, email, code):
     EmailVerification.objects.filter(expires_at__lte=now()).delete()
-    if User.objects.filter(email=email, is_verified_email=True).exists():
-        return None
-    user = User.objects.filter(pk=pk, email=email).first()
+    user = User.objects.filter(pk=pk, email=email, is_verified_email=False).first()
     if user is None:
         return None
     return EmailVerification.objects.filter(user=user, code=code, expires_at__gt=now()).select_related('user').first()

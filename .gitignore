@@ -5,3 +5,4 @@ CLAUDE.md
 .env
 .venv/
 __pycache__/
+staticfiles/

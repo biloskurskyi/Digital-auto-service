@@ -1,5 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.translation import gettext_lazy as _
@@ -111,14 +113,18 @@ class DashboardView(FlashMessagesMixin, LoginRequiredMixin, UpdateView):
         return self.request.user
 
 
-class AccountDeleteView(FlashMessagesMixin, OwnerRequiredMixin, DeleteView):
+class AccountDeleteView(OwnerRequiredMixin, DeleteView):
     template_name = 'accounts/account_delete.html'
     success_url = reverse_lazy('register')
     extra_context = {'title': 'DAS - Account delete'}
-    success_message = _('Account deleted successfully.')
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def form_valid(self, form):
+        services.delete_owner_account(self.object)
+        messages.success(self.request, _('Account deleted successfully.'))
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ManagerCreateView(FlashMessagesMixin, OwnerRequiredMixin, FormView):

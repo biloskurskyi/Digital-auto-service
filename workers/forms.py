@@ -18,4 +18,4 @@ class WorkerForm(StyledForm, forms.ModelForm):
 
     def __init__(self, tenant, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['orders'].queryset = Order.objects.for_tenant(tenant)
+        self.fields['orders'].queryset = Order.objects.for_tenant(tenant).select_related('client', 'car')

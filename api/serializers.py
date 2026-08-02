@@ -1,3 +1,4 @@
+from django.contrib.auth import password_validation
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -20,6 +21,10 @@ class ManagerSerializer(serializers.ModelSerializer):
             users = users.exclude(pk=self.instance.pk)
         if users.exists():
             raise serializers.ValidationError(_('This email address is already used!'))
+        return value
+
+    def validate_password(self, value):
+        password_validation.validate_password(value, self.instance)
         return value
 
     def create(self, validated_data):

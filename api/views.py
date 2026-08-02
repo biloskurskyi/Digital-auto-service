@@ -1,11 +1,18 @@
 from django.db.models import Q
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.viewsets import ModelViewSet
 
 from accounts import services
 from accounts.models import User
 
 from .serializers import ManagerSerializer
+
+
+class AuthTokenView(ObtainAuthToken):
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'token'
 
 
 class ManagerViewSet(ModelViewSet):
