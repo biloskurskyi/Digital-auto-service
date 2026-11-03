@@ -38,6 +38,10 @@ class User(AbstractUser):
         verbose_name = 'Account'
         verbose_name_plural = 'Accounts'
 
+    @property
+    def is_owner(self) -> bool:
+        return self.owner_id is None
+
 
 class EmailVerification(models.Model):
     code = models.UUIDField(unique=True, default=uuid.uuid4)

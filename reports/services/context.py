@@ -10,7 +10,7 @@ from workers.models import Worker
 
 def company_report_context(user):
     tenant = tenant_of(user)
-    is_owner = user.owner_id is None
+    is_owner = user.is_owner
     return {
         'username': user.username,
         'managers': get_user_model().objects.for_tenant(user) if is_owner else None,

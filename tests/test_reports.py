@@ -37,3 +37,45 @@ def test_anonymous_cannot_get_report(client):
     response = client.get(reverse('company_report'))
     assert response.status_code == 302
     assert response.url.startswith(reverse('login'))
+
+
+def test_pdf_renderer_returns_bytes_from_pisa(monkeypatch):
+    from reports.services import pdf
+
+    class Ok:
+        err = 0
+
+    def fake_create(html, dest):
+        dest.write(b'%PDF-fake')
+        return Ok()
+
+    monkeypatch.setattr(pdf.pisa, 'CreatePDF', fake_create)
+    assert pdf.PdfRenderer().render('reports/company_report.html', {'username': 'u'}) == b'%PDF-fake'
+
+
+def test_pdf_renderer_raises_on_pisa_error(monkeypatch):
+    from reports.services import pdf
+
+    class Bad:
+        err = 1
+
+    monkeypatch.setattr(pdf.pisa, 'CreatePDF', lambda html, dest: Bad())
+    with pytest.raises(pdf.PdfRenderError):
+        pdf.PdfRenderer().render('reports/company_report.html', {'username': 'u'})
+
+
+def test_report_view_returns_503_when_render_fails(client, monkeypatch):
+    from reports.services import pdf
+
+    def boom(self, template, context):
+        raise pdf.PdfRenderError(template)
+
+    monkeypatch.setattr(pdf.PdfRenderer, 'render', boom)
+    client.force_login(OwnerFactory())
+    response = client.get(reverse('company_report'))
+    assert response.status_code == 503
+
+
+def test_user_is_owner_property():
+    assert OwnerFactory().is_owner is True
+    assert ManagerFactory().is_owner is False
