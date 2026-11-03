@@ -1,0 +1,10 @@
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "UP"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["accounts", "api", "cars", "clients", "config", "core", "orders", "reports", "stations", "workers"]

@@ -8,7 +8,11 @@ from orders.models import Order
 from stations.models import Station
 
 from .factories import (
-    PASSWORD, CarFactory, ClientFactory, ManagerFactory, OrderFactory, OwnerFactory, StationFactory,
+    ClientFactory,
+    ManagerFactory,
+    OrderFactory,
+    OwnerFactory,
+    StationFactory,
 )
 
 pytestmark = pytest.mark.django_db

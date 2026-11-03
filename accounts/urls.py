@@ -2,9 +2,22 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 
 from .views import (
-    AccountDeleteView, DashboardView, LandingView, LoginSuccessView, LoginView, ManagerCreateView, ManagerDeleteView,
-    ManagerUpdateView, PasswordResetCompleteView, PasswordResetConfirmView, PasswordResetDoneView, PasswordResetView,
-    RegisterView, VerifyInvalidView, VerifySentView, VerifyView,
+    AccountDeleteView,
+    DashboardView,
+    LandingView,
+    LoginSuccessView,
+    LoginView,
+    ManagerCreateView,
+    ManagerDeleteView,
+    ManagerUpdateView,
+    PasswordResetCompleteView,
+    PasswordResetConfirmView,
+    PasswordResetDoneView,
+    PasswordResetView,
+    RegisterView,
+    VerifyInvalidView,
+    VerifySentView,
+    VerifyView,
 )
 
 urlpatterns = [
