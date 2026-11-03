@@ -42,12 +42,13 @@ class LoginForm(StyledForm, AuthenticationForm):
     def clean(self):
         try:
             return super().clean()
-        except forms.ValidationError:
+        except forms.ValidationError as err:
             username = self.cleaned_data.get('username')
             password = self.cleaned_data.get('password')
             user = User.objects.filter(username=username, is_active=False).first()
             if user and password and user.check_password(password):
-                raise forms.ValidationError(_('Please verify your email before logging in.'), code='unverified')
+                message = _('Please verify your email before logging in.')
+                raise forms.ValidationError(message, code='unverified') from err
             raise
 
 
